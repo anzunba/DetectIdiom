@@ -1,0 +1,20 @@
+.MuiTabs-flexContainer button:focus{
+    outline: none!important;
+}
+.MuiListItem-alignItemsFlexStart .MuiCardContent-root{
+    padding: 0!important;
+}
+
+.MuiBox-root {
+    border: 1px solid #eee!important;
+    border-radius: 0 0 .5rem .5rem!important;
+}
+
+.MuiPaper-elevation4{
+    box-shadow: none!important;
+}
+
+
+.follow .MuiBox-root{
+    padding: 0!important;
+}
