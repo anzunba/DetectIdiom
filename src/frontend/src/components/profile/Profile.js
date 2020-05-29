@@ -11,11 +11,12 @@ import Avatar from '@material-ui/core/Avatar';
 import ProfileEditModal from './ProfileEditModal'
 import FollowModal from './FollowModal'
 import CardModal from '../card/CardModal'
+import WordTableModal from '../wordTable/WordTableModal'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    marginTop: '3rem'
+    border: '1px solid #eee'
   },
   large: {
     width: theme.spacing(20),
@@ -28,9 +29,9 @@ export default function ImgMediaCard() {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <div className={classes.root}>
       <CardActionArea>
-      <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
+      <Avatar alt="" src="/static/frontend/images/unicorn.png" className={classes.large} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             Anna Nakatsuji
@@ -45,7 +46,8 @@ export default function ImgMediaCard() {
           <ProfileEditModal />
           <FollowModal />
           <CardModal />
+          <WordTableModal />
       </CardActions>
-    </Card>
+    </div>
   );
 }
