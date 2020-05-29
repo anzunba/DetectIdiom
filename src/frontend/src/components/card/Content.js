@@ -1,15 +1,15 @@
 import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Start from './Start';
+import End from './End';
 
 const questions = [
 	{
@@ -22,39 +22,26 @@ const questions = [
 	}
 ];
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		width: '100%',
-		flexGrow: 1
-	},
-	header: {
-		display: 'flex',
-		alignItems: 'center',
-		backgroundColor: theme.palette.background.default
-	}
-}));
-
 export default function TextMobileStepper() {
-	const classes = useStyles();
 	const theme = useTheme();
-	const [ activeStep, setActiveStep ] = React.useState(0);
+	const [ activeStep, setActiveStep ] = React.useState(-1);
 	const maxSteps = questions.length;
 	const handleNext = () => {
-        if(maxSteps  > activeStep){
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        }
+		if (maxSteps > activeStep) {
+			setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		}
 	};
 
 	const handleBack = () => {
-        if(activeStep <= maxSteps){
-            console.log('activeStep+' + activeStep)
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-        }
+		if (activeStep <= maxSteps) {
+			console.log('activeStep+' + activeStep);
+			setActiveStep((prevActiveStep) => prevActiveStep - 1);
+		}
 	};
-	const aaa = (
+	const stepper = (
 		<MobileStepper
 			steps={maxSteps}
-            position="static"
+			position="static"
 			variant="text"
 			activeStep={activeStep}
 			nextButton={
@@ -65,55 +52,53 @@ export default function TextMobileStepper() {
 			}
 			backButton={
 				<Button size="small" onClick={handleBack}>
-                    {activeStep === maxSteps + 1 ? 'Start' : 'Back'}
+					{activeStep === maxSteps + 1 ? 'Start' : 'Back'}
 					{theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
 				</Button>
 			}
 		/>
 	);
 
-    const question = (
+	const question = (
 		<div>
-			<Card elevation={0} className={classes.header}>
+			<Card elevation={0}>
 				<CardActionArea>
 					<CardContent />
 					<CardContent>
 						<Typography variant="h6">
-                            {console.log(questions[activeStep])}
-                            {questions[activeStep] != undefined ? questions[activeStep].text : console.log("text is undefined")}
-                        </Typography>
+							{console.log(questions[activeStep])}
+							{questions[activeStep] != undefined ? (
+								questions[activeStep].text
+							) : (
+								console.log('text is undefined')
+							)}
+						</Typography>
 					</CardContent>
 					<CardContent />
 				</CardActionArea>
 			</Card>
-			{aaa}
+			{stepper}
 		</div>
-    );
-    
+	);
+
 	const end = (
 		<div>
-			<h1>This is end</h1>
-            <Button size="small" onClick={handleBack}>
-                <KeyboardArrowLeft />
-                Back
-            </Button>
-		</div>
-    );
-    
-    const start = (
-		<div>
-			<h1>This is start</h1>
-            <Button size="small" onClick={handleNext}>
-					<KeyboardArrowRight />
-                    Next
+			<End />
+			<Button size="small" onClick={handleBack}>
+				<KeyboardArrowLeft />
+				Back
 			</Button>
 		</div>
 	);
-	return (
-		<div className={classes.root}>
-            {activeStep === maxSteps ? end
-            : activeStep < 0 ? start 
-            : question}
+
+	const start = (
+		<div>
+			<Start />
+			<Button size="small" onClick={handleNext}>
+				<KeyboardArrowRight />
+				Next
+			</Button>
 		</div>
 	);
+	return <div>{activeStep === maxSteps ? end : activeStep < 0 ? start : question}</div>;
 }

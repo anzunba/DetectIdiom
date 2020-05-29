@@ -13,12 +13,6 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
-	paper: {
-		backgroundColor: theme.palette.background.paper,
-		border: '2px solid #000',
-		boxShadow: theme.shadows[5],
-		width: '40%'
-	},
 }));
 
 export default function InteractiveList() {
@@ -52,7 +46,7 @@ export default function InteractiveList() {
 				}}
 			>
 				<Fade in={open}>
-					<div className={classes.paper}>
+					<div>
                         <Tab />
 					</div>
 				</Fade>
