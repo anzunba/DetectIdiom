@@ -2,6 +2,9 @@ import React, { Fragment } from 'react';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import Order from './Order'
+import Block from './Block'
+import IconButton from '@material-ui/core/IconButton';
 
 export default function SimplePopover() {
 	const [ anchorEl, setAnchorEl ] = React.useState(null);
@@ -19,7 +22,9 @@ export default function SimplePopover() {
 
 	return (
 		<React.Fragment>
+
 			<MoreHorizIcon aria-describedby={id} variant="contained" color="primary" onClick={handleClick} />
+
 			<Popover
 				id={id}
 				open={open}
@@ -34,7 +39,8 @@ export default function SimplePopover() {
 					horizontal: 'center'
 				}}
 			>
-				<Typography>The content of the Popover.</Typography>
+                { true ? <Order /> : <Block />}
+				
 			</Popover>
 		</React.Fragment>
 	);

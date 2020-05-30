@@ -5,7 +5,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 
 import Button from '@material-ui/core/Button';
-import Tab from './Tab'
+import FollowTab from './FollowTab'
 
 const useStyles = makeStyles((theme) => ({
 	modal: {
@@ -47,7 +47,7 @@ export default function InteractiveList() {
 			>
 				<Fade in={open}>
 					<div>
-                        <Tab />
+                        <FollowTab />
 					</div>
 				</Fade>
 			</Modal>

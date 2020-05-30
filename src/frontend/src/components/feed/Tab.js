@@ -9,7 +9,9 @@ import HelpIcon from '@material-ui/icons/Help';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Scream from './Scream';
+import Calendar from '../users/profile/Calendar';
 import PublicIcon from '@material-ui/icons/Public';
+import SettingPopover from './SettingPopover';
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -52,7 +54,8 @@ export default function ScrollableTabsButtonForce() {
 	};
 
 	return (
-		<div>
+		<div> 
+            <span className="float-right"><SettingPopover/></span>          
 			<AppBar position="static" color="default">
 				<Tabs
 					value={value}
@@ -80,7 +83,7 @@ export default function ScrollableTabsButtonForce() {
             <Scream />
 			</TabPanel>
 			<TabPanel value={value} index={3} component="div">
-            <Scream />
+            <Calendar />
 			</TabPanel>
 		</div>
 	);

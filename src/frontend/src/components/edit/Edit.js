@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -10,6 +10,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
+import Setting from './Setting';
+import Save from './Save'
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1
@@ -23,81 +25,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CenteredGrid() {
 	const classes = useStyles();
-	const [ state, setState ] = React.useState({
-		checkedA: true,
-		checkedB: true
-	});
-	const handleChange = (event) => {
-		setState({ ...state, [event.target.name]: event.target.checked });
-	};
+
 	return (
 		<div className={classes.root}>
-            <div className="floatLeft">
-            <form className={classes.root} noValidate autoComplete="off">
-                <div className="selectedInputs">
-            <TextField disabled id="standard-basic" label="Selected Word" />
-            <TextField disabled id="standard-basic" label="Selected Idiom" />
-            </div>
-    </form>
-            </div>
-			<div className="floatRight">
-				<div className="inlineBlock">
-					<FormGroup>
-						<FormControlLabel
-							control={
-								<Switch
-									checked={state.checkedB}
-									onChange={handleChange}
-									name="checkedB"
-									color="primary"
-								/>
-							}
-							label="Translation"
-						/>
-					</FormGroup>
+			<div className="float-left">
+				<form className={classes.root} noValidate autoComplete="off">
+					<div className="selectedInputs">
+						<TextField disabled id="standard-basic" label="Selected Word" />
+						<TextField disabled id="standard-basic" label="Selected Idiom" />
+					</div>
+				</form>
+			</div>
+			<div className="float-right">
+				<div className="d-inline-block">
+					<Save />
 				</div>
-				<div className="inlineBlock">
-					<FormGroup>
-						<FormControlLabel control={
-							<Switch checked={state.checkedB} onChange={handleChange} name="checkedB" color="primary" />
-						}
-						label="Custom Input" />
-					</FormGroup>
-				</div>
-				<div className="inlineBlock">
-					<Button
-						variant="contained"
-						color="primary"
-						size="large"
-						className={classes.button}
-						startIcon={<SaveIcon />}
-					>
-						Save
-					</Button>
-				</div>
-				{/* <FormGroup row>
-                    <FormControlLabel
-                        control={
-                            <Switch checked={state.checkedB} onChange={handleChange} name="checkedB" color="primary" />
-                        }
-                        label="Translate"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Switch checked={state.checkedB} onChange={handleChange} name="checkedB" color="primary" />
-                        }
-                        label="Custom Input"
-                    />
-                </FormGroup>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    className={classes.button}
-                    startIcon={<SaveIcon />}
-                >
-                    Save
-                </Button> */}
 			</div>
 			<Grid container spacing={3}>
 				<Grid item xs={12} sm={8}>
@@ -108,6 +50,9 @@ export default function CenteredGrid() {
 				<Grid item xs={12} sm={4}>
 					<Paper className={classes.paper}>
 						<MeaningTable />
+						<div className="float-right">
+							<Setting />
+						</div>
 					</Paper>
 				</Grid>
 			</Grid>
