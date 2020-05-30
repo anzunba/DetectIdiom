@@ -8,10 +8,10 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import ProfileEditModal from './ProfileEditModal'
-import FollowModal from './FollowModal'
-import CardModal from '../card/CardModal'
-import WordTableModal from '../wordTable/WordTableModal'
+import ProfileEdit from './ProfileEdit'
+import Follow from '../../users/follow/Follow'
+import CardModal from '../../card/CardModal'
+import WordTableModal from '../../wordTable/WordTableModal'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,8 +43,8 @@ export default function ImgMediaCard() {
         </CardContent>
       </CardActionArea>
       <CardActions>
-          <ProfileEditModal />
-          <FollowModal />
+          <ProfileEdit />
+          <Follow />
           <CardModal />
           <WordTableModal />
       </CardActions>

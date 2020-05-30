@@ -5,39 +5,39 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 export default function CenteredGrid() {
 	return (
 		<div>
+            <LinearProgress/>
 			<table className="table table-striped">
 				<thead>
 					<tr>
 						<th>Translate</th>
 					</tr>
 				</thead>
-				<LinearProgress />
 				<tbody>
 					<tr>
 						<td>Not Available</td>
 					</tr>
 				</tbody>
 			</table>
+            <LinearProgress/>
 			<table className="table table-striped">
 				<thead>
 					<tr>
 						<th>Select Word</th>
 					</tr>
 				</thead>
-				<LinearProgress />
 				<tbody>
 					<tr>
 						<td>Not Available</td>
 					</tr>
 				</tbody>
 			</table>
+            <LinearProgress />
 			<table className="table table-striped">
 				<thead>
 					<tr>
 						<th>idiom</th>
 					</tr>
 				</thead>
-				<LinearProgress />
 				<tbody>
 					<tr>
 						<td>Not Available</td>

@@ -2,8 +2,9 @@
 /**********************************************
                 All
 **********************************************/
-nav{margin-bottom:3rem}
-
+header.MuiPaper-root.MuiAppBar-root.MuiAppBar-positionStatic.MuiAppBar-colorPrimary.MuiPaper-elevation4 {
+    margin-bottom: 3rem;
+}
 *:focus{
     outline: none!important;
 }
@@ -12,17 +13,6 @@ nav{margin-bottom:3rem}
     border-bottom: none!important;
 }
 
-.inlineBlock{
-    display: inline-block;
-}
-
-.floatRight{
-    float: right;
-}
-
-.floatLeft{
-    float:left;
-}
 /**********************************************
                 Modal
 **********************************************/
@@ -87,15 +77,12 @@ span.MuiTypography-root.MuiFormControlLabel-label.MuiTypography-body1 {
 .commentContent {
     width: calc(100% - 65px)!important;
     display: inline-block;
-    /* background-color: blue; */
     margin-left:15px;
 }
 
 .profileImg {
     display: inline-block;
     width: 40px;
-    /* background-color: red; */
-    /* margin-bottom: auto; */
     vertical-align: top;
 }
 
@@ -108,5 +95,37 @@ span.MuiTypography-root.MuiFormControlLabel-label.MuiTypography-body1 {
     padding: 2rem 0;
 }
 
+/**********************************************
+                Calendar.js
+**********************************************/
+.react-calendar__navigation, .react-calendar__month-view__weekdays {
+    display: none!important;
+}
+.react-calendar__month-view__days button {
+    border: 1px  solid #eee;
+    background-color: white
+}
+abbr {
+    opacity: 0.2;
+}
+
+/**********************************************
+            CreateProjectTabPage1.js
+**********************************************/
+.dropzone {
+    border: 2px dashed #eee;
+    height: 277px;
+}
+
+/**********************************************
+            Save.js
+**********************************************/
+.save-img img{
+    width:60px;
+}
+
+.MuiPaper-root.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm.MuiPaper-elevation24.MuiPaper-rounded {
+    width: 50%;
+}
 
 
