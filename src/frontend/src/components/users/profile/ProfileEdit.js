@@ -6,7 +6,7 @@ import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
-
+import Lang from './Lang'
 const useStyles = makeStyles((theme) => ({
 	modal: {
 		display: 'flex',
@@ -23,15 +23,19 @@ const useStyles = makeStyles((theme) => ({
 		width: theme.spacing(25),
 		height: theme.spacing(25),
 		margin: '.5rem auto'
-    },
-    textField:{
-        width: '100%'
-    }
+	},
+	textField: {
+		width: '100%'
+	}
 }));
 
 export default function TransitionsModal() {
 	const classes = useStyles();
 	const [ open, setOpen ] = React.useState(false);
+	const [flag, setFlag] = React.useState('no-circle');
+	const [flagImg, setFlagImg] = React.useState('');
+
+
 
 	const handleOpen = () => {
 		setOpen(true);
@@ -46,6 +50,11 @@ export default function TransitionsModal() {
 	const handleChange = (event) => {
 		setValue(event.target.value);
 	};
+
+	function setLang(){
+		setFlag('circle90')
+		setFlagImg('fix-img')
+	}
 
 	return (
 		<div>
@@ -68,16 +77,17 @@ export default function TransitionsModal() {
 					<div className={classes.paper}>
 						<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
 						<form noValidate autoComplete="off">
-							<TextField id="standard-basic" label="Name" className={classes.textField}/>
+							<TextField id="standard-basic" label="Name" className={classes.textField} />
 							<TextField
 								id="standard-multiline-static"
 								label="Bio"
 								multiline
 								rows={4}
 								value={value}
-                                onChange={handleChange}
-                                className={classes.textField}
+								onChange={handleChange}
+								className={classes.textField}
 							/>
+							<Lang />
 						</form>
 					</div>
 				</Fade>
