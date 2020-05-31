@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Tab from './Tab'
-import Profile from '../accounts/profile/Profile'
+import Profile from '../users/profile/Profile'
 import News from './news/News'
 
 export default function Dashboard() {
@@ -12,7 +12,7 @@ export default function Dashboard() {
             <Tab />
         </Grid>
         <Grid item xs={4}>
-            <News />
+            <Profile />
         </Grid>
       </Grid>
       </div>

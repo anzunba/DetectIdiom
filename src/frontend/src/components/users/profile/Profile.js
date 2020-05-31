@@ -30,8 +30,8 @@ export default function ImgMediaCard() {
 
   return (
     <div className={classes.root}>
-      <CardActionArea>
-      <Avatar alt="" src="/static/frontend/images/unicorn.png" className={classes.large} />
+      <CardActionArea><Avatar alt="" src="/static/frontend/images/unicorn.png" className={classes.large} />
+      
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             Anna Nakatsuji
