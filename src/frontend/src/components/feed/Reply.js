@@ -1,15 +1,8 @@
-import React, {Fragment} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import IconButtons from './IconButtons';
-import CommentBox from './CommentBox';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+
 
 export default function AlignItemsList() {
 	const message1 =
@@ -26,7 +19,8 @@ export default function AlignItemsList() {
 				<Typography component="span" variant="body2" color="textPrimary">
 					{message1}
 				</Typography>
-				<IconButtons />
+				<div><IconButtons /></div>
+				
 			</div>
 		</React.Fragment>
 	);

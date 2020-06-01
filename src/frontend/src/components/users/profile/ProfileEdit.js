@@ -6,7 +6,8 @@ import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
-import Lang from './Lang'
+import Lang from './Lang';
+
 const useStyles = makeStyles((theme) => ({
 	modal: {
 		display: 'flex',
@@ -15,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	paper: {
 		backgroundColor: theme.palette.background.paper,
-		border: '2px solid #000',
 		boxShadow: theme.shadows[5],
 		padding: theme.spacing(2, 4, 3)
 	},
@@ -23,19 +23,14 @@ const useStyles = makeStyles((theme) => ({
 		width: theme.spacing(25),
 		height: theme.spacing(25),
 		margin: '.5rem auto'
-	},
-	textField: {
-		width: '100%'
 	}
 }));
 
 export default function TransitionsModal() {
 	const classes = useStyles();
 	const [ open, setOpen ] = React.useState(false);
-	const [flag, setFlag] = React.useState('no-circle');
-	const [flagImg, setFlagImg] = React.useState('');
-
-
+	const [ flag, setFlag ] = React.useState('no-circle');
+	const [ flagImg, setFlagImg ] = React.useState('');
 
 	const handleOpen = () => {
 		setOpen(true);
@@ -51,14 +46,14 @@ export default function TransitionsModal() {
 		setValue(event.target.value);
 	};
 
-	function setLang(){
-		setFlag('circle90')
-		setFlagImg('fix-img')
+	function setLang() {
+		setFlag('circle90');
+		setFlagImg('fix-img');
 	}
 
 	return (
 		<div>
-			<Button type="button" size="small" color="primary" onClick={handleOpen}>
+			<Button type="button" size="small" color="primary" onClick={handleOpen} className="w-100">
 				Edit
 			</Button>
 			<Modal
@@ -74,10 +69,11 @@ export default function TransitionsModal() {
 				}}
 			>
 				<Fade in={open}>
+					<div>
 					<div className={classes.paper}>
 						<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
 						<form noValidate autoComplete="off">
-							<TextField id="standard-basic" label="Name" className={classes.textField} />
+							<TextField id="standard-basic" label="Name" className="w-100 mt-5" />
 							<TextField
 								id="standard-multiline-static"
 								label="Bio"
@@ -85,11 +81,17 @@ export default function TransitionsModal() {
 								rows={4}
 								value={value}
 								onChange={handleChange}
-								className={classes.textField}
+								className="w-100 mt-5"
 							/>
 							<Lang />
 						</form>
 					</div>
+					<div className="w-100 bg-light">
+					<Button color="primary" size="large" fullWidth>
+							Save
+						</Button>
+						</div>
+						</div>
 				</Fade>
 			</Modal>
 		</div>

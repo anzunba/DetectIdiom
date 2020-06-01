@@ -17,7 +17,7 @@ export default function CheckboxLabels() {
 	};
 
 	return (
-		<div>
+		<React.Fragment>
 			<FormControlLabel
 				control={
 					<Checkbox
@@ -42,6 +42,6 @@ export default function CheckboxLabels() {
 				}
 				label="1 Comment"
 			/>
-		</div>
+		</React.Fragment>
 	);
 }

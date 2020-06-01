@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
 import Popover from '@material-ui/core/Popover';
-import IconButton from '@material-ui/core/IconButton';
 import List from './List';
 
 export default function SimplePopover() {
@@ -67,7 +65,7 @@ export default function SimplePopover() {
 		const flag_address = `/static/frontend/images/${lang}-circle.svg`;
 		return (
 			<div className="w-25" key={key}>
-				<div id={lang} onClick={handleClick} className="no-circle">
+				<div id={lang} onClick={handleClick} className="no-circle mt-5">
 					<img src={flag_address} className="w-100" />
 				</div>
 				<Popover

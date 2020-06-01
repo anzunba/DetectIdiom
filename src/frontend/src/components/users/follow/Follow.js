@@ -30,7 +30,7 @@ export default function InteractiveList() {
 
 	return (
 		<div>
-			<Button type="button" size="small" color="primary" onClick={handleOpen}>
+			<Button type="button" size="small" color="primary" onClick={handleOpen}  className="w-100">
 				Follow
 			</Button>
 			<Modal
