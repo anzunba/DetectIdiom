@@ -8,10 +8,8 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Reply from './Reply';
-import SettingPopover from './SettingPopover';
 import CommentBox from './CommentBox';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +37,7 @@ export default function AlignItemsList() {
 
 	return (
 		<div>
-			<CardContent>
+			<CardContent className="py-0">
 				<div className="profileImg">
 					<Avatar alt="" src="/static/frontend/images/bear.png" ria-label="recipe">
 						R

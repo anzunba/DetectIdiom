@@ -84,6 +84,7 @@ span.MuiTypography-root.MuiFormControlLabel-label.MuiTypography-body1 {
     display: inline-block;
     width: 40px;
     vertical-align: top;
+    padding-top: .3rem;
 }
 
 .profileImg img {
@@ -131,87 +132,6 @@ abbr {
 /**********************************************
             ProfileEdit.js
 **********************************************/
-/* .lang-icon img{
-    width:100%;
-} */
-
-.lang-icon {
-    /* width:25%; */
-    display: inline-block;
-}
-
-.drop-down-nav {
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0;
-    margin-top:2rem;
-}
-
-.drop-down-nav li {
-    display: inline-block;
-    list-style: none;
-    color: black;
-}
-
-.drop-down-nav .button-dropdown {
-    position: relative;
-}
-
-.drop-down-nav li a {
-    display: block;
-    color: #333;
-    background-color: #fff;
-    margin: 0px 10px;
-    text-decoration: none;
-}
-
-.drop-down-nav li a span {
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 10px;
-    color: #999;
-}
-
-.custom-dropdown-menu li:hover {
-    background-color: #289dcc;
-    color: #fff;
-}
-.drop-down-nav li:first-child:hover {
-    border-radius: .5rem .5rem 0 0;
-}
-
-.drop-down-nav li:last-child:hover {
-    border-radius: 0 0 .5rem .5rem;
-}
-
-
-.drop-down-nav li a:hover span {
-    color: #fff;
-}
-
-.drop-down-nav li .custom-dropdown-menu {
-    display: none;
-    position: absolute;
-    left: 0;
-    padding: 0;
-    margin: 0;
-    margin-top: 3px;
-    text-align: left;
-    background-color: white;
-    box-shadow: 0 3px 9px rgba(0,0,0,.5);
-    border-radius: .5rem;
-    z-index: 2;
-}
-
-.drop-down-nav li .custom-dropdown-menu.active {
-    display: block;
-}
-
-.drop-down-nav li .custom-dropdown-menu li {
-    width: 150px;
-    padding: 1rem;
-}
-
 .circleNative{
     border:3px solid greenyellow;
     border-radius:100%;
@@ -265,54 +185,87 @@ abbr {
     overflow: hidden;
 }
 
-.custom-dropdown-toggle img{
-    position:relative;
-    width: 100%;
+/**********************************************
+            ConfirmationDelete.js
+**********************************************/
+
+.MuiIconButton-root:hover {
+    background-color: inherit!important;
 }
 
-.edit-lang{
-    position: absolute;
-    opacity: 0;
-    width: 35px;
-    height: 35px;
-    margin-left: 3px;
-    top: 3px;
-    border-radius: 100%;
-    text-align: center;
+.MuiList-root:hover {
+    background-color: #eee;
 }
 
-.edit-lang:hover{
-    opacity:1;
-    background-color:rgba(0,0,0,.1);
-    line-height: 35px;
-    vertical-align: middle;
+/****rate****/
+
+form#smileys input[type="radio"] {
+    -webkit-appearance: none;
+    width: 25px;
+    height: 25px;
+    border: none;
+    cursor: pointer;
+    -webkit-transition: border .2s ease;
+    transition: border .2s ease;
+    -webkit-filter: grayscale(100%);
+            filter: grayscale(100%);
+    margin: 0 5px;
+    -webkit-transition: all .2s ease;
+    transition: all .2s ease;
+  }
+  form#smileys input[type="radio"]:hover, form#smileys input[type="radio"]:checked {
+    -webkit-filter: grayscale(0);
+            filter: grayscale(0);
+  }
+  form#smileys input[type="radio"]:focus {
+    outline: 0;
+  }
+  form#smileys input[type="radio"].happy {
+    background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/happy_ampvnc.svg") center;
+    background-size: cover;
+  }
+  form#smileys input[type="radio"].neutral {
+    background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/neutral_t3q8hz.svg") center;
+    background-size: cover;
+  }
+  form#smileys input[type="radio"].sad {
+    background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/sad_bj1tuj.svg") center;
+    background-size: cover;
+  }
+
+  span.difficultyText {
+    color: #3f51b5;
+    padding-left: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.img-25{
+    width: 25px;
+    height: 25px
 }
 
-.edit-profile-img-wr{
-    position: absolute;
-    padding: 1rem;
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    padding: 1rem;
-    top: 0px;
-    left: 0px;
-}
-.edit-profile-img-wr
-
-.edit-profile-img{
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    text-align: center;
-    padding: 40%;
-    opacity: 0;
+.img-60{
+    width: 60px;
+    height: 60px
 }
 
-.edit-profile-img:hover{
-    opacity:1;
-    background-color:rgba(255, 255, 255, 0.5);
-    vertical-align: middle;
+.bg-blue{
+    background-color: #3f51b5;
 }
 
+.w-95{
+    width: 95%;
+}
 
+.topCommentBox .MuiCardContent-root{
+    padding-right:0;
+    padding-left:0;
+}
+
+.topCommentBox>div{
+    padding-bottom: 0!important;
+}
+
+.commentContent .MuiCardActions-root{
+    padding: 0;
+}

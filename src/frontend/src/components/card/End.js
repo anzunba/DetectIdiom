@@ -11,22 +11,29 @@ function createData(num, wordIdiom, difficulty) {
 }
 
 const rows = [
-	createData(1, 'word-word', 6.0),
-	createData(2, 'word-word', 9.0),
-	createData(3, 'word-word', 16.0),
-	createData(4, 'word-word-word-word', 3.7),
-	createData(5, 'word-word-word-word-word-word', 16.0)
+	createData(1, 'for a while', 'easy'),
+	createData(2, 'take it easy', 'difficult'),
+	createData(3, 'spagettii', 'neutral'),
+	createData(4, 'sausage', 'easy'),
+	createData(5, 'orange', 'difficult')
 ];
+
 
 export default function SimpleTable() {
 	return (
-		<TableContainer>
-			<Table aria-label="simple table">
+		<div>
+			<div className="text-center p-4">
+			<h3>Well done!</h3>
+			<img src="/static/frontend/images/coffee-break.svg/" className="img-60"/>
+			</div>
+			
+			<TableContainer className="p-2">
+			<Table aria-label="simple table"className="table table-striped">
 				<TableHead>
-					<TableRow>
-						<TableCell align="center">#</TableCell>
-						<TableCell align="left">Word/Idiom</TableCell>
-						<TableCell align="center">Difficulty</TableCell>
+					<TableRow className="bg-blue">
+						<TableCell className="text-white" align="center">#</TableCell>
+						<TableCell className="text-white" align="left">Word/Idiom</TableCell>
+						<TableCell className="text-white" align="center">Difficulty</TableCell>
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -36,11 +43,13 @@ export default function SimpleTable() {
 								{row.num}
 							</TableCell>
 							<TableCell align="left">{row.wordIdiom}</TableCell>
-							<TableCell align="center">{row.difficulty}</TableCell>
+							<TableCell align="center"><img src={`/static/frontend/images/${row.difficulty}.svg/`} className="img-25"/></TableCell>
 						</TableRow>
 					))}
 				</TableBody>
 			</Table>
 		</TableContainer>
+		</div>
+		
 	);
 }

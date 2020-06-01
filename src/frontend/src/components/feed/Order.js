@@ -1,38 +1,66 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import Popover from '@material-ui/core/Popover';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import Order from './Order';
+import Block from './Block';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
-  },
+	root: {
+		width: '100%',
+		maxWidth: 360,
+	}
 }));
 
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
-}
+export default function SimplePopover() {
+	const [ anchorEl, setAnchorEl ] = React.useState(null);
 
-export default function SimpleList() {
-  const classes = useStyles();
+	const handleClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
 
-  return (
-    <div className={classes.root}>
-      <List component="nav" aria-label="main mailbox folders">
-        <ListItem button>
-          <ListItemText primary="Latest" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText primary="Popular" />
-        </ListItem>
-      </List>
-    </div>
-  );
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+
+	const open = Boolean(anchorEl);
+	const id = open ? 'simple-popover' : undefined;
+
+	const classes = useStyles();
+
+	return (
+		<React.Fragment>
+			<MoreHorizIcon aria-describedby={id} variant="contained" color="primary" onClick={handleClick} />
+
+			<Popover
+				id={id}
+				open={open}
+				anchorEl={anchorEl}
+				onClose={handleClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center'
+				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'center'
+				}}
+			>
+				{/* { true ? <Order /> : <Block />} */}
+				<div className={classes.root}>
+					<div component="nav" className="py-3">
+						<ListItem button>
+							<ListItemText primary="Latest" />
+						</ListItem>
+						<ListItem button>
+							<ListItemText primary="Popular" />
+						</ListItem>
+					</div>
+				</div>
+			</Popover>
+		</React.Fragment>
+	);
 }

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Content from './Content'
 import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
@@ -10,12 +11,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    width: '50%',
+    margin: '0 auto',
   },
 }));
 
@@ -32,10 +29,10 @@ export default function TransitionsModal() {
   };
 
   return (
-    <div>
-			<Button type="button" size="small" color="primary" onClick={handleOpen}>
-				Table
-			</Button>
+    <React.Fragment>
+      <Button size="small" onClick={handleOpen} fullWidth color="primary" className="p-2">
+        Try Card
+      </Button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -49,12 +46,11 @@ export default function TransitionsModal() {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper}>
-            <h2 id="transition-modal-title">Transition modal</h2>
-            <p id="transition-modal-description">react-transition-group animates me.</p>
+          <div className={classes.paper} className="w-100 bg-light rounded border border-primary shadow">
+            <Content />
           </div>
         </Fade>
       </Modal>
-    </div>
+    </React.Fragment>
   );
 }
