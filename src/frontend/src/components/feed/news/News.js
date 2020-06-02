@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -7,7 +7,16 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+
+import ListItemText from '@material-ui/core/ListItemText';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import FolderIcon from '@material-ui/icons/Folder';
 const useStyles = makeStyles({
 	root: {
 		maxWidth: 345
@@ -15,51 +24,79 @@ const useStyles = makeStyles({
 });
 
 export default function ImgMediaCard() {
-	const classes = useStyles();
+	const [ posts, setPosts ] = useState(null);
 
+	useEffect(() => {
+		axios
+			.get('http://127.0.0.1:8000/feed')
+			.then((res) => {
+				setPosts(res.data);
+			})
+			//.then((res) => a(res))
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
+
+	const classes = useStyles();
+	const year = new Date().getFullYear();
+	const month = new Date().getMonth();
+	const day = new Date().getDay();
+	const hour = new Date().getHours();
+	const minute = new Date().getMinutes();
+	const monthNames = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+	const [ dt, setDt ] = useState(`${monthNames[month]} ${day} ${year} ${hour}:${minute}`);
+
+	useEffect(() => {
+		let secTimer = setInterval(() => {
+			setDt(`${month} ${day} ${year} ${hour}:${minute}`);
+		}, 60000);
+
+		return () => clearInterval(secTimer);
+	}, []);
 	return (
 		<React.Fragment>
 			<Typography gutterBottom variant="h6" component="h6">
-				May 28 2020
+				{dt}
 			</Typography>
-			<div className={classes.root}>
-				<CardActionArea>
-					<CardMedia
-						component="img"
-						alt="Contemplative Reptile"
-						height="140"
-						image="/static/frontend/images/news1.jpg"
-						title="Contemplative Reptile"
-					/>
-					<CardContent>
-						<Typography gutterBottom variant="h6" component="h6">
-							Trump says right-wing voices are being censored. The data says something else
-						</Typography>
-						<Typography variant="body2" color="textSecondary" component="p">
-							Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across
-							all continents except Antarctica
-						</Typography>
-					</CardContent>
-				</CardActionArea>
-                <CardActionArea>
-					<CardMedia
-						component="img"
-						alt="Contemplative Reptile"
-						height="140"
-						image="/static/frontend/images/news2.jpg"
-						title="Contemplative Reptile"
-					/>
-					<CardContent>
-						<Typography gutterBottom variant="h6" component="h6">
-                        Big chains filed for bankruptcy every week in May. Here are 6 of them
-						</Typography>
-						<Typography variant="body2" color="textSecondary" component="p">
-							Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across
-							all continents except Antarctica
-						</Typography>
-					</CardContent>
-				</CardActionArea>
-			</div>
+				{posts === null ? (
+					<div className="w-100 text-center">
+						<CircularProgress />
+					</div>
+				) : (
+					<div  className="shadow-sm rounded">
+					{posts.map((post, i) => {
+						return (
+							
+							<a key={i} href={post[0]}>
+								<List>
+									<ListItem>
+										<ListItemIcon>
+											<img src={post[2]} style={{ width: '50px' }} />
+										</ListItemIcon>
+										<ListItemText primary={post[1]} />
+									</ListItem>
+								</List>
+							</a>
+							
+						);
+						
+					})}
+					</div>
+				)}
 		</React.Fragment>
 	);
 }

@@ -12,7 +12,7 @@ export default function Dashboard() {
             <Tab />
         </Grid>
         <Grid item xs={4}>
-            <Profile />
+            <News />
         </Grid>
       </Grid>
       </div>
