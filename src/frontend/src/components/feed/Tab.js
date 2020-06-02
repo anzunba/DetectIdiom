@@ -12,6 +12,7 @@ import Scream from './Scream';
 import Calendar from '../users/profile/Calendar';
 import PublicIcon from '@material-ui/icons/Public';
 import Order from './Order';
+import CardTryLog from './CardTryLog'
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -84,6 +85,9 @@ export default function ScrollableTabsButtonForce() {
 			</TabPanel>
 			<TabPanel value={value} index={3} component="div">
             <Calendar />
+			</TabPanel>
+			<TabPanel value={value} index={4} component="div">
+            <CardTryLog />
 			</TabPanel>
 		</div>
 	);

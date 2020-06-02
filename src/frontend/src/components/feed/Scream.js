@@ -100,7 +100,6 @@ export default function RecipeReviewCard() {
 					</div>
 				</CardActions>
 			</CardContent>
-
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<Comment />
 			</Collapse>
