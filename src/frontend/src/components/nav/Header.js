@@ -9,6 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import LoginNav from './LoginNav';
 import AddIcon from '@material-ui/icons/Add';
 import CreateProject from './CreateProject';
+import Notification from './Notification'
 
 export default function ButtonAppBar() {
 	return (
@@ -22,6 +23,7 @@ export default function ButtonAppBar() {
 						<Typography variant="h6" className="align-self-center pl-2">Detect-IDIOM</Typography>
 					</div>
 					<div className="d-flex">
+						<Notification />
 						<CreateProject />
 						<LoginNav/>
 					</div>

@@ -14,7 +14,7 @@ class Header extends Component {
 		const { isAuthenticated, user } = this.props.auth;
 
 		const authLinks = (
-			<ul className="list-inline-mb-0">
+			<ul className="mb-0  align-self-center">
 				<li className="list-inline-item">
 					<span className="navbar-text mr-3">
 						<strong>{user ? `Welcome ${user.username}` : ''}</strong>
