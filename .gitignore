@@ -1,0 +1,32 @@
+# Django #
+db.sqlite3
+media/file/*
+*.log
+*.pot
+*.pyc
+frontend/__pycache__/
+# Webpack #
+/node_modules
+/test/js
+/test/browsertest/js
+/test/fixtures/temp-*
+/test/temp
+/test/ChangesAndRemovals
+/benchmark/js
+/benchmark/fixtures
+/examples/**/dist
+/coverage
+.DS_Store
+*.log
+.idea
+.vscode
+.cache
+.eslintcache
+package-lock.json
+frontend/static/frontend/main.js
+frontend/static/frontend/main.js
+# frontend/static/frontend/main.js.map
+# frontend/static/frontend/notifications.js.map
+# frontend/static/frontend/notifications.js
+# frontend/static/frontend/social.js
+# frontend/static/frontend/social.js.map
