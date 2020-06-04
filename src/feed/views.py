@@ -30,3 +30,8 @@ def index(request):
             print("*****************")
             print(type(data))
         return HttpResponse(json.dumps(data))
+    
+@csrf_exempt 
+def getText(request):
+    if request.method == 'POST':
+        return HttpResponse("Return from getText")

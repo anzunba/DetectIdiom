@@ -38,7 +38,7 @@ const App = () => {
               {/* <Alerts /> */}
               <div className="container">
                 <Switch>
-                  <PrivateRoute exact path="/" component={Dashboard} />
+                  <PrivateRoute exact path="/" component={Edit} />
                   <Route exact path="/register" component={Register} />
                   <Route exact path="/login" component={Login} />
                 </Switch>

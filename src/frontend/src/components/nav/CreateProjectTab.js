@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -8,7 +9,7 @@ import Tab from '@material-ui/core/Tab';
 import CreateProjectTabPage1 from './CreateProjectTabPage1';
 import CreateProjectTabPage2 from './CreateProjectTabPage2';
 import Button from '@material-ui/core/Button';
-
+import { getText } from '../../actions/edit';
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
 
@@ -58,6 +59,16 @@ export default function FullWidthTabs() {
 		setValue(index);
 	};
 
+	const [fileContent, setFileContent] = useState('')
+	const callback = (fileContent) => {
+		setFileContent(fileContent)
+		console.log(fileContent)
+	}
+	const dispatch = useDispatch()
+	const handleStart = () =>{
+		dispatch(getText(fileContent))
+	}
+
 	return (
 		<div className={classes.root}>
 			<AppBar position="static" color="default">
@@ -75,12 +86,12 @@ export default function FullWidthTabs() {
 			</AppBar>
 
 			<TabPanel value={value} index={0} dir={theme.direction}>
-				<CreateProjectTabPage1 />
+				<CreateProjectTabPage1 parentCallback={callback}/>
 			</TabPanel>
 			<TabPanel value={value} index={1} dir={theme.direction}>
 				<CreateProjectTabPage2 />
 			</TabPanel>
-			<Button color="primary" size="large" fullWidth>
+			<Button color="primary" size="large" fullWidth onClick={()=>handleStart()}>
 				Start
 			</Button>
 		</div>

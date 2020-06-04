@@ -12,3 +12,5 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const CLEAR_FEEDS = 'CLEAR_FEEDS';
+
+export const GET_TEXT = 'GET_TEXT';

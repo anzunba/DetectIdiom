@@ -4,7 +4,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 export default function CenteredGrid() {
 	return (
 		<div>
-            <LinearProgress/>
+            {/* <LinearProgress/> */}
 			<table className="table table-striped">
 				<thead>
 					<tr>
@@ -17,7 +17,7 @@ export default function CenteredGrid() {
 					</tr>
 				</tbody>
 			</table>
-            <LinearProgress/>
+            {/* <LinearProgress/> */}
 			<table className="table table-striped">
 				<thead>
 					<tr>
@@ -30,7 +30,7 @@ export default function CenteredGrid() {
 					</tr>
 				</tbody>
 			</table>
-            <LinearProgress />
+            {/* <LinearProgress /> */}
 			<table className="table table-striped">
 				<thead>
 					<tr>
