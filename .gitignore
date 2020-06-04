@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Django #
 db.sqlite3
 media/file/*
@@ -31,7 +30,6 @@ package-lock.json
 # frontend/static/frontend/notifications.js
 # frontend/static/frontend/social.js
 # frontend/static/frontend/social.js.map
-=======
 node_modules
 
 ### Django ###
@@ -191,4 +189,5 @@ chrome-user-data
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
->>>>>>> 1c9b22c2323670bad5ecd19b8c625ceeaf232af1
+src/frontend/static/frontend/main.js
+package-lock.json
