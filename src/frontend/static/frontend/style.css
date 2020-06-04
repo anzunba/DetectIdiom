@@ -1,0 +1,295 @@
+/**********************************************
+                All
+**********************************************/
+header.MuiPaper-root.MuiAppBar-root.MuiAppBar-positionStatic.MuiAppBar-colorPrimary.MuiPaper-elevation4 {
+	margin-bottom: 3rem;
+}
+*:focus {
+	outline: none !important;
+}
+
+.table thead th {
+	border-bottom: none !important;
+}
+
+/**********************************************
+                Modal
+**********************************************/
+
+.MuiListItem-alignItemsFlexStart .MuiCardContent-root {
+	padding: 0 !important;
+}
+
+.MuiBox-root {
+	border: 1px solid #eee !important;
+	border-radius: 0 0 .5rem .5rem !important;
+}
+
+.MuiPaper-elevation4 {
+	box-shadow: none !important;
+}
+
+.follow .MuiBox-root {
+	padding: 0 !important;
+}
+
+/**********************************************
+                EditPaper.js
+**********************************************/
+/* styling paper */
+.editPaper {
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	box-shadow: 0px 0px 5px 0px #888;
+	position: relative;
+	background-image: repeating-linear-gradient(white 0px, white 24px, lightblue 25px);
+	padding: 5% 5% 5% 15%;
+	line-height: 25px;
+	font-size: 14px;
+	letter-spacing: 1px;
+	word-spacing: 5px;
+}
+
+/* .editPaper {
+    width: 100%;
+    height: 100%;	
+    padding: 5% 5% 5% 5%;
+    font-size: 14px;
+} */
+
+/* styling red vertical line */
+.editPaper::before {
+	content: '';
+	width: 2px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 10%;
+	background-color: rgba(255, 0, 0, 0.3);
+}
+
+span.MuiTypography-root.MuiFormControlLabel-label.MuiTypography-body1 {
+	font-size: smaller;
+}
+
+.selectedInputs .MuiFormControl-root.MuiTextField-root {
+	margin-right: 1rem;
+}
+
+.commentContent {
+	width: calc(100% - 65px) !important;
+	display: inline-block;
+	margin-left: 15px;
+}
+
+.profileImg {
+	display: inline-block;
+	width: 40px;
+	vertical-align: top;
+	padding-top: .3rem;
+}
+
+.profileImg img {
+	border: 1px solid #aaa;
+	border-radius: 100%;
+}
+
+.replyBox .MuiCardContent-root {
+	padding: 2rem 0;
+}
+
+/**********************************************
+                Calendar.js
+**********************************************/
+.react-calendar__navigation,
+.react-calendar__month-view__weekdays {
+	display: none !important;
+}
+.react-calendar__month-view__days button {
+	border: 1px solid #eee;
+	background-color: white;
+}
+abbr {
+	opacity: 0.2;
+}
+
+/**********************************************
+            CreateProjectTabPage1.js
+**********************************************/
+.dropzone {
+	border: 2px dashed #eee;
+	height: 277px;
+}
+
+/**********************************************
+            Save.js
+**********************************************/
+.save-img img {
+	width: 60px;
+}
+
+.MuiPaper-root.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm.MuiPaper-elevation24.MuiPaper-rounded {
+	width: 50%;
+}
+
+/**********************************************
+            ProfileEdit.js
+**********************************************/
+.circleNative {
+	border: 3px solid greenyellow;
+	border-radius: 100%;
+	overflow: hidden;
+}
+
+.fix-img {
+	transform: rotate(-45deg);
+	background-color: transparent;
+	border-radius: 100%;
+	overflow: hidden;
+}
+
+.circle90 {
+	border: 3px solid white;
+	border-radius: 100%;
+	border-top-color: skyblue;
+	transform: rotate(45deg);
+	overflow: hidden;
+}
+
+.circle180 {
+	border: 3px solid white;
+	border-radius: 100%;
+	border-top-color: skyblue;
+	border-right-color: skyblue;
+	transform: rotate(45deg);
+	overflow: hidden;
+}
+
+.circle270 {
+	border: 3px solid white;
+	border-radius: 100%;
+	border-top-color: skyblue;
+	border-right-color: skyblue;
+	border-bottom-color: skyblue;
+	transform: rotate(45deg);
+	overflow: hidden;
+}
+
+.circle360 {
+	border: 3px solid skyblue;
+	border-radius: 100%;
+	overflow: hidden;
+}
+
+.no-circle {
+	border: 3px solid transparent;
+	/* border-radius:100%; */
+	overflow: hidden;
+}
+
+/**********************************************
+            ConfirmationDelete.js
+**********************************************/
+
+.MuiIconButton-root:hover {
+	background-color: inherit !important;
+}
+
+.MuiList-root:hover {
+	background-color: #eee;
+}
+
+/****rate****/
+
+form#smileys input[type="radio"] {
+	-webkit-appearance: none;
+	width: 25px;
+	height: 25px;
+	border: none;
+	cursor: pointer;
+	-webkit-transition: border .2s ease;
+	transition: border .2s ease;
+	-webkit-filter: grayscale(100%);
+	filter: grayscale(100%);
+	margin: 0 5px;
+	-webkit-transition: all .2s ease;
+	transition: all .2s ease;
+}
+form#smileys input[type="radio"]:hover,
+form#smileys input[type="radio"]:checked {
+	-webkit-filter: grayscale(0);
+	filter: grayscale(0);
+}
+form#smileys input[type="radio"]:focus {
+	outline: 0;
+}
+form#smileys input[type="radio"].happy {
+	background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/happy_ampvnc.svg") center;
+	background-size: cover;
+}
+form#smileys input[type="radio"].neutral {
+	background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/neutral_t3q8hz.svg") center;
+	background-size: cover;
+}
+form#smileys input[type="radio"].sad {
+	background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/sad_bj1tuj.svg") center;
+	background-size: cover;
+}
+
+span.difficultyText {
+	color: #3f51b5;
+	padding-left: 4px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.img-25 {
+	width: 25px;
+	height: 25px;
+}
+
+.img-60 {
+	width: 60px;
+	height: 60px;
+}
+
+.bg-blue {
+	background-color: #3f51b5;
+}
+
+.w-95 {
+	width: 95%;
+}
+
+.topCommentBox .MuiCardContent-root {
+	padding-right: 0;
+	padding-left: 0;
+}
+
+.topCommentBox > div {
+	padding-bottom: 0 !important;
+}
+
+.commentContent .MuiCardActions-root {
+	padding: 0;
+}
+
+/**********************************************
+            Edit.js
+**********************************************/
+
+.clickable p {
+	word-wrap: break-word;
+}
+
+.clickable {
+	height: 450px;
+	overflow-y: scroll;
+}
+
+.clickable::-webkit-scrollbar {
+	/* Chrome, Safari 対応 */
+	display: none;
+}
+
+
