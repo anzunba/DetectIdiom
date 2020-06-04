@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -7,6 +7,10 @@ import TextField from '@material-ui/core/TextField';
 import Setting from './Setting';
 import Save from './Save';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
+import { useSelector } from 'react-redux';
+
+
 const useStyles = makeStyles((theme) => ({
 	paper: {
 		textAlign: 'center',
@@ -15,8 +19,13 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function CenteredGrid() {
+
+
+//RECEIVE DATA
+const CenteredGrid = () => {
 	const classes = useStyles();
+	const inputText = useSelector(state => state.edit.input_html)
+	console.log("inputText: " + inputText)
 
 	return (
 		<div>
@@ -36,8 +45,8 @@ export default function CenteredGrid() {
 			<Grid container spacing={3}>
 				<Grid item xs={12} sm={8}>
 					<Paper className={classes.paper}>
-						<LinearProgress />
-						<div className="editPaper" />
+						{/* <LinearProgress /> */}
+						<div className="editPaper text-left" dangerouslySetInnerHTML={{__html: inputText}} />
 					</Paper>
 				</Grid>
 				<Grid item xs={12} sm={4}>
@@ -52,3 +61,5 @@ export default function CenteredGrid() {
 		</div>
 	);
 }
+
+export default CenteredGrid
