@@ -23,8 +23,8 @@ frontend/__pycache__/
 .cache
 .eslintcache
 package-lock.json
-src/frontend/static/frontend/main.js
-src/frontend/static/frontend/main.js
+# src/frontend/static/frontend/main.js
+# src/frontend/static/frontend/main.js
 # frontend/static/frontend/main.js.map
 # frontend/static/frontend/notifications.js.map
 # frontend/static/frontend/notifications.js
