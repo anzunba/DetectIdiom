@@ -7,7 +7,7 @@ import { getText } from '../../actions/edit';
 
 
 //PASS DATA
-const App = ({parentCallback}) =>{
+const App = ({getFileContentCallback}) =>{
 	const [ fileNames, setFileNames ] = useState([]);
 	const [ fileContent, setFileContent ] = useState('');
 	// const handleDrop = (acceptedFiles) => setFileNames(acceptedFiles[0].name);
@@ -19,7 +19,7 @@ const App = ({parentCallback}) =>{
 			const text = e.target.result;
       setFileContent(text);
       //dispatch(getText(text))
-      parentCallback(text)
+      getFileContentCallback(text)
 		};
     reader.readAsText(e.target.files[0]);
     setFileNames(e.target.files[0].name)

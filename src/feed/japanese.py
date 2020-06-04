@@ -12,10 +12,7 @@ from janome.analyzer import Analyzer
 from janome.tokenfilter import *
 from janome.charfilter import *
 from pykakasi import kakasi
-from django.views.decorators.csrf import csrf_exempt
 import csv
-
-text = "こんにちは、真剣勝負ですか？？元気ですよー。。あなたは相撲に勝って勝負に負ける？"
 
 def to_hiragana(text):
     kakasi_ = kakasi()
@@ -120,27 +117,24 @@ def create_html(paragraph_html, p):
     html += h
     return(html)
 
-@csrf_exempt 
-def get_text_ja(request):
-    if request.method == 'POST':
-        if request.body:
-            text = request.body.decode("utf-8") 
-            html = ''
-            paragraphs, all_sentences, paragraph_tra_sentence, paragraph_list, idioms = [], [], [], [], []
-            paragraphs = re.split('\n\n+', text)
-            p = 0
-            for paragraph in paragraphs:
-                sentences = get_sentence(paragraph)
-                all_sentences.append(sentences)
-                paragraph_content = create_paragraph_content(sentences, p)
-                paragraph_html = paragraph_content[0]
-                paragraph_list.append(paragraph_content[1])
-                paragraph_tra_sentence.append(paragraph_content[2])
-                idioms.append(paragraph_content[3])
-                html += create_html(paragraph_html, p)
-                p += 1
-            result = [html, paragraph_list, all_sentences, paragraph_tra_sentence, idioms]
-            return HttpResponse(json.dumps(result))
+
+def get_text_ja(text):
+    html = ''
+    paragraphs, all_sentences, paragraph_tra_sentence, paragraph_list, idioms = [], [], [], [], []
+    paragraphs = re.split('\n\n+', text)
+    p = 0
+    for paragraph in paragraphs:
+        sentences = get_sentence(paragraph)
+        all_sentences.append(sentences)
+        paragraph_content = create_paragraph_content(sentences, p)
+        paragraph_html = paragraph_content[0]
+        paragraph_list.append(paragraph_content[1])
+        paragraph_tra_sentence.append(paragraph_content[2])
+        idioms.append(paragraph_content[3])
+        html += create_html(paragraph_html, p)
+        p += 1
+    result = [html, paragraph_list, all_sentences, paragraph_tra_sentence, idioms]
+    return result
             
 def get_tokens(sentence):
     t = Tokenizer()

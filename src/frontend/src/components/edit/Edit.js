@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 const CenteredGrid = () => {
 	const classes = useStyles();
 	const inputText = useSelector(state => state.edit.input_html)
-	console.log("inputText: " + inputText)
 
 	return (
 		<div>

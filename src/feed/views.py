@@ -3,23 +3,16 @@ from bs4 import BeautifulSoup
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from textblob import TextBlob
+import json
+from . import english, japanese
 @csrf_exempt 
-def index(request):
+def get_news(request):
     if request.method == 'GET':
-        # WebサイトのURLを指定
         url = "https://soranews24.com/"
-
-        # Requestsを利用してWebページを取得する
         r = requests.get(url)
-
-        # BeautifulSoupを利用してWebページを解析する
         soup = BeautifulSoup(r.text, 'html.parser')
-
-        # soup.find_allを利用して、ヘッドラインのタイトルを取得する
-        elems = soup.find('div', {'id':'widget_realtimeranking'})
-        #results = [[i for i in b.find_all('li')] for b in elems.find_all('ol')]
-        
+        elems = soup.find('div', {'id':'widget_realtimeranking'})        
         data = []
         
         for elem in elems.find_all('li'):
@@ -27,11 +20,19 @@ def index(request):
             text = elem.getText()
             img = elem.find('img').get('src')
             data.append([link, text, img])
-            print("*****************")
             print(type(data))
         return HttpResponse(json.dumps(data))
-    
+
 @csrf_exempt 
-def getText(request):
+def get_text(request):
     if request.method == 'POST':
-        return HttpResponse("Return from getText")
+        if request.body:
+            text = request.body.decode("utf-8") 
+            text_lang = TextBlob(text).detect_language()
+            if(text_lang == 'en'):
+                result = english.get_text_en(text)
+            elif(text_lang == 'ja'):
+                result = japanese.get_text_ja(text)
+            else:
+                result = 'Failed to detect text language.'
+            return HttpResponse(json.dumps(result))

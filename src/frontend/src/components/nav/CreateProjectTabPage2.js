@@ -1,7 +1,7 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 
-export default function MultilineTextFields() {
+const App = ({getFileContentCallback}) => {
 	return (
 		<div className="p-5">
 			<form noValidate autoComplete="off">
@@ -12,10 +12,13 @@ export default function MultilineTextFields() {
 						multiline
 						rows={15}
                         variant="outlined"
-                        fullWidth
+						fullWidth
+						onChange={(e)=>getFileContentCallback(e.target.value)}
 					/>
 				</div>
 			</form>
 		</div>
 	);
 }
+
+export default App;

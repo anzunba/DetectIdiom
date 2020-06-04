@@ -36,6 +36,9 @@ export default function TransitionsModal() {
     setOpen(false);
   };
 
+  const callback = (handleClose) => {
+    handleClose ? setOpen(false) : setOpen(true)
+	}
   return (
     <div>
       <IconButton onClick={handleOpen} className="text-light">
@@ -56,7 +59,7 @@ export default function TransitionsModal() {
         <Fade in={open}>
 
           <div>
-          <CreateProjectTab />
+          <CreateProjectTab handleCloseCallback={callback}/>
           </div>
         </Fade>
       </Modal>

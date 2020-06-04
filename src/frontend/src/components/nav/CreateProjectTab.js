@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function FullWidthTabs() {
+const App = ({handleCloseCallback}) =>{
 	const classes = useStyles();
 	const theme = useTheme();
 	const [ value, setValue ] = React.useState(0);
@@ -67,6 +67,7 @@ export default function FullWidthTabs() {
 	const dispatch = useDispatch()
 	const handleStart = () =>{
 		dispatch(getText(fileContent))
+		handleCloseCallback(true)
 	}
 
 	return (
@@ -86,14 +87,16 @@ export default function FullWidthTabs() {
 			</AppBar>
 
 			<TabPanel value={value} index={0} dir={theme.direction}>
-				<CreateProjectTabPage1 parentCallback={callback}/>
+				<CreateProjectTabPage1 getFileContentCallback={callback} />
 			</TabPanel>
 			<TabPanel value={value} index={1} dir={theme.direction}>
-				<CreateProjectTabPage2 />
+				<CreateProjectTabPage2 getFileContentCallback={callback}/>
 			</TabPanel>
-			<Button color="primary" size="large" fullWidth onClick={()=>handleStart()}>
+			<Button className="bg-light" color="primary" size="large" fullWidth onClick={()=>handleStart()}>
 				Start
 			</Button>
 		</div>
 	);
 }
+
+export default App;
