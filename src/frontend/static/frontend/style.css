@@ -43,7 +43,7 @@ header.MuiPaper-root.MuiAppBar-root.MuiAppBar-positionStatic.MuiAppBar-colorPrim
 	background-color: white;
 	box-shadow: 0px 0px 5px 0px #888;
 	position: relative;
-	background-image: repeating-linear-gradient(white 0px, white 24px, lightblue 25px);
+	background-image: repeating-linear-gradient(white 0px, white 24px, lightskyblue 25px);
 	padding: 5% 5% 5% 15%;
 	line-height: 25px;
 	font-size: 14px;
@@ -280,11 +280,14 @@ span.difficultyText {
 
 .clickable p {
 	word-wrap: break-word;
+	display: inline;
+	width: 100%;
 }
 
 .clickable {
 	height: 450px;
 	overflow-y: scroll;
+	width:100%;
 }
 
 .clickable::-webkit-scrollbar {
@@ -292,4 +295,59 @@ span.difficultyText {
 	display: none;
 }
 
+.clickable p span{
+	white-space: nowrap;
+}
+
+/*******table**********/
+
+.table-scroll{
+	/*width:100%; */
+	/*display: block;*/
+	/* empty-cells: show; */
+	
+	/* Decoration */
+	/* border-spacing: 0; */
+  }
+  
+  .table-scroll thead{
+	/* background-color: #f1f1f1;  
+	position:relative;
+	display: block;
+	width:100%; */
+	/*overflow-y: scroll;*/
+  }
+  
+  .table-scroll tbody{
+	/* Position */
+	display: block; 
+	position:relative;
+	width:100%; 
+	overflow-y:scroll;
+	-ms-overflow-style: none;    /* IE, Edge 対応 */
+	scrollbar-width: none;       /* Firefox 対応 */
+	max-height: 200px;
+	overflow: auto;
+	display:inline-block;
+  }
+  .table-scroll tbody::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+	display:none;
+  }
+  
+  
+  .table-scroll tr{
+	width: 100%;
+	display:flex;
+  }
+  
+  .table-scroll td,.table-scroll th{
+	flex-basis:100%;
+	flex-grow:2;
+	display: block;
+	padding:0.2rem!important;
+  }
+  .table-scroll th{
+	  background-color: #3f51b5;
+	  color: white;
+  }
 

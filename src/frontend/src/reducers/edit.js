@@ -5,7 +5,7 @@ const initialState = {
   input_html: [],
   pre_sentence: [],
   aft_sentence: [],
-  idioms: []
+  idioms: [],
 };
 
 export default function (state = initialState, action) {
@@ -22,3 +22,6 @@ export default function (state = initialState, action) {
       return state;
   }
 }
+
+
+

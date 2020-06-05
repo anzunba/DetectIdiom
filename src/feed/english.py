@@ -48,7 +48,7 @@ def create_sentence_html(token, p, s, t):
 
 def create_paragraph_html(sentence_html, p, s):
     paragraph_html = ''
-    h = "<p id='s_{}_{} class='mb-0'>{}</p>".format(p, s, sentence_html)
+    h = "<p id='s_{}_{}' class='mb-0'>{}</p>".format(p, s, sentence_html)
     paragraph_html += h
     return(paragraph_html)
 
@@ -84,15 +84,14 @@ def get_idiom_dictionary():
 remove_items = {'A', 'B', 'C', 'D', '', '…', '~', 'do'}
 def get_idiom_key(tokens):
     idioms_dictionary = get_idiom_dictionary()
-    idiom_tokens_sets, selected_idioms_list = {}, []
+    idiom_tokens_sets = {}
     for key in idioms_dictionary:
         key = re.sub('[\(.*\)]', '', key)
         idiom_tokens_set = set(TextBlob(key).tokens)
         idiom_tokens_set = idiom_tokens_set - remove_items
         if idiom_tokens_set <= set(tokens) and idiom_tokens_set:
             idiom_tokens_sets[key] = idioms_dictionary[key]
-    selected_idioms_list.append(idiom_tokens_sets)
-    return selected_idioms_list
+    return idiom_tokens_sets
 
 
 def get_text_en(text): 

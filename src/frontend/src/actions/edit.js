@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_TEXT } from './types';
+import { GET_TEXT, GET_P_ID } from './types';
 
 export const getText = (text) => (dispatch) => {
     axios
@@ -13,6 +13,8 @@ export const getText = (text) => (dispatch) => {
       })
       .catch((err) => console.log("actions: " + err));
   };
+
+
 //   axios
 // 			.get('http://127.0.0.1:8000/feed')
 // 			.then((res) => {

@@ -4,6 +4,7 @@ import errors from './errors';
 import messages from './messages';
 import auth from './auth';
 import edit from './edit';
+import edit2 from './edit2';
 
 export default combineReducers({
   feed,
@@ -11,4 +12,5 @@ export default combineReducers({
   messages,
   auth,
   edit,
+  edit2
 });

@@ -14,3 +14,4 @@ export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const CLEAR_FEEDS = 'CLEAR_FEEDS';
 
 export const GET_TEXT = 'GET_TEXT';
+export const GET_P_ID = 'GET_P_ID';

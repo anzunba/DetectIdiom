@@ -113,7 +113,7 @@ def create_paragraph_content(sentences, p):
 
 def create_html(paragraph_html, p):
     html = ''
-    h = "<div id='p_{}'>{}</p>".format(p, paragraph_html)
+    h = "<div class='clickable id='p_{}'>{}</p>".format(p, paragraph_html)
     html += h
     return(html)
 
