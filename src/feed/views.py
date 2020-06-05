@@ -27,8 +27,8 @@ def get_news(request):
 def get_text(request):
     if request.method == 'POST':
         if request.body:
-            text = request.body.decode("utf-8") 
-            text_lang = TextBlob(text).detect_language()
+            text = request.body.decode("utf-8") #{"input_text" : "I'm cool"} => text = "I'm cool"
+            text_lang = TextBlob(text).detect_language() 
             if(text_lang == 'en'):
                 result = english.get_text_en(text)
             elif(text_lang == 'ja'):

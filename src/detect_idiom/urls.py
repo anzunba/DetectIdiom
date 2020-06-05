@@ -6,4 +6,5 @@ urlpatterns = [
     path('', include('feed.urls')),
     path('', include('accounts.urls')),
     path('', include('frontend.urls')),
+    path('', include('edit.urls')),
 ]

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useSelector } from 'react-redux';
-
+import TextField from '@material-ui/core/TextField';
+import InputBase from '@material-ui/core/InputBase';
 const getId = (p_id) => {
 	var p = p_id.split('_')[1];
 	var s = p_id.split('_')[2];
@@ -76,9 +77,6 @@ const App = () => {
 					<tr>
 						<td>Not Available</td>
 					</tr>
-					<tr>
-						<td>Not Available</td>
-					</tr>
 				</tbody>
 			</table>
 			{/* <LinearProgress /> */}
@@ -90,7 +88,7 @@ const App = () => {
 				</thead>
 				<tbody>{items.length > 0 ? items : notAvailable}</tbody>
 			</table>
-			{/* <table className="table table-striped">
+			<table className="table table-striped  table-scroll mb-0">
 				<thead>
 					<tr>
 						<th>Custom Input</th>
@@ -98,10 +96,14 @@ const App = () => {
 				</thead>
 				<tbody>
 					<tr>
-						<td>input</td>
+						<td>
+							<form noValidate autoComplete="off">
+								<InputBase id="standard-basic" fullWidth placeholder="custom input here" inputProps={{ 'aria-label': 'naked' }}/>
+							</form>
+						</td>
 					</tr>
 				</tbody>
-			</table> */}
+			</table>
 		</div>
 	);
 };
