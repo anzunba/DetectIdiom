@@ -62,7 +62,6 @@ const App = ({handleCloseCallback}) =>{
 	const [fileContent, setFileContent] = useState('')
 	const callback = (fileContent) => {
 		setFileContent(fileContent)
-		console.log(fileContent)
 	}
 	const dispatch = useDispatch()
 	const handleStart = () =>{

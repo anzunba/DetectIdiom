@@ -287,7 +287,7 @@ span.difficultyText {
 .clickable {
 	height: 450px;
 	overflow-y: scroll;
-	width:100%;
+	width: 100%;
 }
 
 .clickable::-webkit-scrollbar {
@@ -295,59 +295,72 @@ span.difficultyText {
 	display: none;
 }
 
-.clickable p span{
+.clickable p span {
 	white-space: nowrap;
 }
 
 /*******table**********/
 
-.table-scroll{
+.table-scroll {
 	/*width:100%; */
 	/*display: block;*/
 	/* empty-cells: show; */
-	
+
 	/* Decoration */
 	/* border-spacing: 0; */
-  }
-  
-  .table-scroll thead{
+}
+
+.table-scroll thead {
 	/* background-color: #f1f1f1;  
 	position:relative;
 	display: block;
 	width:100%; */
 	/*overflow-y: scroll;*/
-  }
-  
-  .table-scroll tbody{
+}
+
+.table-scroll tbody {
 	/* Position */
-	display: block; 
-	position:relative;
-	width:100%; 
-	overflow-y:scroll;
-	-ms-overflow-style: none;    /* IE, Edge 対応 */
-	scrollbar-width: none;       /* Firefox 対応 */
+	display: block;
+	position: relative;
+	width: 100%;
+	overflow-y: scroll;
+	-ms-overflow-style: none; /* IE, Edge 対応 */
+	scrollbar-width: none; /* Firefox 対応 */
 	max-height: 200px;
 	overflow: auto;
-	display:inline-block;
-  }
-  .table-scroll tbody::-webkit-scrollbar {  /* Chrome, Safari 対応 */
-	display:none;
-  }
-  
-  
-  .table-scroll tr{
-	width: 100%;
-	display:flex;
-  }
-  
-  .table-scroll td,.table-scroll th{
-	flex-basis:100%;
-	flex-grow:2;
-	display: block;
-	padding:0.2rem!important;
-  }
-  .table-scroll th{
-	  background-color: #3f51b5;
-	  color: white;
-  }
+	display: inline-block;
+}
+.table-scroll tbody::-webkit-scrollbar {
+	/* Chrome, Safari 対応 */
+	display: none;
+}
 
+.table-scroll tr {
+	width: 100%;
+	display: flex;
+}
+
+.table-scroll td,
+.table-scroll th {
+	flex-basis: 100%;
+	flex-grow: 2;
+	display: block;
+	padding: 0.2rem !important;
+}
+.table-scroll th {
+	background-color: #3f51b5;
+	color: white;
+}
+
+.clickable_mean:hover,.clickable_idiom:hover {
+	background-color: lightpink!important;
+	cursor: pointer;
+}
+
+.bg-pink{
+	background-color: lightpink;
+}
+
+.bg-yellow{
+	background-color: yellow;
+}

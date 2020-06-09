@@ -1,10 +1,10 @@
-import { GET_P_ID } from './types';
+import { GET_T_ID } from './types';
 
 
-  export const getPId = (pId) => {
+  export const getTId = (tId) => {
     return {
-      type: GET_P_ID,
-      payload: pId,
+      type: GET_T_ID,
+      payload: tId,
     };
   }
 

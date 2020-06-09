@@ -6,7 +6,7 @@ from django.dispatch import receiver
 import os
 
 # Create your models here.
-class En_Ja(models.Model):
+class EnJa(models.Model):
   word = models.CharField(max_length=100)
   mean = models.CharField(max_length=2000)
 

@@ -7,7 +7,9 @@ import TextField from '@material-ui/core/TextField';
 import Save from './Save';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useSelector } from 'react-redux';
-import { getPId } from '../../actions/edit2';
+import { getTId } from '../../actions/edit2';
+import { getMeaning } from '../../actions/edit3';
+
 import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,8 +21,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const highlight_token = (token_id) => {
-	document.getElementById(token_id).style.backgroundColor = 'yellow';
+	document.getElementById(token_id).classList.add("bg-yellow");
 };
+
 
 //RECEIVE DATA
 const CenteredGrid = () => {
@@ -28,11 +31,13 @@ const CenteredGrid = () => {
 	const bgReset = () => {
 		const tokens = document.getElementsByClassName('clickable_token');
 		for (let i = 0; i < tokens.length; i++) {
-			document.getElementById(tokens[i].id).style.backgroundColor = '';
+			document.getElementById(tokens[i].id).classList.remove("bg-yellow");
 			document.getElementById(tokens[i].id).parentElement.style.borderBottom = '';
 		}
 	};
 	const [ token, setToken ] = useState('Selected Word');
+	const [ tokenId, setTokenId ] = useState('')
+
 	const getToken = () => {
 		const tokens = document.getElementsByClassName('clickable_token');
 		for (let i = 0; i < tokens.length; i++) {
@@ -40,12 +45,18 @@ const CenteredGrid = () => {
 			tokens[i].addEventListener(
 				'click',
 				(e) => {
-					var tokenId = e.target.id;
+					setTokenId(e.target.id);
 					setToken(e.target.innerHTML);
 					bgReset();
-					document.getElementById(tokenId).style.backgroundColor = 'yellow';
-					document.getElementById(tokenId).parentElement.style.borderBottom = '2px solid lightblue';
-					dispatch(getPId(document.getElementById(tokenId).parentElement.id));
+					highlight_token(e.target.id)
+					if(document.getElementById(e.target.id).parentElement.tagName == 'RUBY'){
+						document.getElementById(e.target.id).parentElement.parentElement.style.borderBottom = '2px solid lightblue';
+					}else{
+						document.getElementById(e.target.id).parentElement.style.borderBottom = '2px solid lightblue';
+					}
+					
+					dispatch(getMeaning(e.target.innerHTML));
+					dispatch(getTId(document.getElementById(e.target.id).id));
 				},
 				false
 			);
@@ -53,10 +64,30 @@ const CenteredGrid = () => {
 	};
 	const classes = useStyles();
 	const inputText = useSelector((state) => state.edit.input_html);
+	const selected_meaning = useSelector((state) => state.edit4.selected_meaning);
+	const idiomTable = useSelector((state) => state.edit6);
 
+	const get_selected = () =>{
+		if(tokenId){
+			if(document.getElementById(tokenId).parentElement.tagName == 'RUBY'){
+				document.getElementById(tokenId).parentElement.children[1].innerHTML = selected_meaning
+			}else{
+				document.getElementById(tokenId).outerHTML = `<ruby>${document.getElementById(tokenId).outerHTML}<rt>${selected_meaning}</rt></ruby>`
+			}
+		}
+		getToken()
+	}
+	useEffect(
+		() => {
+			get_selected();
+			
+		},
+		[ selected_meaning ]
+	);
 	useEffect(
 		() => {
 			getToken();
+			
 		},
 		[ inputText ]
 	);
