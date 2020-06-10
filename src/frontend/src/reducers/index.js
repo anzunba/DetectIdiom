@@ -9,6 +9,7 @@ import edit3 from './edit3';
 import edit4 from './edit4';
 import edit5 from './edit5';
 import edit6 from './edit6';
+import edit7 from './edit7';
 
 export default combineReducers({
   feed,
@@ -20,5 +21,6 @@ export default combineReducers({
   edit3,
   edit4,
   edit5,
-  edit6
+  edit6,
+  edit7
 });

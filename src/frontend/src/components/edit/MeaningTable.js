@@ -14,7 +14,7 @@ const getId = (t_id) => {
 	return [ p, s ];
 };
 const word_table = {}
-const idiom_table = {}
+
 const App = () => {
 	var translation = 'Not Available';
 	var selectedIdioms = [];
@@ -24,11 +24,11 @@ const App = () => {
 	const p = getId(t_id)[0];
 	const s = getId(t_id)[1];
 	const items = [];
-
+	var idiom_table = []
 	const handleIdiom = (e) =>{
 		var idiom = e.target.parentElement.children[0].innerHTML
 		var meaning = e.target.parentElement.children[1].innerHTML
-		idiom_table[idiom] = meaning
+		idiom_table = [idiom, meaning]
 		dispatch(getIdiomTable(idiom_table));
 	}
 	if (tra_sentence.length > 0 && p && s) {

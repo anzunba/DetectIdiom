@@ -26,52 +26,38 @@ def one_word_detect(token):
                 return False
 
 def create_sentence_content(tokens, p, s):
-    t = 0
-    sentence_html = ''
     sentence_list = []
+    t = 0
     for token in tokens:
-        sentence_html += create_sentence_html(token, p, s, t)
-        sentence_list.append([token, ''])
-        t += 1
-    return [sentence_html, sentence_list]
-
-def create_sentence_html(token, p, s, t):
-    sentence_html = ''
-    if re.fullmatch(r"\.|,|!|\?|\'", token):
-        h = token
-    elif one_word_detect(token):
-        h = "<span id='t_{}_{}_{}' class='{}'>{}</span>".format(p, s, t, "clickable_token", token)
-    else:
-        h = "<span id='t_{}_{}_{}' class='{}'>{}</span>".format(p, s, t, "clickable_token ml-2", token)
-    sentence_html += h
-    return sentence_html
-
-def create_paragraph_html(sentence_html, p, s):
-    paragraph_html = ''
-    h = "<p id='s_{}_{}' class='mb-0'>{}</p>".format(p, s, sentence_html)
-    paragraph_html += h
-    return(paragraph_html)
+        sentence_d = {}
+        sentence_d['id'] = '{}_{}_{}'.format(p, s, t)
+        sentence_d['token'] = token
+        sentence_d['mean'] = ''
+        
+        if one_word_detect(token) or re.fullmatch(r'\.|,|:|\'', token):
+            sentence_d['class'] = ''
+        else:
+            sentence_d['class'] = 'ml-2'
+        sentence_list.append(sentence_d)
+        t+=1
+    return sentence_list
 
 def create_paragraphs_list(sentence_list):
-    sentences_list = []
-    sentences_list.append(sentence_list)
-    return sentences_list
+    paragraphs_list = []
+    paragraphs_list.append(sentence_list)
+    return paragraphs_list
 
 def create_paragraph_content(sentences, p):
-    s = 0
-    paragraph_html = ''
     paragraph_list, tra_sentence, selected_idioms = [], [], []
+    s = 0
     for sentence in sentences:
         tra_sentence.append(str(TextBlob(sentence).translate(from_lang='en', to='ja')))
         tokens = TextBlob(sentence).tokens
         selected_idioms.append(get_idiom_key(tokens))
-        sentence_content = create_sentence_content(tokens, p, s)
-        sentence_html = sentence_content[0]
-        paragraph_html += create_paragraph_html(sentence_html, p, s)
-        sentence_list = sentence_content[1]
-        paragraph_list += create_paragraphs_list(sentence_list)
+        sentence_list = create_sentence_content(tokens, p, s)
+        paragraph_list.append(create_paragraphs_list(sentence_list))
         s += 1
-    return [paragraph_html, paragraph_list, tra_sentence, selected_idioms]
+    return [paragraph_list, tra_sentence, selected_idioms]
 
 idioms_dictionary = {} #{"for a while":"--", "for the first time": "--"}
 def get_idiom_dictionary():
@@ -96,7 +82,6 @@ def get_idiom_key(tokens):
 
 def get_text_en(text): 
     paragraphs, idioms, all_sentences, paragraph_tra_sentence, paragraph_list = [], [], [], [], []
-    html = ''
     paragraphs = re.split('\n\n+', text)
     text_lang = TextBlob(text).detect_language()
     p = 0
@@ -104,13 +89,9 @@ def get_text_en(text):
         sentences = TextBlob(paragraph).raw_sentences
         all_sentences.append(sentences)
         paragraph_content = create_paragraph_content(sentences, p)
-        paragraph_html = paragraph_content[0]
-        paragraph_list.append(paragraph_content[1])
-        paragraph_tra_sentence.append(paragraph_content[2])
-        paragraph_idioms = paragraph_content[3]
-        html += "<div id='p_{}'>{}</div>".format(p, paragraph_html)
-        idioms.append(paragraph_idioms)
+        paragraph_list.append(paragraph_content[0])
+        paragraph_tra_sentence.append(paragraph_content[1])
+        idioms.append(paragraph_content[2])
         p += 1
-    html = "<div class='clickable'>{}</div>".format(html)
-    result = [html, paragraph_list, all_sentences, paragraph_tra_sentence, idioms]
+    result = [paragraph_list, all_sentences, paragraph_tra_sentence, idioms]
     return result
