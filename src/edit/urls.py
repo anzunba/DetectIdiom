@@ -4,7 +4,7 @@ from rest_framework import routers
 from .api import EnJaViewSet
 
 urlpatterns = [
-  path('edit/getSentenceTokens', views.get_sentence_tokens)
+  path('edit/getTokens', views.get_tokens)
 ]
 
 router = routers.DefaultRouter(trailing_slash=False)

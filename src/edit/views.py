@@ -7,9 +7,9 @@ import json
 from textblob import TextBlob
 # Create your views here.
 @csrf_exempt 
-def get_sentence_tokens(request):
+def get_tokens(request):
     if request.method == 'POST':
         if request.body:
             sentence = request.body.decode("utf-8") 
-            sentence_tokens = TextBlob(sentence).tokens
-            return HttpResponse(json.dumps(sentence_tokens))
+            tokens = TextBlob(sentence).tokens
+            return HttpResponse(json.dumps(tokens))

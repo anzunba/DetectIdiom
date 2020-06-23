@@ -358,9 +358,21 @@ span.difficultyText {
 }
 
 .bg-pink{
-	background-color: lightpink;
+	background-color: lightpink!important;
 }
 
 .bg-yellow{
-	background-color: yellow;
+	background-color: yellow!important;
+}
+
+.rubies{
+	font-size: x-small;
+}
+
+.mright5{
+	margin-right:.5rem;
+}
+
+.cursor{
+	cursor: pointer;
 }

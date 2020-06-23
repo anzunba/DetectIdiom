@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { GET_SENTENCE_TOKENS } from './types';
+import { GET_TOKENS } from './types';
 
-export const getSentenceTokens = (sentence) => (dispatch) => {
+export const getTokens = (sentence) => (dispatch) => {
     axios
-      .post('/edit/getSentenceTokens', sentence)
+      .post('/edit/getTokens', sentence)
       .then((res) => {
         dispatch({
-          type: GET_SENTENCE_TOKENS,
+          type: GET_TOKENS,
           payload: res.data,
           
         });
