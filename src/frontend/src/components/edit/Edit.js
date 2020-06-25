@@ -22,7 +22,9 @@ const useStyles = makeStyles((theme) => ({
 const getSelectedIdiomAddressList = (tokensOfIdiomList, tokensOfSentenceList) => {
 	let idiomIndexList = [];
 	tokensOfIdiomList.forEach(function(tokenOfIdiom) {
-		idiomIndexList.push(tokensOfSentenceList.indexOf(tokenOfIdiom.toLowerCase()));
+		if (tokenOfIdiom != '') {
+			idiomIndexList.push(tokensOfSentenceList.indexOf(tokenOfIdiom.toLowerCase()));
+		}
 	});
 	for (let i = 0; i < idiomIndexList.length - 1; i++) {
 		if (idiomIndexList[i] + 1 != idiomIndexList[i + 1]) {
@@ -91,7 +93,7 @@ const App = () => {
 	const pId = getId(tokenFullId)[0];
 	const sId = getId(tokenFullId)[1];
 	const handleToken = (e) => {
-		setTokenBg({})
+		setTokenBg({});
 		tokenFullId = e.target.id;
 		sentenceId = tokenFullId.split('_').slice(0, 3).join('_');
 		token = e.target.innerHTML;
@@ -134,7 +136,7 @@ const App = () => {
 			</ruby>
 		);
 
-		if ('t_' + t.id == idiomDetail[idiomAddressConvertor['t_' + t.id]].end_id) {
+		if (idiomDetail[idiomAddressConvertor['t_' + t.id]] && 't_' + t.id == idiomDetail[idiomAddressConvertor['t_' + t.id]].end_id) {
 			tokenRubyResultHtml[idiomAddressConvertor['t_' + t.id]].push(
 				<rt key={t_idx + t + t}>{iruby[idiomAddressConvertor['t_' + t.id]]}</rt>
 			);
@@ -154,17 +156,17 @@ const App = () => {
 	//Words
 	let selectedMeaning = '';
 	const handleMeaning = (e, i) => {
-		let hash = {}
+		let hash = {};
 		selectedMeaning = e.target.innerHTML;
 		setMeaningRowBg((state) => ({ ...state, [tokenFullId]: {} }));
 		if (meaningRowBg[tokenFullId] && meaningRowBg[tokenFullId][i] == 'bg-pink') {
-			hash[i] = ''
+			hash[i] = '';
 			setTokenRuby((state) => ({ ...state, [tokenFullId]: '' }));
 		} else {
-			hash[i] = 'bg-pink'
+			hash[i] = 'bg-pink';
 			setTokenRuby((state) => ({ ...state, [tokenFullId]: selectedMeaning }));
 		}
-		setMeaningRowBg((state) => ({...state, [tokenFullId]: hash}));
+		setMeaningRowBg((state) => ({ ...state, [tokenFullId]: hash }));
 	};
 
 	const meaningsString = useSelector((state) => state.edit3.mean);
@@ -193,58 +195,99 @@ const App = () => {
 	meaningsString ? createWordMeaningTable(meaningsString) : '';
 
 	//Idioms
+	const getIsDuplicate = (arr1, arr2) =>{
+		return [...arr1, ...arr2].filter(item => arr1.includes(item) && arr2.includes(item)).length > 0
+	  }
 	const getIdiomDetail = (selectedIdiom) => {
-		const idiomFullAddress = getSelectedIdiomAddressList(selectedIdiom.idiom.split(' '), sentenceTokensList);
+		
+		const keySelectedIdiom = selectedIdiom.idiom.replace('A', '');
+		const idiomFullAddress = getSelectedIdiomAddressList(keySelectedIdiom.split(' '), sentenceTokensList);
+		for (let key in idiomDetail) {
+			let duplicate = getIsDuplicate(idiomDetail[key].fullAddress, idiomFullAddress)
+			let hash = {}
+			if(duplicate){
+				iruby[key] = '';
+				hash[idiomDetail[key].rowId] = ''
+				const a = idiomDetail[key].meaningId
+				setMeaningRowBg((state) => ({ ...state, [a]: hash}));
+				idiomDetail[key].fullAddress.map((address)=>{
+					delete idiomAddressConvertor[address]
+				})
+				delete idiomDetail[key];
+			}
+		  }
 		if (idiomFullAddress.length != 0) {
 			iruby[idiomFullAddress[0]] = selectedIdiom.mean;
 			idiomFullAddress.map((address) => {
 				idiomAddressConvertor[address] = idiomFullAddress[0];
 			});
 			idiomDetail[idiomFullAddress[0]] = {
+				fullAddress: idiomFullAddress,
 				start_id: idiomFullAddress[0],
 				end_id: idiomFullAddress[idiomFullAddress.length - 1],
 				idiom: selectedIdiom.idiom,
-				mean: selectedIdiom.mean
+				mean: selectedIdiom.mean,
+				meaningId: selectedIdiom.meaningId,
+				rowId: selectedIdiom.rowId
 			};
 		}
 	};
 	const handleIdiom = (e, idiomId) => {
+		let rowId = e.target.parentElement.id
 		let idiom = e.target.parentElement.children[0].innerHTML;
 		let meaning = e.target.parentElement.children[1].innerHTML;
-		if (meaningRowBg[idiomId] == 'bg-pink') {
-			getIdiomDetail({ idiom: idiom, mean: '' });
-			setMeaningRowBg((state) => ({ ...state, [idiomId]: '' }));
+		let hash = {};
+		if (meaningRowBg[idiomId] && meaningRowBg[idiomId][rowId] == 'bg-pink') {
+			getIdiomDetail({ idiom: idiom, mean: '', idiomMeaningId:idiomId});
+			console.log('change bg color to no color')
+			hash[rowId] = ''
+			setMeaningRowBg((state) => ({ ...state, [idiomId]: hash }));
 		} else {
-			setMeaningRowBg((state) => ({ ...state, [idiomId]: 'bg-pink' }));
-			getIdiomDetail({ idiom: idiom, mean: meaning });
+			console.log('change bg color to pink')
+			hash[rowId] = 'bg-pink'
+			setMeaningRowBg((state) => ({ ...state, [idiomId]: hash}));
+			getIdiomDetail({ idiom: idiom, mean: meaning, meaningId:idiomId, rowId: rowId });
 		}
-		console.log('debug')
+		console.log('debug');
 	};
 
-	let i = 0;
+	let rowId = 0;
+	let idiomId = 0;
 	const createIdiomMeaningTable = () => {
 		idiomsInSentence = allIdioms[pId][sId];
 		for (const [ key, value ] of Object.entries(idiomsInSentence)) {
 			let meaningsForOneToken = value.split('、');
-			let idiomId = `${pId}_${sId}_${i}`
+			let idiomKey = `${pId}_${sId}_${idiomId}`
 			if (meaningsForOneToken.length > 1) {
 				meaningsForOneToken.map((m) => {
 					idiomsTableRow.push(
-						<tr key={i} id={idiomId} className={meaningRowBg[idiomId]} onClick={(e) => handleIdiom(e, idiomId)}>
+						<tr
+							key={rowId}
+							id={rowId}
+							className={meaningRowBg[idiomKey]!==undefined?meaningRowBg[idiomKey][rowId]:'' }
+							onClick={(e) => handleIdiom(e, idiomKey)}
+						>
 							<td>{key}</td>
 							<td className="text-left">{m}</td>
 						</tr>
-					); 
-					i += 1;
+					);
+					rowId += 1;
 				});
+				idiomId += 1;
 			} else {
 				idiomsTableRow.push(
-					<tr key={key} id={idiomId} className={meaningRowBg[idiomId]} onClick={(e) => handleIdiom(e, idiomId)}>
+					<tr
+						key={rowId}
+						id={rowId}
+						className={meaningRowBg[idiomKey]!==undefined?meaningRowBg[idiomKey][rowId]:'' }
+						onClick={(e) => handleIdiom(e, idiomKey)}
+					>
 						<td>{key}</td>
 						<td className="text-left">{value}</td>
 					</tr>
 				);
-				i += 1
+				rowId += 1;
+				idiomId += 1;
 			}
 		}
 	};
@@ -280,10 +323,12 @@ const App = () => {
 														-1 ? (
 															<ruby key={t_idx + t}>
 																{createTokenRubyWithMeaning(t_idx, t)}
-																{idiomDetail[idiomAddressConvertor['t_' + t.id]]
+																{idiomDetail[idiomAddressConvertor['t_' + t.id]] && idiomDetail[idiomAddressConvertor['t_' + t.id]]
 																	.end_id ==
 																't_' + t.id ? (
-																	tokenRubyResultHtml[idiomAddressConvertor['t_' + t.id]]
+																	tokenRubyResultHtml[
+																		idiomAddressConvertor['t_' + t.id]
+																	]
 																) : (
 																	''
 																)}
