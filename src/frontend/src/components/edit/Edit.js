@@ -51,16 +51,16 @@ const getId = (tokenFullId) => {
 	return [ pId, sId, tId ];
 };
 
-const clickableElements = document.getElementsByClassName('clickable_token');
-const resetHighlight = () => {
-	for (let i = 0; i < clickableElements.length; i++) {
-		document.getElementById(clickableElements[i].id).classList.remove('bg-yellow');
-	}
-};
-const highlightToken = (tokenFullId) => {
-	resetHighlight();
-	document.getElementById(tokenFullId).classList.add('bg-yellow');
-};
+// const clickableElements = document.getElementsByClassName('clickable_token');
+// const resetHighlight = () => {
+// 	for (let i = 0; i < clickableElements.length; i++) {
+// 		document.getElementById(clickableElements[i].id).classList.remove('bg-yellow');
+// 	}
+// };
+// const highlightToken = (tokenFullId) => {
+// 	resetHighlight();
+// 	document.getElementById(tokenFullId).classList.add('bg-yellow');
+// };
 
 let token = 'Selected Word';
 let sentenceId = '';
@@ -79,68 +79,67 @@ const App = () => {
 	const sentenceTokensList = useSelector((state) => state.edit7);
 	const inputText = useSelector((state) => state.edit.words);
 	let idiomFullAddress = [];
-
-	const [ wruby, setWRuby ] = useState({});
-
-	const pId = getId(tokenFullId)[0];
-	const sId = getId(tokenFullId)[1];
-	const get_token = (e) => {
-		tokenFullId = e.target.id;
-		resetTokenMeaningBg();
-		sentenceId = tokenFullId.split('_').slice(0, 3).join('_');
-		token = e.target.innerHTML;
-		dispatch(getMeaning(token));
-		highlightToken(tokenFullId);
-		dispatch(getTokens(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
-	};
-
-	const ruby_html = (t_idx, t) => {
-		return (
-			<ruby key={t_idx + t} className={t.class}>
-				<span
-					key={t_idx + t + 'span'}
-					className="clickable_token"
-					id={'t_' + t.id}
-					onClick={(e) => get_token(e)}
-				>
-					{t.token}
-				</span>
-				<rt key={t_idx + t + 'rt'}>{wruby['t_' + t.id]}</rt>
-			</ruby>
-		);
-	};
-	let result = { '': [] };
-	const ruby_html_from_dic = (t_idx, t) => {
-		if ([ idiomAddressConvertor['t_' + t.id] ] == 't_' + t.id) {
-			result[idiomAddressConvertor['t_' + t.id]] = [];
-		}
-		result[idiomAddressConvertor['t_' + t.id]].push(
-			<ruby key={t_idx + t} className={t.class}>
-				<span
-					key={t_idx + t + 'span'}
-					className="clickable_token"
-					id={'t_' + t.id}
-					onClick={(e) => get_token(e)}
-				>
-					{t.token}
-				</span>
-				<rt key={t_idx + t + 'rt'}>{wruby['t_' + t.id]}</rt>
-			</ruby>
-		);
-
-		if ('t_' + t.id == idiomDetail[idiomAddressConvertor['t_' + t.id]].end_id) {
-			result[idiomAddressConvertor['t_' + t.id]].push(
-				<rt key={t_idx + t + t}>{iruby[idiomAddressConvertor['t_' + t.id]]}</rt>
-			);
-		}
-	};
-
+	const [ tokenRuby, setTokenRuby ] = useState({});
 	const idiomsTableRow = [];
 	const wordsTableRow = [];
 	const dispatch = useDispatch();
 	const allTranslatedSentences = useSelector((state) => state.edit.aft_sentence);
 	const allIdioms = useSelector((state) => state.edit.idioms);
-	const [ idiomBg, setIdiomBg ] = useState({});
+	const [ meaningRowBg, setMeaningRowBg ] = useState({});
+	const [ tokenBg, setTokenBg ] = useState({});
+
+	const pId = getId(tokenFullId)[0];
+	const sId = getId(tokenFullId)[1];
+	const handleToken = (e) => {
+		setTokenBg({})
+		tokenFullId = e.target.id;
+		sentenceId = tokenFullId.split('_').slice(0, 3).join('_');
+		token = e.target.innerHTML;
+		dispatch(getMeaning(token));
+		dispatch(getTokens(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
+		setTokenBg((state) => ({ ...state, [tokenFullId]: 'bg-yellow' }));
+	};
+
+	const createEmptyTokenRubyHtml = (t_idx, t) => {
+		return (
+			<ruby key={t_idx + t} className={t.class}>
+				<span
+					key={t_idx + t + 'span'}
+					className={`clickable_token ${tokenBg['t_' + t.id]}`}
+					id={'t_' + t.id}
+					onClick={(e) => handleToken(e)}
+				>
+					{t.token}
+				</span>
+				<rt key={t_idx + t + 'rt'}>{tokenRuby['t_' + t.id]}</rt>
+			</ruby>
+		);
+	};
+	let tokenRubyResultHtml = { '': [] };
+	const createTokenRubyWithMeaning = (t_idx, t) => {
+		if ([ idiomAddressConvertor['t_' + t.id] ] == 't_' + t.id) {
+			tokenRubyResultHtml[idiomAddressConvertor['t_' + t.id]] = [];
+		}
+		tokenRubyResultHtml[idiomAddressConvertor['t_' + t.id]].push(
+			<ruby key={t_idx + t} className={t.class}>
+				<span
+					key={t_idx + t + 'span'}
+					className="clickable_token"
+					id={'t_' + t.id}
+					onClick={(e) => handleToken(e)}
+				>
+					{t.token}
+				</span>
+				<rt key={t_idx + t + 'rt'}>{tokenRuby['t_' + t.id]}</rt>
+			</ruby>
+		);
+
+		if ('t_' + t.id == idiomDetail[idiomAddressConvertor['t_' + t.id]].end_id) {
+			tokenRubyResultHtml[idiomAddressConvertor['t_' + t.id]].push(
+				<rt key={t_idx + t + t}>{iruby[idiomAddressConvertor['t_' + t.id]]}</rt>
+			);
+		}
+	};
 
 	//Translated Sentence
 	if (allTranslatedSentences.length > 0 && pId && sId) {
@@ -157,24 +156,15 @@ const App = () => {
 	const handleMeaning = (e, i) => {
 		let hash = {}
 		selectedMeaning = e.target.innerHTML;
-		setIdiomBg((state) => ({ ...state, [tokenFullId]: {} }));
-		if (idiomBg[tokenFullId] && idiomBg[tokenFullId][i] == 'bg-pink') {
+		setMeaningRowBg((state) => ({ ...state, [tokenFullId]: {} }));
+		if (meaningRowBg[tokenFullId] && meaningRowBg[tokenFullId][i] == 'bg-pink') {
 			hash[i] = ''
-			setIdiomBg((state) => ({...state, [tokenFullId]: hash}));
-			setWRuby((state) => ({ ...state, [tokenFullId]: '' }));
+			setTokenRuby((state) => ({ ...state, [tokenFullId]: '' }));
 		} else {
 			hash[i] = 'bg-pink'
-			setIdiomBg((state) => ({ ...state, [tokenFullId]: hash}));
-			setWRuby((state) => ({ ...state, [tokenFullId]: selectedMeaning }));
+			setTokenRuby((state) => ({ ...state, [tokenFullId]: selectedMeaning }));
 		}
-		console.log('idiomBg: ' + idiomBg[tokenFullId]);
-	};
-
-	const resetTokenMeaningBg = () => {
-		const meanings = document.getElementsByClassName('clickable_mean');
-		for (let i = 0; i < meanings.length; i++) {
-			document.getElementById(meanings[i].id).classList.remove('bg-pink');
-		}
+		setMeaningRowBg((state) => ({...state, [tokenFullId]: hash}));
 	};
 
 	const meaningsString = useSelector((state) => state.edit3.mean);
@@ -186,8 +176,8 @@ const App = () => {
 					<td
 						id={`${tokenFullId}_${i}`}
 						className={
-							idiomBg[tokenFullId] !== undefined ? (
-								`clickable_mean ${idiomBg[tokenFullId][i]}`
+							meaningRowBg[tokenFullId] !== undefined ? (
+								`clickable_mean ${meaningRowBg[tokenFullId][i]}`
 							) : (
 								`clickable_mean`
 							)
@@ -204,7 +194,7 @@ const App = () => {
 
 	//Idioms
 	const getIdiomDetail = (selectedIdiom) => {
-		idiomFullAddress = getSelectedIdiomAddressList(selectedIdiom.idiom.split(' '), sentenceTokensList);
+		const idiomFullAddress = getSelectedIdiomAddressList(selectedIdiom.idiom.split(' '), sentenceTokensList);
 		if (idiomFullAddress.length != 0) {
 			iruby[idiomFullAddress[0]] = selectedIdiom.mean;
 			idiomFullAddress.map((address) => {
@@ -218,42 +208,43 @@ const App = () => {
 			};
 		}
 	};
-	const handleIdiom = (e, i) => {
+	const handleIdiom = (e, idiomId) => {
 		let idiom = e.target.parentElement.children[0].innerHTML;
 		let meaning = e.target.parentElement.children[1].innerHTML;
-		let keyToken = idiom.split(' ').join('_');
-		if (idiomBg[keyToken + i] == 'bg-pink') {
-			setIdiomBg((state) => ({ ...state, [keyToken + i]: '' }));
+		if (meaningRowBg[idiomId] == 'bg-pink') {
 			getIdiomDetail({ idiom: idiom, mean: '' });
+			setMeaningRowBg((state) => ({ ...state, [idiomId]: '' }));
 		} else {
-			setIdiomBg((state) => ({ ...state, [keyToken + i]: 'bg-pink' }));
+			setMeaningRowBg((state) => ({ ...state, [idiomId]: 'bg-pink' }));
 			getIdiomDetail({ idiom: idiom, mean: meaning });
 		}
+		console.log('debug')
 	};
 
+	let i = 0;
 	const createIdiomMeaningTable = () => {
 		idiomsInSentence = allIdioms[pId][sId];
 		for (const [ key, value ] of Object.entries(idiomsInSentence)) {
 			let meaningsForOneToken = value.split('、');
+			let idiomId = `${pId}_${sId}_${i}`
 			if (meaningsForOneToken.length > 1) {
-				meaningsForOneToken.map((m, i) => {
-					let keyToken = key.split(' ').join('_');
+				meaningsForOneToken.map((m) => {
 					idiomsTableRow.push(
-						<tr key={i} className={idiomBg[keyToken + i]} onClick={(e) => handleIdiom(e, i)}>
+						<tr key={i} id={idiomId} className={meaningRowBg[idiomId]} onClick={(e) => handleIdiom(e, idiomId)}>
 							<td>{key}</td>
 							<td className="text-left">{m}</td>
 						</tr>
-					);
+					); 
+					i += 1;
 				});
 			} else {
-				let keyToken = key.split(' ').join('_');
-				let i = -1;
 				idiomsTableRow.push(
-					<tr key={key} className={idiomBg[keyToken + i]} onClick={(e) => handleIdiom(e, i)}>
+					<tr key={key} id={idiomId} className={meaningRowBg[idiomId]} onClick={(e) => handleIdiom(e, idiomId)}>
 						<td>{key}</td>
 						<td className="text-left">{value}</td>
 					</tr>
 				);
+				i += 1
 			}
 		}
 	};
@@ -288,17 +279,17 @@ const App = () => {
 														Object.keys(idiomAddressConvertor).indexOf('t_' + t.id) !=
 														-1 ? (
 															<ruby key={t_idx + t}>
-																{ruby_html_from_dic(t_idx, t)}
+																{createTokenRubyWithMeaning(t_idx, t)}
 																{idiomDetail[idiomAddressConvertor['t_' + t.id]]
 																	.end_id ==
 																't_' + t.id ? (
-																	result[idiomAddressConvertor['t_' + t.id]]
+																	tokenRubyResultHtml[idiomAddressConvertor['t_' + t.id]]
 																) : (
 																	''
 																)}
 															</ruby>
 														) : (
-															ruby_html(t_idx, t)
+															createEmptyTokenRubyHtml(t_idx, t)
 														)
 												)}
 											</p>
