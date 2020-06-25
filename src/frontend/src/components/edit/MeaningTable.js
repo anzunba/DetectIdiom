@@ -7,126 +7,137 @@ import { getSelectedMeaning } from '../../actions/edit4';
 import { useDispatch } from 'react-redux';
 import { getWordTable } from '../../actions/edit5';
 import { getIdiomTable } from '../../actions/edit6';
+import { getIdiomTableAddress } from '../../actions/edit8';
 
-const getId = (t_id) => {
-	let p = t_id.split('_')[1];
-	let s = t_id.split('_')[2];
-	return [ p, s ];
+const getId = (tokenFullId) => {
+	let pId = tokenFullId.split('_')[1];
+	let sId = tokenFullId.split('_')[2];
+	let tId = tokenFullId.split('_')[3];
+	return [ pId, sId, tId ];
 };
-const word_table = {}
-
+let wordTable = {};
+let idiomTable = {};
+let selectedTranslatedSentence = 'Not Available';
+let idiomsInSentence = [];
+/******************************************/
 const App = () => {
-	let translation = 'Not Available';
-	let selectedIdioms = [];
-	const tra_sentence = useSelector((state) => state.edit.aft_sentence);
-	const idioms = useSelector((state) => state.edit.idioms);
-	const t_id = useSelector((state) => state.edit2.t_id);
-	const idiomTableAddress = useSelector((state) => state.edit8);
-	console.log("idiomTableAddress: " + idiomTableAddress)
-
-	const p = getId(t_id)[0];
-	const s = getId(t_id)[1];
-	const items = [];
-	let idiom_table = {}
+	const idiomsTableRow = [];
+	const wordsTableRow = [];
+	const dispatch = useDispatch();
+	const allTranslatedSentences = useSelector((state) => state.edit.aft_sentence);
+	const allIdioms = useSelector((state) => state.edit.idioms);
+	const tokenFullId = useSelector((state) => state.edit2.t_id);
+	const selectedIdiomAddress = useSelector((state) => state.edit8);
 	const [ idiomBg, setidiomBg ] = useState({});
-	const handleIdiom = (e, i) =>{
-		console.log("i:"  + i)
-		let idiom = e.target.parentElement.children[0].innerHTML
-		let meaning = e.target.parentElement.children[1].innerHTML
-		let key_id = idiom.split(' ').join('_')
-		console.log(idiomBg[key_id + i])
-		if(idiomBg[key_id + i] == 'bg-pink'){
-			setidiomBg((state) => ({ ...state, [key_id + i]: '' }));
-			idiom_table = {"idiom": idiom, "mean" : ''}
-		}else{
-			setidiomBg((state) => ({ ...state, [key_id + i]: 'bg-pink' }));
-			idiom_table = {"idiom": idiom, "mean" : meaning}
-		}
-		
-		dispatch(getIdiomTable(idiom_table));
+	const pId = getId(tokenFullId)[0];
+	const sId = getId(tokenFullId)[1];
+
+	useEffect(
+		() => {
+			resetTokenMeaningBg();
+		},
+		[ tokenFullId ]
+	);
+
+	//Translated Sentence
+	if (allTranslatedSentences.length > 0 && pId && sId) {
+		selectedTranslatedSentence = allTranslatedSentences[pId][sId];
 	}
-	if (tra_sentence.length > 0 && p && s) {
-		translation = tra_sentence[p][s];
-		selectedIdioms = idioms[p][s];
-		for (const [ key, value ] of Object.entries(selectedIdioms)) {
-			let meanings = value.split('、');
-			if (meanings.length > 1) {
-				meanings.map((m, i) => {
-						let key_id = key.split(' ').join('_')
-						console.log('i: ' + i)
-						items.push(
-							<tr key={i} className={idiomBg[key_id + i]} onClick={(e)=>handleIdiom(e, i)}>
-								<td>{key}</td>
-								<td className="text-left">{m}</td>
-							</tr>
-						);
+	const notAvailable = (
+		<tr>
+			<td>Not Available</td>
+		</tr>
+	);
+
+	//Words
+	const handleMeaning = (e) => {
+		document.getElementById(e.target.id).classList.add('bg-pink');
+		dispatch(getSelectedMeaning(e.target.innerHTML));
+		wordTable[tokenFullId] = e.target.innerHTML;
+		dispatch(getWordTable(wordTable));
+	};
+
+	const resetTokenMeaningBg = () => {
+		const meanings = document.getElementsByClassName('clickable_mean');
+		for (let i = 0; i < meanings.length; i++) {
+			document.getElementById(meanings[i].id).classList.remove('bg-pink');
+		}
+	};
+
+	const meaningsString = useSelector((state) => state.edit3.mean);
+	const createWordMeaningTable = (meaningsString) => {
+		let meaningsList = meaningsString.split('/');
+		let count = 0;
+		meaningsList.map((m, i) => {
+			if (wordTable[tokenFullId] == m) {
+				wordsTableRow.push(
+					<tr key={i}>
+						<td
+							id={`${tokenFullId}_${count}`}
+							className="clickable_mean bg-pink"
+							onClick={(e) => handleMeaning(e)}
+						>
+							{m}
+						</td>
+					</tr>
+				);
+			} else {
+				wordsTableRow.push(
+					<tr key={i}>
+						<td id={`${tokenFullId}_${count}`} className="clickable_mean" onClick={(e) => handleMeaning(e)}>
+							{m}
+						</td>
+					</tr>
+				);
+			}
+			count += 1;
+		});
+	};
+	meaningsString ? createWordMeaningTable(meaningsString) : '';
+
+	//Idioms
+	const handleIdiom = (e, i) => {
+		let idiom = e.target.parentElement.children[0].innerHTML;
+		let meaning = e.target.parentElement.children[1].innerHTML;
+		let keyToken = idiom.split(' ').join('_');
+		if (idiomBg[keyToken + i] == 'bg-pink') {
+			setidiomBg((state) => ({ ...state, [keyToken + i]: '' }));
+			idiomTable = { idiom: idiom, mean: '' };
+		} else {
+			setidiomBg((state) => ({ ...state, [keyToken + i]: 'bg-pink' }));
+			idiomTable = { idiom: idiom, mean: meaning };
+		}
+		dispatch(getIdiomTable(idiomTable));
+	};
+	
+	const createIdiomMeaningTable = () => {
+		idiomsInSentence = allIdioms[pId][sId];
+		for (const [ key, value ] of Object.entries(idiomsInSentence)) {
+			let meaningsForOneToken = value.split('、');
+			if (meaningsForOneToken.length > 1) {
+				meaningsForOneToken.map((m, i) => {
+					let keyToken = key.split(' ').join('_');
+					idiomsTableRow.push(
+						<tr key={i} className={idiomBg[keyToken + i]} onClick={(e) => handleIdiom(e, i)}>
+							<td>{key}</td>
+							<td className="text-left">{m}</td>
+						</tr>
+					);
 				});
 			} else {
-				let key_id = key.split(' ').join('_')
-				let i = -1
-				items.push(
-					<tr key={key} className={idiomBg[key_id + i]} onClick={(e)=>handleIdiom(e, i)}>
+				let keyToken = key.split(' ').join('_');
+				let i = -1;
+				idiomsTableRow.push(
+					<tr key={key} className={idiomBg[keyToken + i]} onClick={(e) => handleIdiom(e, i)}>
 						<td>{key}</td>
 						<td className="text-left">{value}</td>
 					</tr>
 				);
 			}
 		}
-	}
-
-	let notAvailable = (
-		<tr>
-			<td>Not Available</td>
-		</tr>
-	);
-	const dispatch = useDispatch();
-	const handleMeaning = (e) =>{
-		//console.log("idiomTableAddress: " + idiomTableAddress)
-		document.getElementById(e.target.id).classList.add('bg-pink');
-		dispatch(getSelectedMeaning(e.target.innerHTML));
-		word_table[t_id] = e.target.innerHTML
-		dispatch(getWordTable(word_table));
-	}
-
-	useEffect(() => {
-		reset_pink()
-	}, [t_id])
-	const reset_pink = () =>{
-		const means = document.getElementsByClassName('clickable_mean');
-		for (let i = 0; i < means.length; i++) {
-			document.getElementById(means[i].id).classList.remove('bg-pink');
-		}
-	}
-	
-	const meaning = useSelector((state) => state.edit3.mean);
-	let meaning_list = '';
-	const m_items = [];
-	const get_m_list = (meaning) => {
-		meaning_list = meaning.split('/');
-		meaning_list = Array.from(new Set(meaning_list));
-		let count = 0
-		meaning_list.map((m, i) => {
-			if(word_table[t_id] == m){
-				m_items.push(
-					<tr key={i}>
-						<td id={`${t_id}_${count}`} className="clickable_mean bg-pink" onClick={(e)=>handleMeaning(e)}>
-							{m}
-						</td>
-					</tr>
-				);
-			}else{
-				m_items.push(
-					<tr key={i}>
-						<td id={`${t_id}_${count}`} className="clickable_mean" onClick={(e)=>handleMeaning(e)}>
-							{m}
-						</td>
-					</tr>
-				);
-			}
-			count += 1
-		});
 	};
-	meaning ? get_m_list(meaning) : '';
+
+	allTranslatedSentences.length > 0 && pId && sId ? createIdiomMeaningTable() : '';
 
 	return (
 		<div className="">
@@ -139,7 +150,7 @@ const App = () => {
 				</thead>
 				<tbody>
 					<tr>
-						<td>{translation}</td>
+						<td>{selectedTranslatedSentence}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -150,7 +161,7 @@ const App = () => {
 						<th>Word</th>
 					</tr>
 				</thead>
-				<tbody className="cursor">{m_items.length > 0 ? m_items : notAvailable}</tbody>
+				<tbody className="cursor">{wordsTableRow.length > 0 ? wordsTableRow : notAvailable}</tbody>
 			</table>
 			{/* <LinearProgress /> */}
 			<table className="table table-striped table-scroll mb-0">
@@ -159,7 +170,7 @@ const App = () => {
 						<th>idiom</th>
 					</tr>
 				</thead>
-				<tbody className="cursor">{items.length > 0 ? items : notAvailable}</tbody>
+				<tbody className="cursor">{idiomsTableRow.length > 0 ? idiomsTableRow : notAvailable}</tbody>
 			</table>
 			<table className="table table-striped  table-scroll mb-0">
 				<thead>

@@ -2,16 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import MeaningTable from './MeaningTable';
 import TextField from '@material-ui/core/TextField';
 import Save from './Save';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useSelector } from 'react-redux';
-import { getTId } from '../../actions/edit2';
 import { getMeaning } from '../../actions/edit3';
 import { getTokens } from '../../actions/edit7';
 import { useDispatch } from 'react-redux';
-import { getIdiomTableAddress } from '../../actions/edit8';
+import InputBase from '@material-ui/core/InputBase';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -21,132 +19,246 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const get_idiom_address_arr = (idiom_token_arr, sentence_token_arr) => {
-	var address_arr = [];
-	idiom_token_arr.forEach(function(i) {
-		address_arr.push(sentence_token_arr.indexOf(i.toLowerCase()));
+const getSelectedIdiomAddressList = (tokensOfIdiomList, tokensOfSentenceList) => {
+	let idiomIndexList = [];
+	tokensOfIdiomList.forEach(function(tokenOfIdiom) {
+		idiomIndexList.push(tokensOfSentenceList.indexOf(tokenOfIdiom.toLowerCase()));
 	});
-	for (let i = 0; i < address_arr.length - 1; i++) {
-		if (address_arr[i] + 1 != address_arr[i + 1]) {
-			var num = address_arr[i] + 1;
-			var temp_arr = [];
-			idiom_token_arr.forEach(function(i) {
-				temp_arr.push(sentence_token_arr.indexOf(i.toLowerCase(), num));
+	for (let i = 0; i < idiomIndexList.length - 1; i++) {
+		if (idiomIndexList[i] + 1 != idiomIndexList[i + 1]) {
+			let num = idiomIndexList[i] + 1;
+			let temp_arr = [];
+			tokensOfIdiomList.forEach(function(i) {
+				temp_arr.push(tokensOfSentenceList.indexOf(i.toLowerCase(), num));
 			});
 			if (temp_arr.indexOf(-1) == -1) {
-				address_arr = [];
-				address_arr = temp_arr;
+				idiomIndexList = [];
+				idiomIndexList = temp_arr;
 			}
 		}
 	}
-	var idiom_address_arr = [];
-	address_arr.map((i) => {
-		idiom_address_arr.push(sentenceId + '_' + i);
+	let idiomAddressList = [];
+	idiomIndexList.map((i) => {
+		idiomAddressList.push(sentenceId + '_' + i);
 	});
-	return idiom_address_arr;
+	return idiomAddressList;
 };
 
-const highlight_token = () => {
-	hightlight_reset();
-	document.getElementById(tokenId).classList.add('bg-yellow');
+const getId = (tokenFullId) => {
+	let pId = tokenFullId.split('_')[1];
+	let sId = tokenFullId.split('_')[2];
+	let tId = tokenFullId.split('_')[3];
+	return [ pId, sId, tId ];
 };
 
-const clickable_elements = document.getElementsByClassName('clickable_token');
-const hightlight_reset = () => {
-	for (let i = 0; i < clickable_elements.length; i++) {
-		document.getElementById(clickable_elements[i].id).classList.remove('bg-yellow');
+const clickableElements = document.getElementsByClassName('clickable_token');
+const resetHighlight = () => {
+	for (let i = 0; i < clickableElements.length; i++) {
+		document.getElementById(clickableElements[i].id).classList.remove('bg-yellow');
 	}
 };
-var token = 'Selected Word';
-var tokenId = '';
-var sentenceId = '';
-var idiom_table_dic = {};
-var idiom_map = {};
+const highlightToken = (tokenFullId) => {
+	resetHighlight();
+	document.getElementById(tokenFullId).classList.add('bg-yellow');
+};
+
+let token = 'Selected Word';
+let sentenceId = '';
+let idiomDetail = {};
+let idiomAddressConvertor = {};
+let wordTable = {};
+let selectedIdiom = {};
+let selectedTranslatedSentence = 'Not Available';
+let idiomsInSentence = [];
+let tokenFullId = '';
 /*********************************************************************/
+let iruby = {};
 const App = () => {
-	const dispatch = useDispatch();
 	const classes = useStyles();
-	const sentence = useSelector((state) => state.edit.pre_sentence);
-	const selected_meaning = useSelector((state) => state.edit4.selected_meaning);
-	const idiomTable = useSelector((state) => state.edit6);
-	const sentence_tokens_arr = useSelector((state) => state.edit7);
+	const originSentencesList = useSelector((state) => state.edit.pre_sentence);
+	const sentenceTokensList = useSelector((state) => state.edit7);
 	const inputText = useSelector((state) => state.edit.words);
-
-	var idiom_address = [];
-
-	useEffect(
-		() => {
-			idiomTable
-				? (idiom_address = get_idiom_address_arr(idiomTable.idiom.split(' '), sentence_tokens_arr))
-				: console.log('idiomTable is empty.');
-			if (idiom_address.length != 0) {
-				setIRuby((state) => ({ ...state, [idiom_address[0]]: idiomTable.mean }));
-				idiom_address.map((address) => {
-					idiom_map[address] = idiom_address[0];
-				});
-				idiom_table_dic[idiom_address[0]] = {
-					start_id: idiom_address[0],
-					end_id: idiom_address[idiom_address.length - 1],
-					idiom: idiomTable.idiom,
-					mean: idiomTable.mean
-				};
-			}
-			dispatch(getIdiomTableAddress(idiom_table_dic));
-			console.log('idiom_address: ' + idiom_address);
-			console.log('idiom_table_dic: ' + idiom_table_dic);
-			console.log('updated idiomTable');
-		},
-		[ idiomTable ]
-	);
+	let idiomFullAddress = [];
 
 	const [ wruby, setWRuby ] = useState({});
-	const [ iruby, setIRuby ] = useState({});
-	useEffect(
-		() => {
-			setWRuby((state) => ({ ...state, [tokenId]: selected_meaning }));
-		},
-		[ selected_meaning ]
-	);
 
+	const pId = getId(tokenFullId)[0];
+	const sId = getId(tokenFullId)[1];
 	const get_token = (e) => {
-		tokenId = e.target.id;
-		sentenceId = tokenId.split('_').slice(0, 3).join('_');
+		tokenFullId = e.target.id;
+		resetTokenMeaningBg();
+		sentenceId = tokenFullId.split('_').slice(0, 3).join('_');
 		token = e.target.innerHTML;
 		dispatch(getMeaning(token));
-		dispatch(getTId(tokenId));
-		highlight_token();
-		dispatch(getTokens(sentence[tokenId.split('_')[1]][tokenId.split('_')[2]]));
+		highlightToken(tokenFullId);
+		dispatch(getTokens(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
 	};
 
 	const ruby_html = (t_idx, t) => {
 		return (
 			<ruby key={t_idx + t} className={t.class}>
-				<span key={t_idx + t + "span"} className="clickable_token" id={'t_' + t.id} onClick={(e) => get_token(e)}>
+				<span
+					key={t_idx + t + 'span'}
+					className="clickable_token"
+					id={'t_' + t.id}
+					onClick={(e) => get_token(e)}
+				>
 					{t.token}
 				</span>
-				<rt key={t_idx + t + "rt"}>{wruby['t_' + t.id]}</rt>
+				<rt key={t_idx + t + 'rt'}>{wruby['t_' + t.id]}</rt>
 			</ruby>
 		);
 	};
-	var result = { '': [] };
+	let result = { '': [] };
 	const ruby_html_from_dic = (t_idx, t) => {
-		if ([ idiom_map['t_' + t.id] ] == 't_' + t.id) {
-			result[idiom_map['t_' + t.id]] = [];
+		if ([ idiomAddressConvertor['t_' + t.id] ] == 't_' + t.id) {
+			result[idiomAddressConvertor['t_' + t.id]] = [];
 		}
-		result[idiom_map['t_' + t.id]].push(
+		result[idiomAddressConvertor['t_' + t.id]].push(
 			<ruby key={t_idx + t} className={t.class}>
-				<span key={t_idx + t + "span"} className="clickable_token" id={'t_' + t.id} onClick={(e) => get_token(e)}>
+				<span
+					key={t_idx + t + 'span'}
+					className="clickable_token"
+					id={'t_' + t.id}
+					onClick={(e) => get_token(e)}
+				>
 					{t.token}
 				</span>
-				<rt key={t_idx + t + "rt"}>{wruby['t_' + t.id]}</rt>
+				<rt key={t_idx + t + 'rt'}>{wruby['t_' + t.id]}</rt>
 			</ruby>
 		);
 
-		if ('t_' + t.id == idiom_table_dic[idiom_map['t_' + t.id]].end_id) {
-			result[idiom_map['t_' + t.id]].push(<rt key={t_idx + t + t}>{iruby[idiom_map['t_' + t.id]]}</rt>);
+		if ('t_' + t.id == idiomDetail[idiomAddressConvertor['t_' + t.id]].end_id) {
+			result[idiomAddressConvertor['t_' + t.id]].push(
+				<rt key={t_idx + t + t}>{iruby[idiomAddressConvertor['t_' + t.id]]}</rt>
+			);
 		}
-		
 	};
+
+	const idiomsTableRow = [];
+	const wordsTableRow = [];
+	const dispatch = useDispatch();
+	const allTranslatedSentences = useSelector((state) => state.edit.aft_sentence);
+	const allIdioms = useSelector((state) => state.edit.idioms);
+	const [ idiomBg, setIdiomBg ] = useState({});
+
+	//Translated Sentence
+	if (allTranslatedSentences.length > 0 && pId && sId) {
+		selectedTranslatedSentence = allTranslatedSentences[pId][sId];
+	}
+	const notAvailable = (
+		<tr>
+			<td>Not Available</td>
+		</tr>
+	);
+
+	//Words
+	let selectedMeaning = '';
+	const handleMeaning = (e, i) => {
+		let hash = {}
+		selectedMeaning = e.target.innerHTML;
+		setIdiomBg((state) => ({ ...state, [tokenFullId]: {} }));
+		if (idiomBg[tokenFullId] && idiomBg[tokenFullId][i] == 'bg-pink') {
+			hash[i] = ''
+			setIdiomBg((state) => ({...state, [tokenFullId]: hash}));
+			setWRuby((state) => ({ ...state, [tokenFullId]: '' }));
+		} else {
+			hash[i] = 'bg-pink'
+			setIdiomBg((state) => ({ ...state, [tokenFullId]: hash}));
+			setWRuby((state) => ({ ...state, [tokenFullId]: selectedMeaning }));
+		}
+		console.log('idiomBg: ' + idiomBg[tokenFullId]);
+	};
+
+	const resetTokenMeaningBg = () => {
+		const meanings = document.getElementsByClassName('clickable_mean');
+		for (let i = 0; i < meanings.length; i++) {
+			document.getElementById(meanings[i].id).classList.remove('bg-pink');
+		}
+	};
+
+	const meaningsString = useSelector((state) => state.edit3.mean);
+	const createWordMeaningTable = (meaningsString) => {
+		let meaningsList = meaningsString.split('/');
+		meaningsList.map((m, i) => {
+			wordsTableRow.push(
+				<tr key={i}>
+					<td
+						id={`${tokenFullId}_${i}`}
+						className={
+							idiomBg[tokenFullId] !== undefined ? (
+								`clickable_mean ${idiomBg[tokenFullId][i]}`
+							) : (
+								`clickable_mean`
+							)
+						}
+						onClick={(e) => handleMeaning(e, i)}
+					>
+						{m}
+					</td>
+				</tr>
+			);
+		});
+	};
+	meaningsString ? createWordMeaningTable(meaningsString) : '';
+
+	//Idioms
+	const getIdiomDetail = (selectedIdiom) => {
+		idiomFullAddress = getSelectedIdiomAddressList(selectedIdiom.idiom.split(' '), sentenceTokensList);
+		if (idiomFullAddress.length != 0) {
+			iruby[idiomFullAddress[0]] = selectedIdiom.mean;
+			idiomFullAddress.map((address) => {
+				idiomAddressConvertor[address] = idiomFullAddress[0];
+			});
+			idiomDetail[idiomFullAddress[0]] = {
+				start_id: idiomFullAddress[0],
+				end_id: idiomFullAddress[idiomFullAddress.length - 1],
+				idiom: selectedIdiom.idiom,
+				mean: selectedIdiom.mean
+			};
+		}
+	};
+	const handleIdiom = (e, i) => {
+		let idiom = e.target.parentElement.children[0].innerHTML;
+		let meaning = e.target.parentElement.children[1].innerHTML;
+		let keyToken = idiom.split(' ').join('_');
+		if (idiomBg[keyToken + i] == 'bg-pink') {
+			setIdiomBg((state) => ({ ...state, [keyToken + i]: '' }));
+			getIdiomDetail({ idiom: idiom, mean: '' });
+		} else {
+			setIdiomBg((state) => ({ ...state, [keyToken + i]: 'bg-pink' }));
+			getIdiomDetail({ idiom: idiom, mean: meaning });
+		}
+	};
+
+	const createIdiomMeaningTable = () => {
+		idiomsInSentence = allIdioms[pId][sId];
+		for (const [ key, value ] of Object.entries(idiomsInSentence)) {
+			let meaningsForOneToken = value.split('、');
+			if (meaningsForOneToken.length > 1) {
+				meaningsForOneToken.map((m, i) => {
+					let keyToken = key.split(' ').join('_');
+					idiomsTableRow.push(
+						<tr key={i} className={idiomBg[keyToken + i]} onClick={(e) => handleIdiom(e, i)}>
+							<td>{key}</td>
+							<td className="text-left">{m}</td>
+						</tr>
+					);
+				});
+			} else {
+				let keyToken = key.split(' ').join('_');
+				let i = -1;
+				idiomsTableRow.push(
+					<tr key={key} className={idiomBg[keyToken + i]} onClick={(e) => handleIdiom(e, i)}>
+						<td>{key}</td>
+						<td className="text-left">{value}</td>
+					</tr>
+				);
+			}
+		}
+	};
+
+	allTranslatedSentences.length > 0 && pId && sId ? createIdiomMeaningTable() : '';
 
 	return (
 		<div>
@@ -173,12 +285,14 @@ const App = () => {
 											<p key={s_idx}>
 												{Object.entries(s).map(
 													([ t_idx, t ]) =>
-														Object.keys(idiom_map).indexOf('t_' + t.id) != -1 ? (
+														Object.keys(idiomAddressConvertor).indexOf('t_' + t.id) !=
+														-1 ? (
 															<ruby key={t_idx + t}>
 																{ruby_html_from_dic(t_idx, t)}
-																{idiom_table_dic[idiom_map['t_' + t.id]].end_id ==
+																{idiomDetail[idiomAddressConvertor['t_' + t.id]]
+																	.end_id ==
 																't_' + t.id ? (
-																	result[idiom_map['t_' + t.id]]
+																	result[idiomAddressConvertor['t_' + t.id]]
 																) : (
 																	''
 																)}
@@ -198,7 +312,60 @@ const App = () => {
 				</Grid>
 				<Grid item xs={12} sm={4}>
 					<Paper className={classes.paper}>
-						<MeaningTable />
+						{/* <LinearProgress/> */}
+						<table className="table table-striped table-scroll mb-0">
+							<thead>
+								<tr>
+									<th>Translate</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>{selectedTranslatedSentence}</td>
+								</tr>
+							</tbody>
+						</table>
+						{/* <LinearProgress/> */}
+						<table className="table table-striped table-scroll mb-0">
+							<thead>
+								<tr>
+									<th>Word</th>
+								</tr>
+							</thead>
+							<tbody className="cursor">{wordsTableRow.length > 0 ? wordsTableRow : notAvailable}</tbody>
+						</table>
+						{/* <LinearProgress /> */}
+						<table className="table table-striped table-scroll mb-0">
+							<thead>
+								<tr>
+									<th>idiom</th>
+								</tr>
+							</thead>
+							<tbody className="cursor">
+								{idiomsTableRow.length > 0 ? idiomsTableRow : notAvailable}
+							</tbody>
+						</table>
+						<table className="table table-striped  table-scroll mb-0">
+							<thead>
+								<tr>
+									<th>Custom Input</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<form noValidate autoComplete="off">
+											<InputBase
+												id="standard-basic"
+												fullWidth
+												placeholder="custom input here"
+												inputProps={{ 'aria-label': 'naked' }}
+											/>
+										</form>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</Paper>
 				</Grid>
 			</Grid>
