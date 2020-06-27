@@ -8,6 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { useSelector } from 'react-redux';
 import { getMeaning } from '../../actions/edit3';
 import { getTokens } from '../../actions/edit7';
+import { lemmatizer } from '../../actions/edit9';
 import { useDispatch } from 'react-redux';
 import InputBase from '@material-ui/core/InputBase';
 
@@ -53,18 +54,8 @@ const getId = (tokenFullId) => {
 	return [ pId, sId, tId ];
 };
 
-// const clickableElements = document.getElementsByClassName('clickable_token');
-// const resetHighlight = () => {
-// 	for (let i = 0; i < clickableElements.length; i++) {
-// 		document.getElementById(clickableElements[i].id).classList.remove('bg-yellow');
-// 	}
-// };
-// const highlightToken = (tokenFullId) => {
-// 	resetHighlight();
-// 	document.getElementById(tokenFullId).classList.add('bg-yellow');
-// };
-
-let token = 'Selected Word';
+let token = '';
+let lemma = 'Selected Word'
 let sentenceId = '';
 let idiomDetail = {};
 let idiomAddressConvertor = {};
@@ -98,7 +89,9 @@ const App = () => {
 		sentenceId = tokenFullId.split('_').slice(0, 3).join('_');
 		token = e.target.innerHTML;
 		dispatch(getMeaning(token));
-		dispatch(getTokens(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
+		//dispatch(lemmatizer(token))
+		dispatch(lemmatizer(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]))
+		//dispatch(getTokens(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
 		setTokenBg((state) => ({ ...state, [tokenFullId]: 'bg-yellow' }));
 	};
 
@@ -126,7 +119,7 @@ const App = () => {
 			<ruby key={t_idx + t} className={t.class}>
 				<span
 					key={t_idx + t + 'span'}
-					className="clickable_token"
+					className={`clickable_token ${tokenBg['t_' + t.id]}`}
 					id={'t_' + t.id}
 					onClick={(e) => handleToken(e)}
 				>
@@ -170,6 +163,8 @@ const App = () => {
 	};
 
 	const meaningsString = useSelector((state) => state.edit3.mean);
+	lemma = useSelector((state) => state.edit9)
+	console.log("lemma: " + lemma)
 	const createWordMeaningTable = (meaningsString) => {
 		let meaningsList = meaningsString.split('/');
 		meaningsList.map((m, i) => {
@@ -299,7 +294,7 @@ const App = () => {
 			<div className="float-left">
 				<form noValidate autoComplete="off">
 					<div className="selectedInputs">
-						<TextField disabled id="standard-basic" label={token} />
+						<TextField disabled id="standard-basic" label={`${lemma}`} />
 					</div>
 				</form>
 			</div>

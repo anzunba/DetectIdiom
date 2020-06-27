@@ -3,8 +3,9 @@ import Grid from '@material-ui/core/Grid';
 import Tab from './Tab'
 import Profile from '../users/profile/Profile'
 import News from './news/News'
+import Snackbar from '@material-ui/core/Snackbar';
 
-export default function Dashboard() {
+const App =() =>{
   return (
     <div>
       <Grid container spacing={3}>
@@ -18,3 +19,5 @@ export default function Dashboard() {
       </div>
   );
 }
+
+export default App;

@@ -4,26 +4,17 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
+
 import TextField from '@material-ui/core/TextField';
 import Lang from './Lang';
+import Crop from './Crop'
 
 const useStyles = makeStyles((theme) => ({
 	modal: {
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
-	paper: {
-		backgroundColor: theme.palette.background.paper,
-		boxShadow: theme.shadows[5],
-		padding: theme.spacing(2, 4, 3)
-	},
-	large: {
-		width: theme.spacing(25),
-		height: theme.spacing(25),
-		margin: '.5rem auto'
-	}
 }));
 
 export default function TransitionsModal() {
@@ -70,10 +61,10 @@ export default function TransitionsModal() {
 			>
 				<Fade in={open}>
 					<div>
-					<div className={classes.paper}>
-						<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={classes.large} />
+					<div className="bg-light px-5 text-center">
+						<Crop />
 						<form noValidate autoComplete="off">
-							<TextField id="standard-basic" label="Name" className="w-100 mt-5" />
+							<TextField id="standard-basic" label="Name" className="w-100 mt-2" />
 							<TextField
 								id="standard-multiline-static"
 								label="Bio"
@@ -81,7 +72,7 @@ export default function TransitionsModal() {
 								rows={4}
 								value={value}
 								onChange={handleChange}
-								className="w-100 mt-5"
+								className="w-100 mt-2"
 							/>
 							<Lang />
 						</form>

@@ -74,9 +74,9 @@ export default function SimplePopover() {
       };
 	return (
 		<div className="align-self-center">
-			<Badge badgeContent={notify?4:0} color="error" aria-describedby={id} onClick={handleClick}>
-				<MailIcon />
-			</Badge>
+			<IconButton onClick={handleClick}><Badge badgeContent={notify?4:0} color="error" aria-describedby={id}>
+			<MailIcon style={{color:'#f8f9fa'}}/>
+			</Badge></IconButton>
 
 			<Popover
 				id={id}

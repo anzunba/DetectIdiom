@@ -376,3 +376,22 @@ span.difficultyText {
 .cursor{
 	cursor: pointer;
 }
+
+.makeStyles-modal-32 .MuiBackdrop-root{
+	background-color: transparent!important;
+}
+
+button.MuiButtonBase-root.MuiButton-root.MuiButton-text.fixed-bottom.w-100.MuiButton-textPrimary {
+    position: absolute;
+    bottom: 0;
+}
+
+.MuiAvatar-root.MuiAvatar-circle.mt-3.w-20.h-20 {
+    width: 20%;
+    height: 20%;
+    margin: 0 auto;
+}
+
+button.MuiButtonBase-root.MuiButton-root.MuiButton-text.w-100.MuiButton-textPrimary {
+    margin-top: 4rem;
+}

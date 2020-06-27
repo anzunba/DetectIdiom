@@ -6,6 +6,9 @@ import json
 from textblob import TextBlob
 import json
 from . import english, japanese
+from nltk.stem import WordNetLemmatizer
+from nltk import pos_tag, word_tokenize
+
 @csrf_exempt 
 def get_news(request):
     if request.method == 'GET':
@@ -36,3 +39,18 @@ def get_text(request):
             else:
                 result = 'Failed to detect text language.'
             return HttpResponse(json.dumps(result))
+        
+
+@csrf_exempt 
+def lemmatizer(request):
+    if request.method == 'POST':
+        if request.body:
+            text = request.body.decode("utf-8")
+            wnl = WordNetLemmatizer()
+            lemma_list = []
+            for word, tag in pos_tag(word_tokenize(text)):
+                wntag = tag[0].lower()
+                wntag = wntag if wntag in ['a', 'r', 'n', 'v'] else None
+                lemma = wnl.lemmatize(word, wntag) if wntag else word
+                lemma_list.append(lemma) 
+            return HttpResponse(lemma_list)

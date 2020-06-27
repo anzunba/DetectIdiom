@@ -66,7 +66,7 @@ export default function SimplePopover() {
 		return (
 			<div className="w-25" key={key}>
 				<div id={lang} onClick={handleClick} className="no-circle mt-5">
-					<img src={flag_address} className="w-100" />
+					<img src={flag_address} className="w-50" />
 				</div>
 				<Popover
 					id={id}
@@ -92,7 +92,7 @@ export default function SimplePopover() {
 	}
 	return (
 		<React.Fragment>
-			<div className="d-flex justify-content-between mt-3">{lang_frags}</div>
+			<div className="d-flex justify-content-between mt-2">{lang_frags}</div>
 		</React.Fragment>
 	);
 }

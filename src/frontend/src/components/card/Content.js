@@ -48,7 +48,7 @@ export default function TextMobileStepper() {
 	};
 
 	const stepperBack = (
-		<Button size="small" onClick={handleNext} color="primary" className="w-50 p-3 mt-3">
+		<Button size="small" onClick={handleBack} color="primary" className="w-50 p-3 mt-3">
 			{theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
 			{activeStep === 0 ? 'Settings' : 'Back'}
 		</Button>

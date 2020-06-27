@@ -17,6 +17,9 @@ import Card from '../card/Card';
 import WordTable from '../wordTable/WordTable';
 import Divider from '@material-ui/core/Divider';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import SendIcon from '@material-ui/icons/Send';
+
+
 
 const useStyles = makeStyles((theme) => ({
 	expand: {
@@ -87,6 +90,7 @@ export default function RecipeReviewCard() {
 						<CommentBox />
 					</div>
 					<div className="w-10 ml-0 mt-3">
+
 						<IconButton
 							className={clsx(classes.expand, {
 								[classes.expandOpen]: expanded
@@ -97,6 +101,7 @@ export default function RecipeReviewCard() {
 						>
 							<ExpandMoreIcon />
 						</IconButton>
+
 					</div>
 				</CardActions>
 			</CardContent>
