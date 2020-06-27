@@ -12,3 +12,4 @@ class EnJa(models.Model):
 
   def __str__(self):
     return self.word
+  

@@ -10,6 +10,8 @@ from nltk.corpus import wordnet
 # from .models import Word_Dictionary, Language, Article, Sentence, Word
 import collections
 from django.views.decorators.csrf import csrf_exempt
+from nltk.stem import WordNetLemmatizer
+from nltk import pos_tag, word_tokenize
 
 one_word_group = {"got":["ta"], "I": ["'m", "'ve"], "It":["'s"], "it":["'s"]}
 
@@ -53,7 +55,7 @@ def create_paragraph_content(sentences, p):
     for sentence in sentences:
         tra_sentence.append(str(TextBlob(sentence).translate(from_lang='en', to='ja')))
         tokens = TextBlob(sentence).tokens
-        selected_idioms.append(get_idiom_key(tokens))
+        selected_idioms.append(get_idiom_key(sentence))
         sentence_list = create_sentence_content(tokens, p, s)
         paragraph_list.append(create_paragraphs_list(sentence_list))
         s += 1
@@ -67,18 +69,27 @@ def get_idiom_dictionary():
             idioms_dictionary[row[0]] = row[1]
     return idioms_dictionary
 
-remove_items = {'A', 'B', 'C', 'D', '', '…', '~', 'do'}
-def get_idiom_key(tokens):
+remove_items = ['A', 'B', 'C', 'D', '', '…', '~', 'do']
+def get_idiom_key(sentence):
+    lemma_sentence = get_lemmatizer(sentence)
     idioms_dictionary = get_idiom_dictionary()
     idiom_tokens_sets = {}
     for key in idioms_dictionary:
-        key = re.sub('[\(.*\)]', '', key)
-        idiom_tokens_set = set(TextBlob(key).tokens)
-        idiom_tokens_set = idiom_tokens_set - remove_items
-        if idiom_tokens_set <= set(tokens) and idiom_tokens_set:
+        key = re.sub('[\(.*\)]', '', key) #()内の文字列排除
+        key2 = re.sub('[[A]|[B]|[C]|[D]|[…]|[~]|[ do ]]', '', key)
+        if key2 in lemma_sentence:
             idiom_tokens_sets[key] = idioms_dictionary[key]
     return idiom_tokens_sets
 
+def get_lemmatizer(sentence):
+    wnl = WordNetLemmatizer()
+    lemma_sentence = ''
+    for word, tag in pos_tag(word_tokenize(sentence)):
+        wntag = tag[0].lower()
+        wntag = wntag if wntag in ['a', 'r', 'n', 'v'] else None
+        lemma = wnl.lemmatize(word, wntag) if wntag else word
+        lemma_sentence += lemma + ' '
+    return lemma_sentence
 
 def get_text_en(text): 
     paragraphs, idioms, all_sentences, paragraph_tra_sentence, paragraph_list = [], [], [], [], []

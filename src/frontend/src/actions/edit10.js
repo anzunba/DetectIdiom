@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { LEMMATIZER } from './types';
+import { LEMMATIZER2 } from './types';
 
-export const lemmatizer = (text) => (dispatch) => {
-  console.log('debug')
+export const lemmatizer2 = (text) => (dispatch) => {
     axios
       .post('/feed/lemmatizer', text)
       .then((res) => {
         dispatch({
-          type: LEMMATIZER,
+          type: LEMMATIZER2,
           payload: res.data,
         });
       })

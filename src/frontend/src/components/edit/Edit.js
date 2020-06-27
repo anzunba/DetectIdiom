@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { getMeaning } from '../../actions/edit3';
 import { getTokens } from '../../actions/edit7';
 import { lemmatizer } from '../../actions/edit9';
+import { lemmatizer2 } from '../../actions/edit10';
+import { lemmatizer3 } from '../../actions/edit11';
 import { useDispatch } from 'react-redux';
 import InputBase from '@material-ui/core/InputBase';
 
@@ -69,7 +71,8 @@ let iruby = {};
 const App = () => {
 	const classes = useStyles();
 	const originSentencesList = useSelector((state) => state.edit.pre_sentence);
-	const sentenceTokensList = useSelector((state) => state.edit7);
+	const sentenceTokensList = useSelector((state) => state.edit10);
+	//const sentenceTokensList = useSelector((state) => state.edit7);
 	const inputText = useSelector((state) => state.edit.words);
 	let idiomFullAddress = [];
 	const [ tokenRuby, setTokenRuby ] = useState({});
@@ -89,11 +92,12 @@ const App = () => {
 		sentenceId = tokenFullId.split('_').slice(0, 3).join('_');
 		token = e.target.innerHTML;
 		dispatch(getMeaning(token));
-		//dispatch(lemmatizer(token))
-		dispatch(lemmatizer(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]))
+		dispatch(lemmatizer(token))
+		dispatch(lemmatizer2(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]))
 		//dispatch(getTokens(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
 		setTokenBg((state) => ({ ...state, [tokenFullId]: 'bg-yellow' }));
 	};
+	lemma = useSelector((state) => state.edit9)
 
 	const createEmptyTokenRubyHtml = (t_idx, t) => {
 		return (
@@ -163,8 +167,6 @@ const App = () => {
 	};
 
 	const meaningsString = useSelector((state) => state.edit3.mean);
-	lemma = useSelector((state) => state.edit9)
-	console.log("lemma: " + lemma)
 	const createWordMeaningTable = (meaningsString) => {
 		let meaningsList = meaningsString.split('/');
 		meaningsList.map((m, i) => {
@@ -234,16 +236,13 @@ const App = () => {
 		let hash = {};
 		if (meaningRowBg[idiomId] && meaningRowBg[idiomId][rowId] == 'bg-pink') {
 			getIdiomDetail({ idiom: idiom, mean: '', idiomMeaningId:idiomId});
-			console.log('change bg color to no color')
 			hash[rowId] = ''
 			setMeaningRowBg((state) => ({ ...state, [idiomId]: hash }));
 		} else {
-			console.log('change bg color to pink')
 			hash[rowId] = 'bg-pink'
 			setMeaningRowBg((state) => ({ ...state, [idiomId]: hash}));
 			getIdiomDetail({ idiom: idiom, mean: meaning, meaningId:idiomId, rowId: rowId });
 		}
-		console.log('debug');
 	};
 
 	let rowId = 0;
@@ -255,21 +254,24 @@ const App = () => {
 			let idiomKey = `${pId}_${sId}_${idiomId}`
 			if (meaningsForOneToken.length > 1) {
 				meaningsForOneToken.map((m) => {
-					idiomsTableRow.push(
-						<tr
-							key={rowId}
-							id={rowId}
-							className={meaningRowBg[idiomKey]!==undefined?meaningRowBg[idiomKey][rowId]:'' }
-							onClick={(e) => handleIdiom(e, idiomKey)}
-						>
-							<td>{key}</td>
-							<td className="text-left">{m}</td>
-						</tr>
-					);
-					rowId += 1;
+					if(key && m){
+						idiomsTableRow.push(
+							<tr
+								key={rowId}
+								id={rowId}
+								className={meaningRowBg[idiomKey]!==undefined?meaningRowBg[idiomKey][rowId]:'' }
+								onClick={(e) => handleIdiom(e, idiomKey)}
+							>
+								<td>{key}</td>
+								<td className="text-left">{m}</td>
+							</tr>
+						);
+						rowId += 1;
+					}
 				});
 				idiomId += 1;
 			} else {
+				if(key && value){
 				idiomsTableRow.push(
 					<tr
 						key={rowId}
@@ -283,6 +285,7 @@ const App = () => {
 				);
 				rowId += 1;
 				idiomId += 1;
+				}
 			}
 		}
 	};
@@ -376,7 +379,7 @@ const App = () => {
 								{idiomsTableRow.length > 0 ? idiomsTableRow : notAvailable}
 							</tbody>
 						</table>
-						<table className="table table-striped  table-scroll mb-0">
+						{/* <table className="table table-striped  table-scroll mb-0">
 							<thead>
 								<tr>
 									<th>Custom Input</th>
@@ -396,7 +399,7 @@ const App = () => {
 									</td>
 								</tr>
 							</tbody>
-						</table>
+						</table> */}
 					</Paper>
 				</Grid>
 			</Grid>

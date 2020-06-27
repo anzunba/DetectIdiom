@@ -53,4 +53,4 @@ def lemmatizer(request):
                 wntag = wntag if wntag in ['a', 'r', 'n', 'v'] else None
                 lemma = wnl.lemmatize(word, wntag) if wntag else word
                 lemma_list.append(lemma) 
-            return HttpResponse(lemma_list)
+            return HttpResponse(json.dumps(lemma_list))
