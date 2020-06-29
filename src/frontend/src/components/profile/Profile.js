@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import ProfileEdit from './ProfileEdit';
-import Follow from '../../users/follow/Follow';
+import Follow from './Follow';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Grid from '@material-ui/core/Grid';
 import ProfileTab from './ProfileTab';

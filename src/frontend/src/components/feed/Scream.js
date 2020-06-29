@@ -13,11 +13,11 @@ import Comment from './Comment';
 import CommentBox from './CommentBox';
 import IconButtons from './IconButtons';
 import Block from './Block';
-import Card from '../card/Card';
-import WordTable from '../wordTable/WordTable';
+import Card from './Card';
+import WordTable from './WordTable';
 import Divider from '@material-ui/core/Divider';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import SendIcon from '@material-ui/icons/Send';
+
 
 
 

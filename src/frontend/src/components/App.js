@@ -8,7 +8,7 @@ import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import Header from './nav/Header';
 import Dashboard from './feed/Dashboard';
 import Edit from './edit/Edit';
-import Profile from './users/profile/Profile';
+import Profile from './profile/Profile';
 import Login from './accounts/Login';
 import Register from './accounts/Register';
 import PrivateRoute from './common/PrivateRoute';

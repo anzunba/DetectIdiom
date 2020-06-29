@@ -1,8 +1,8 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Tab from './Tab'
-import Profile from '../users/profile/Profile'
-import News from './news/News'
+import Profile from '../profile/Profile'
+import News from './News'
 import Snackbar from '@material-ui/core/Snackbar';
 
 const App =() =>{

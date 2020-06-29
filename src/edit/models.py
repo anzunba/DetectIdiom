@@ -31,9 +31,9 @@ class WordIdiomTable(models.Model):
   
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
-  bio = models.TextField(max_length=255, blank=True)
+  bio = models.CharField(max_length=255, blank=True)
   profile_img = models.ImageField(upload_to='images/profile/')
-  native_lang = models.ForeignKey('Language', on_delete=models.CASCADE)
+  lang = models.CharField(max_length=255, blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
 
 class Following(models.Model):
@@ -60,9 +60,13 @@ class NativeLanguage(models.Model):
 
 class LanguageLevel(models.Model):
   level = models.CharField(max_length=15)
+  def __str__(self):
+        return self.level
 
 class Language(models.Model):
   lang_name = models.CharField(max_length=15)
+  def __str__(self):
+        return self.lang_name
 
 class ArticleLike(models.Model):
   article = models.ForeignKey('Article', on_delete=models.CASCADE)

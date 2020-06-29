@@ -150,7 +150,7 @@ abbr {
 }
 
 .circle90 {
-	border: 3px solid white;
+	border: 3px solid transparent;
 	border-radius: 100%;
 	border-top-color: skyblue;
 	transform: rotate(45deg);
@@ -158,7 +158,7 @@ abbr {
 }
 
 .circle180 {
-	border: 3px solid white;
+	border: 3px solid transparent;
 	border-radius: 100%;
 	border-top-color: skyblue;
 	border-right-color: skyblue;
@@ -167,7 +167,7 @@ abbr {
 }
 
 .circle270 {
-	border: 3px solid white;
+	border: 3px solid transparent;
 	border-radius: 100%;
 	border-top-color: skyblue;
 	border-right-color: skyblue;
@@ -224,7 +224,7 @@ form#smileys input[type="radio"]:checked {
 form#smileys input[type="radio"]:focus {
 	outline: 0;
 }
-form#smileys input[type="radio"].happy {
+form#smileys input[type="radio"].easy {
 	background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/happy_ampvnc.svg") center;
 	background-size: cover;
 }
@@ -232,7 +232,7 @@ form#smileys input[type="radio"].neutral {
 	background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/neutral_t3q8hz.svg") center;
 	background-size: cover;
 }
-form#smileys input[type="radio"].sad {
+form#smileys input[type="radio"].difficult {
 	background: url("https://res.cloudinary.com/turdlife/image/upload/v1492864443/sad_bj1tuj.svg") center;
 	background-size: cover;
 }
@@ -352,46 +352,79 @@ span.difficultyText {
 	color: white;
 }
 
-.clickable_mean:hover,.clickable_idiom:hover {
-	background-color: lightpink!important;
+.clickable_mean:hover,
+.clickable_idiom:hover {
+	background-color: lightpink !important;
 	cursor: pointer;
 }
 
-.bg-pink{
-	background-color: lightpink!important;
+.bg-pink {
+	background-color: lightpink !important;
 }
 
-.bg-yellow{
-	background-color: yellow!important;
+.bg-yellow {
+	background-color: yellow !important;
 }
 
-.rubies{
+.rubies {
 	font-size: x-small;
 }
 
-.mright5{
-	margin-right:.5rem;
+.mright5 {
+	margin-right: .5rem;
 }
 
-.cursor{
+.cursor {
 	cursor: pointer;
 }
 
-.makeStyles-modal-32 .MuiBackdrop-root{
-	background-color: transparent!important;
+.makeStyles-modal-32 .MuiBackdrop-root {
+	background-color: transparent !important;
 }
 
 button.MuiButtonBase-root.MuiButton-root.MuiButton-text.fixed-bottom.w-100.MuiButton-textPrimary {
-    position: absolute;
-    bottom: 0;
+	position: absolute;
+	bottom: 0;
 }
 
 .MuiAvatar-root.MuiAvatar-circle.mt-3.w-20.h-20 {
-    width: 20%;
-    height: 20%;
-    margin: 0 auto;
+	width: 20%;
+	height: 20%;
+	margin: 0 auto;
 }
 
 button.MuiButtonBase-root.MuiButton-root.MuiButton-text.w-100.MuiButton-textPrimary {
-    margin-top: 4rem;
+	margin-top: 4rem;
+}
+
+.modalBorder {
+	border: 5px solid lightblue;
+	border-radius: 2px;
+}
+
+.profileImgEdit {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background-color: #ddd;
+	padding: 3px;
+}
+
+.profileAvatar {
+	width: 130px !important;
+	height: 130px !important;
+	border: 1px solid #eee;
+}
+
+.h-550px {
+	height: 550px;
+}
+
+.mt-70px {
+	margin-top: 70px;
+}
+
+.listScroll {
+	max-height: 500px;
+	overflow: auto;
 }

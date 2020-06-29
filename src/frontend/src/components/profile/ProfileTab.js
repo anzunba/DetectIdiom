@@ -8,10 +8,9 @@ import PersonPinIcon from '@material-ui/icons/PersonPin';
 import HelpIcon from '@material-ui/icons/Help';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Scream from '../../feed/Scream';
-import Calendar from './Calendar';
+import Scream from '../feed/Scream';
 import PublicIcon from '@material-ui/icons/Public';
-import Order from '../../feed/Order';
+import Order from '../feed/Order';
 import CardTryLog from './CardTryLog'
 import TodayIcon from '@material-ui/icons/Today';
 import BookIcon from '@material-ui/icons/Book';
