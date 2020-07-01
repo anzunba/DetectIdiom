@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_TEXT, GET_P_ID } from './types';
+import { GET_TEXT } from './types';
 
 export const getText = (text) => (dispatch) => {
     axios
@@ -13,3 +13,5 @@ export const getText = (text) => (dispatch) => {
       })
       .catch((err) => console.log("actions: " + err));
   };
+
+

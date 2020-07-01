@@ -17,6 +17,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+
 const useStyles = makeStyles((theme) => ({
 	modal: {
 		display: 'flex',
@@ -59,7 +60,34 @@ const rows = [
 	createData(4, 'sausage', 'easy'),
 	createData(5, 'orange', 'difficult')
 ];
-const App = () => {
+const App = (props) => {
+	if(props.data[0] && props.data[0] != "[object Object]" && props.data[1] && props.data[1] != '[object Object]'){
+		const wordList = JSON.parse(props.data[0])
+		const idiomList = JSON.parse(props.data[1])
+		for (let key in wordList){
+			for(let i in wordList[key]){
+				let one_question = {}
+				one_question['text'] = 'text'
+				one_question['textRuby'] = 'textRuby'
+				one_question['word'] = i
+				one_question['wordRuby'] = wordList[key][i]
+				console.log(one_question)
+				questions.push(one_question)
+			}
+		}
+		for (let key in idiomList){
+			for(let i in idiomList[key]){
+				let one_question = {}
+				one_question['text'] = 'text'
+				one_question['textRuby'] = 'textRuby'
+				one_question['word'] = i
+				one_question['wordRuby'] = idiomList[key][i]
+				console.log(one_question)
+				questions.push(one_question)
+			}
+		}
+	}
+	
 	const classes = useStyles();
 	const [ cardOpen, setCardOpen ] = useState(false);
 
@@ -144,7 +172,7 @@ const App = () => {
 							</div>
 						</div>
 					) : (
-						console.log('text is undefined')
+						''
 					)}
 				</div>
 				{radioButtons}

@@ -8,7 +8,7 @@ import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 
 import TextField from '@material-ui/core/TextField';
-import { getProfile, updateProfile } from '../../actions/profile';
+import { updateProfile } from '../../actions/profile';
 import { useDispatch } from 'react-redux';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -53,7 +53,7 @@ const App = () => {
 	const [ cropperOpen, setCropperOpen ] = useState(false);
 	const [ profileName, setProfileName ] = useState('');
 	const [ profileBio, setProfileBio ] = useState('');
-
+	const [ croppedImg, setCroppedImg ] = useState('');
 	const handleProfileName = (e) => {
 		setProfileName(e.target.value);
 	};
@@ -74,17 +74,13 @@ const App = () => {
 	};
 
 	const handleProfileSave = () => {
-		// onGetProfile()
 		const formData = new FormData();
 		formData.append('bio', profileBio)
-		formData.append('user', 2)
 		formData.append('lang', nativeLangLevels)
 		formData.append('profile_img', croppedImg, 'croppedProfileImg.png')
 		dispatch(updateProfile(formData))
 	};
-	const onGetProfile = () => {
-		dispatch(getProfile());
-	};
+
 	// const onUpdateProfile = () => {
 	// 	dispatch(updateProfile('test'));
 	// };
@@ -183,7 +179,7 @@ const App = () => {
 	/*Crpper Modal Start*/
 	/********************/
 
-	const [ croppedImg, setCroppedImg ] = useState({});
+
 	const handleCropImg = (previewCanvas, crop) => {
 		if (!crop || !previewCanvas) {
 			return;
@@ -254,7 +250,7 @@ const App = () => {
 		[ completedCrop ]
 	);
 
-	const [ prevProfileImg, setPrevProfileImg ] = useState('/static/frontend/images/unicorn.png');
+	const [ prevProfileImg, setPrevProfileImg ] = useState('/static/frontend/images/user.png');
 
 	return (
 		<div>

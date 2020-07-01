@@ -6,10 +6,12 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import CreateProjectTabPage1 from './CreateProjectTabPage1';
-import CreateProjectTabPage2 from './CreateProjectTabPage2';
 import Button from '@material-ui/core/Button';
 import { getText } from '../../actions/edit';
+import { getInputText } from '../../actions/edit2';
+import Dropzone from 'react-dropzone';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import TextField from '@material-ui/core/TextField';
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
 
@@ -60,15 +62,28 @@ const App = ({handleCloseCallback}) =>{
 	};
 
 	const [fileContent, setFileContent] = useState('')
-	const callback = (fileContent) => {
-		setFileContent(fileContent)
-	}
-	const dispatch = useDispatch()
+
+	const [ fileNames, setFileNames ] = useState([]);
+	// const handleDrop = (acceptedFiles) => setFileNames(acceptedFiles[0].name);
+  
+	const showFile = (e) => {
+		e.preventDefault();
+    const reader = new FileReader();
+		reader.onload = (e) => { 
+			const text = e.target.result;
+      setFileContent(text);
+      //dispatch(getText(text))
+      setFileContent(text)
+		};
+    reader.readAsText(e.target.files[0]);
+    setFileNames(e.target.files[0].name)
+  };
+  const dispatch = useDispatch()
 	const handleStart = () =>{
 		dispatch(getText(fileContent))
+		dispatch(getInputText(fileContent))
 		handleCloseCallback(true)
 	}
-
 	return (
 		<div className={classes.root}>
 			<AppBar position="static" color="default">
@@ -85,11 +100,36 @@ const App = ({handleCloseCallback}) =>{
 				</Tabs>
 			</AppBar>
 
-			<TabPanel value={value} index={0} dir={theme.direction}>
-				<CreateProjectTabPage1 getFileContentCallback={callback} />
+			<TabPanel value={value} index={0} dir={theme.direction} className="p-5">
+				
+				<Dropzone >
+				{({ getRootProps, getInputProps }) => (
+					<div {...getRootProps({ className: 'dropzone d-flex justify-content-center' })}>
+						<input {...getInputProps()} type="file" onChange={(e) => showFile(e)} />
+						<div className="align-self-center text-center">
+							<CloudUploadIcon fontSize="large" />
+							<p>Drag & Drop OR Choose File</p>
+							<h4>{fileNames}</h4>
+							<p>{fileContent}</p>
+						</div>
+					</div>
+				)}
+			</Dropzone>
 			</TabPanel>
-			<TabPanel value={value} index={1} dir={theme.direction}>
-				<CreateProjectTabPage2 getFileContentCallback={callback}/>
+			<TabPanel value={value} index={1} dir={theme.direction} className="p-5">
+			<form noValidate autoComplete="off">
+				<div>
+					<TextField
+						id="outlined-multiline-static"
+						label="Input your text"
+						multiline
+						rows={15}
+                        variant="outlined"
+						fullWidth
+						onChange={(e)=>setFileContent(e.target.value)}
+					/>
+				</div>
+			</form>
 			</TabPanel>
 			<Button className="bg-light" color="primary" size="large" fullWidth onClick={()=>handleStart()}>
 				Start

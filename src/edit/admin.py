@@ -6,10 +6,7 @@ from .models import *
 admin.site.register(EnJa)
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'title', 'content', 'from_lang', 'to_lang')
-    
-class WordIdiomTableAdmin(admin.ModelAdmin):
-    list_display = ('id', 'article', 'user', 'word', 'idiom', 'created_at')
+    list_display = ('id', 'user', 'title', 'content', 'word', 'idiom')
     
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'bio', 'profile_img', 'created_at')
@@ -58,7 +55,6 @@ class ReplyLikeAdmin(admin.ModelAdmin):
     list_display = ('id', 'reply', 'user')
 
 admin.site.register(Article, ArticleAdmin)
-admin.site.register(WordIdiomTable, WordIdiomTableAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Following, FollowingAdmin)
 admin.site.register(Notification, NotificationAdmin)

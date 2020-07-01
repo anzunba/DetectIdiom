@@ -24,7 +24,7 @@ function TabPanel(props) {
 			{...other}
 		>
 			{value === index && (
-				<Box p={3}>
+				<Box>
 					<div>{children}</div>
 				</Box>
 			)}
@@ -70,13 +70,13 @@ export default function ScrollableTabsButtonForce() {
 					<Tab label="ClassMates" icon={<GroupIcon />} {...a11yProps(2)} />
 				</Tabs>
 			</AppBar>
-			<TabPanel value={value} index={0} component="div">
+			<TabPanel value={value} index={0}>
 				<Scream />
 			</TabPanel>
-			<TabPanel value={value} index={1} component="div">
+			<TabPanel value={value} index={1}>
             <Scream />
 			</TabPanel>
-			<TabPanel value={value} index={2} component="div">
+			<TabPanel value={value} index={2}>
             <Scream />
 			</TabPanel>
 		</div>

@@ -145,7 +145,7 @@ const App = () => {
 							</AppBar>
 							{followsList.map((list, i) => {
 								return (
-									<TabPanel value={tabIndex} index={i} dir={theme.direction} className="listScroll">
+									<TabPanel value={tabIndex} key={i} index={i} dir={theme.direction} className="listScroll">
 										{list.map((listItem, j) =>
 											<List key={j}>
 												<ListItem>

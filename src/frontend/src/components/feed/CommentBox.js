@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState ,useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-
+import { profileImg } from './Scream'
 const App = () => {
+	const profileImgUrl = useContext(profileImg)
 	const [ comment, setComment ] = useState('');
 	const [ open, setOpen ] = React.useState(false);
 	const handleComment = (e) => {
@@ -59,7 +60,7 @@ const App = () => {
 			</Snackbar>
 			<CardContent>
 				<div className="profileImg">
-					<Avatar alt="" src="/static/frontend/images/bear.png" ria-label="recipe">
+					<Avatar alt="" src={profileImgUrl} ria-label="recipe">
 						R
 					</Avatar>
 				</div>

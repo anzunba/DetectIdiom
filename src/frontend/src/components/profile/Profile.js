@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -13,6 +13,8 @@ import Follow from './Follow';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Grid from '@material-ui/core/Grid';
 import ProfileTab from './ProfileTab';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile} from '../../actions/profile';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -29,6 +31,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ImgMediaCard() {
 	const classes = useStyles();
+	const dispatch = useDispatch();
+	const [ profileBio, setProfileBio ] = useState('');
+	const [ croppedImg, setCroppedImg ] = useState("/static/frontend/images/user.png");
+	useEffect(() => {
+		dispatch(getProfile());
+	}, []);
+	const p = useSelector((state) => state.profile);
+
+	useEffect(
+		() => {
+			setProfileBio(p.bio);
+			setCroppedImg(p.profile_img);
+		},
+		[ p ]
+	);
 
 	return (
 		<Grid container spacing={3}>
@@ -37,7 +54,7 @@ export default function ImgMediaCard() {
 			</Grid>
 			<Grid item xs={4}>
 				<div>
-					<Avatar alt="" src="/static/frontend/images/unicorn.png" className={classes.large} />
+					<Avatar alt="" src={croppedImg} className={classes.large} />
 
 					<CardContent>
 						<div className="d-flex justify-content-between">
@@ -53,8 +70,7 @@ export default function ImgMediaCard() {
 							</div>
 						</div>
 						<Typography variant="body2" color="textSecondary" component="p">
-							Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across
-							all continents except Antarctica
+							{profileBio}
 						</Typography>
 					</CardContent>
 				</div>

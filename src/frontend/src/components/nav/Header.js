@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,7 +15,8 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import PersonIcon from '@material-ui/icons/Person';
-
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { useSelector } from 'react-redux';
 const App = ({ parentCallback }) => {
 	const useStyles = makeStyles((theme) => ({
 		modal: {
@@ -42,10 +43,19 @@ const App = ({ parentCallback }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-
+	const textProcessingDone = useSelector((state) => state.edit)
+	const [loader, setLoader] = useState(false)
 	const callback = (handleClose) => {
-		handleClose ? setOpen(false) : setOpen(true);
+		if(handleClose){
+			setOpen(false)
+			setLoader(true)
+		} else{
+			setOpen(true);
+		}
 	};
+	useEffect(() => {
+		textProcessingDone ? setLoader(false) : ''
+	}, [textProcessingDone])
 
 	return (
 		<div>
@@ -96,7 +106,9 @@ const App = ({ parentCallback }) => {
 						<LoginNav />
 					</div>
 				</Toolbar>
+				{loader? <LinearProgress/> : ''}
 			</AppBar>
+			
 		</div>
 	);
 };

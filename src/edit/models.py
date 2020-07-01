@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import os
+from django.db.models.signals import post_save
 
 # Create your models here.
 class EnJa(models.Model):
@@ -14,30 +15,28 @@ class EnJa(models.Model):
     return self.word
   
 class Article(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="articles")
   title = models.CharField(max_length=63)
   content = models.TextField()
-  from_lang = models.ForeignKey('Language', on_delete=models.CASCADE, related_name = "from_lang")
-  to_lang = models.ForeignKey('Language', on_delete=models.CASCADE, related_name = "to_lang")
+  word = models.TextField(blank=True)
+  idiom = models.TextField(blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
-
-class WordIdiomTable(models.Model):
-  article = models.ForeignKey('Article', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
-  word = models.TextField()
-  idiom = models.TextField()
-  created_at = models.DateTimeField(auto_now_add=True)
   
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.CharField(max_length=255, blank=True)
   profile_img = models.ImageField(upload_to='images/profile/')
-  lang = models.CharField(max_length=255, blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
+  
+  def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+  post_save.connect(create_user_profile, sender=User)
 
 class Following(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = "following_user")
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "following_user")
   followed_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = "followed_user")
 
 class Notification(models.Model):
