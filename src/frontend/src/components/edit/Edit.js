@@ -321,6 +321,8 @@ const App = () => {
 		const formData = new FormData();
 		formData.append('title', title);
 		formData.append('content', inputText);
+		formData.append('origin_sentence', JSON.stringify(originSentencesList))
+		formData.append('translated_sentence', JSON.stringify(allTranslatedSentences))
 		formData.append('word', JSON.stringify(wordList));
 		formData.append('idiom', JSON.stringify(idiomList));
 		dispatch(createArticle(formData));

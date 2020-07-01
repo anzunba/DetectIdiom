@@ -6,7 +6,7 @@ from .models import *
 admin.site.register(EnJa)
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'title', 'content', 'word', 'idiom')
+    list_display = ('id', 'user', 'title', 'content', 'origin_sentence', 'translated_sentence', 'word', 'idiom')
     
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'bio', 'profile_img', 'created_at')

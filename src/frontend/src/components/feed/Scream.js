@@ -62,72 +62,80 @@ export default function RecipeReviewCard() {
 		[ p ]
 	);
 dayjs.extend(relativeTime)
+
+
+
+const articleList = (
+	content.map((c, i) => {
+			
+		return (
+			<div className="bg-light m-1" key={i}>
+				<CardHeader
+					avatar={<Avatar alt="" src={croppedImg} ria-label="recipe" className="border" />}
+					action={
+						<div className="d-flex">
+							<img src="/static/frontend/images/en-circle.svg" style={{ width: '20px' }} />
+							<NavigateNextIcon />
+							<img src="/static/frontend/images/ja-circle.svg" style={{ width: '22px' }} />
+
+							<IconButton aria-label="settings" className="py-0 pl-3">
+								<Block />
+							</IconButton>
+						</div>
+					}
+					title={c.title}
+					subheader={dayjs(c.updated_at).fromNow()}
+				/>
+				<CardContent>
+					<Typography variant="body1" color="textSecondary" component="span" className="pb-2">
+						{c.content}
+					</Typography>
+					<CardActions disableSpacing className="p-0">
+						<IconButtons />
+					</CardActions>
+					<Divider />
+					<div className="d-flex">
+						<span className="w-50">
+						<Card data={[c.origin_sentence, c.translated_sentence, c.word, c.idiom]}/>
+						</span>
+						<span className="w-50">
+							<WordTable />
+						</span>
+					</div>
+					<Divider />
+					<CardActions className="px-0">
+						<div className="w-95 p-0 topCommentBox">
+							<profileImg.Provider value={croppedImg}>
+								<CommentBox />
+							</profileImg.Provider>
+						</div>
+						<div className="w-10 ml-0 mt-3">
+							<IconButton
+								className={clsx(classes.expand, {
+									[classes.expandOpen]: expanded
+								})}
+								onClick={handleExpandClick}
+								aria-expanded={expanded}
+								aria-label="show more"
+							>
+								<ExpandMoreIcon />
+							</IconButton>
+						</div>
+					</CardActions>
+				</CardContent>
+				<Collapse in={expanded} timeout="auto" unmountOnExit>
+					<Comment />
+				</Collapse>
+			</div>
+			
+		);
+	})
+)
+
+
 	return (
 		<div>
-			{content.map((c, i) => {
-			
-				return (
-					<div className="bg-light m-1" key={i}>
-						<CardHeader
-							avatar={<Avatar alt="" src={croppedImg} ria-label="recipe" className="border" />}
-							action={
-								<div className="d-flex">
-									<img src="/static/frontend/images/en-circle.svg" style={{ width: '20px' }} />
-									<NavigateNextIcon />
-									<img src="/static/frontend/images/ja-circle.svg" style={{ width: '22px' }} />
-
-									<IconButton aria-label="settings" className="py-0 pl-3">
-										<Block />
-									</IconButton>
-								</div>
-							}
-							title={c.title}
-							subheader={dayjs(c.updated_at).fromNow()}
-						/>
-						<CardContent>
-							<Typography variant="body1" color="textSecondary" component="span" className="pb-2">
-								{c.content}
-							</Typography>
-							<CardActions disableSpacing className="p-0">
-								<IconButtons />
-							</CardActions>
-							<Divider />
-							<div className="d-flex">
-								<span className="w-50">
-								<Card data={[c.word, c.idiom]}/>
-								</span>
-								<span className="w-50">
-									<WordTable />
-								</span>
-							</div>
-							<Divider />
-							<CardActions className="px-0">
-								<div className="w-95 p-0 topCommentBox">
-									<profileImg.Provider value={croppedImg}>
-										<CommentBox />
-									</profileImg.Provider>
-								</div>
-								<div className="w-10 ml-0 mt-3">
-									<IconButton
-										className={clsx(classes.expand, {
-											[classes.expandOpen]: expanded
-										})}
-										onClick={handleExpandClick}
-										aria-expanded={expanded}
-										aria-label="show more"
-									>
-										<ExpandMoreIcon />
-									</IconButton>
-								</div>
-							</CardActions>
-						</CardContent>
-						<Collapse in={expanded} timeout="auto" unmountOnExit>
-							<Comment />
-						</Collapse>
-					</div>
-					
-				);
-			})}
+			{content.length == 0 ? <div className="bg-light m-1 p-5 text-center">Not Available</div> : articleList}
 		</div>
 	);
 }

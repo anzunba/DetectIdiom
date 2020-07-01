@@ -17,7 +17,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-
 const useStyles = makeStyles((theme) => ({
 	modal: {
 		display: 'flex',
@@ -25,69 +24,58 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: 'center',
 		width: '50%',
 		margin: '0 auto'
-	},
+	}
 }));
 
-const questions = [
-	{
-		text:
-			'text1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-		textRuby:
-			'ruby - Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-		word: 'ruby',
-		wordRuby: 'wordRuby'
-	},
-	{
-		text:
-			'text1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-		textRuby:
-			'ruby - Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-		word: 'ruby',
-		wordRuby: 'wordRuby'
-	}
-];
+const getSentence = (id, sentenceList) => {
+	let pId = id.split('_')[0];
+	let sId = id.split('_')[1];
+	return sentenceList[pId][sId];
+};
 
-const difficultList = [ 'easy', 'neutral', 'difficult' ];
-
-function createData(num, wordIdiom, difficulty) {
-	return { num, wordIdiom, difficulty };
-}
-
-const rows = [
-	createData(1, 'for a while', 'easy'),
-	createData(2, 'take it easy', 'difficult'),
-	createData(3, 'spagettii', 'neutral'),
-	createData(4, 'sausage', 'easy'),
-	createData(5, 'orange', 'difficult')
-];
 const App = (props) => {
-	if(props.data[0] && props.data[0] != "[object Object]" && props.data[1] && props.data[1] != '[object Object]'){
-		const wordList = JSON.parse(props.data[0])
-		const idiomList = JSON.parse(props.data[1])
-		for (let key in wordList){
-			for(let i in wordList[key]){
-				let one_question = {}
-				one_question['text'] = 'text'
-				one_question['textRuby'] = 'textRuby'
-				one_question['word'] = i
-				one_question['wordRuby'] = wordList[key][i]
-				console.log(one_question)
-				questions.push(one_question)
+	const questions = [];	
+	const cardResultRows = [];
+	if (props.data[0] && props.data[0] != '[object Object]') {
+		const originSentenceList = JSON.parse(props.data[0]);
+		const translatedSentenceList = JSON.parse(props.data[1]);
+		const wordList = JSON.parse(props.data[2]);
+		const idiomList = JSON.parse(props.data[3]);
+		let count = 1;
+		for (let key in wordList) {
+			let originSentence = getSentence(key.split('_').slice(1, 4).join('_'), originSentenceList);
+			let translatedSentence = getSentence(key.split('_').slice(1, 4).join('_'), translatedSentenceList);
+			for (let i in wordList[key]) {
+				let one_question = {};
+				let oneResultRow = {};
+				one_question['text'] = originSentence;
+				one_question['textRuby'] = translatedSentence;
+				one_question['word'] = i;
+				one_question['wordRuby'] = wordList[key][i];
+				questions.push(one_question);
+				oneResultRow = { 'num': count, 'wordIdiom': i, 'id': key};
+				cardResultRows.push(oneResultRow);
+				count += 1;
 			}
 		}
-		for (let key in idiomList){
-			for(let i in idiomList[key]){
-				let one_question = {}
-				one_question['text'] = 'text'
-				one_question['textRuby'] = 'textRuby'
-				one_question['word'] = i
-				one_question['wordRuby'] = idiomList[key][i]
-				console.log(one_question)
-				questions.push(one_question)
+		for (let key in idiomList) {
+			let originSentence = getSentence(key, originSentenceList);
+			let translatedSentence = getSentence(key, translatedSentenceList);
+			for (let i in idiomList[key]) {
+				let one_question = {};
+				let oneResultRow = {};
+				one_question['text'] = originSentence;
+				one_question['textRuby'] = translatedSentence;
+				one_question['word'] = i;
+				one_question['wordRuby'] = idiomList[key][i];
+				questions.push(one_question);
+				oneResultRow = { 'num': count, 'wordIdiom': i, 'id': key };
+				cardResultRows.push(oneResultRow);
+				count += 1;
 			}
 		}
 	}
-	
+
 	const classes = useStyles();
 	const [ cardOpen, setCardOpen ] = useState(false);
 
@@ -111,7 +99,6 @@ const App = (props) => {
 
 	const handleBack = () => {
 		if (activeStep <= maxSteps) {
-			setActiveStep((prevActiveStep) => prevActiveStep - 1);
 		}
 	};
 
@@ -128,32 +115,7 @@ const App = (props) => {
 			{theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
 		</Button>
 	);
-	const [ difficulty, setDifficulty ] = useState('easy');
-	const handleDifficulty = (e) => {
-		setDifficulty(e.target.value);
-	};
-	
-	const radioButtons = (
-		<form id="smileys" className="bg-light pt-4">
-			<span className="d-flex justify-content-center pb-3">
-				This question is<span className="difficultyText">{difficulty}</span>..
-			</span>
-			<div className="w-50 mx-auto text-center">
-				{difficultList.map((d, i) => {
-          return (
-          <input
-						key={i}
-						type="radio"
-						name="smiley"
-						value={d}
-						className={d}
-						onClick={handleDifficulty}
-						defaultChecked
-					/>)
-        })}
-			</div>
-		</form>
-	);
+
 	const questionCard = (
 		<div>
 			<span className="d-flex justify-content-center p-3 bg-light">
@@ -175,7 +137,6 @@ const App = (props) => {
 						''
 					)}
 				</div>
-				{radioButtons}
 			</Card>
 			{stepperBack}
 			{stepperForward}
@@ -228,21 +189,15 @@ const App = (props) => {
 							<TableCell className="text-white" align="left">
 								Word/Idiom
 							</TableCell>
-							<TableCell className="text-white" align="center">
-								Difficulty
-							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows.map((row) => (
+						{cardResultRows.map((row) => (
 							<TableRow key={row.num}>
 								<TableCell component="th" scope="row" align="center">
 									{row.num}
 								</TableCell>
 								<TableCell align="left">{row.wordIdiom}</TableCell>
-								<TableCell align="center">
-									<img src={`/static/frontend/images/${row.difficulty}.svg/`} className="img-25" />
-								</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
@@ -275,7 +230,9 @@ const App = (props) => {
 				}}
 			>
 				<Fade in={cardOpen}>
-					<div className="w-100 bg-light shadow modalBorder">{activeStep === maxSteps ? endCard : activeStep < 0 ? startCard : questionCard}</div>
+					<div className="w-100 bg-light shadow modalBorder">
+						{activeStep === maxSteps ? endCard : activeStep < 0 ? startCard : questionCard}
+					</div>
 				</Fade>
 			</Modal>
 		</React.Fragment>

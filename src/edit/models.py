@@ -18,6 +18,8 @@ class Article(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="articles")
   title = models.CharField(max_length=63)
   content = models.TextField()
+  origin_sentence = models.TextField()
+  translated_sentence = models.TextField()
   word = models.TextField(blank=True)
   idiom = models.TextField(blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
