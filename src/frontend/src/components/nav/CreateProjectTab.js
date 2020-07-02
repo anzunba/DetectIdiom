@@ -73,7 +73,6 @@ const App = ({handleCloseCallback}) =>{
 			const text = e.target.result;
       setFileContent(text);
       //dispatch(getText(text))
-      setFileContent(text)
 		};
     reader.readAsText(e.target.files[0]);
     setFileNames(e.target.files[0].name)

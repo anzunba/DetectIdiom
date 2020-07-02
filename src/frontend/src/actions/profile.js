@@ -16,7 +16,7 @@ export const updateProfile = (profileData) => (dispatch, getState) => {
 
 export const getProfile = () => (dispatch, getState) => {
     axios
-      .get('/api/profile/', tokenConfig(getState))
+      .get(`/api/profile/`, tokenConfig(getState))
       .then((res) => {
         dispatch({
           type: PROFILE,

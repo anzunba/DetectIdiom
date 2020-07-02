@@ -34,6 +34,35 @@ def get_lemmatizer(sentence):
         lemma = wnl.lemmatize(word, wntag) if wntag else word
         return lemma
 
+# class OtherProfileDetailAPIView(APIView):
+#     err_msg = {
+#         "error": {
+#             "code": 404,
+#             "message": "Profile not found",
+#         }}
+ 
+#     def get_object(self, pk):
+#         profile = get_object_or_404(Profile, pk=pk)
+#         return profile
+ 
+#     def get(self, request, pk):
+#         profile = self.get_object(pk)
+#         serializer = ProfileSerializer(profile)
+#         return Response(serializer.data)
+ 
+#     def put(self, request, pk):
+#         profile = self.get_object(pk)
+#         serializer = ProfileSerializer(profile, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+ 
+#     def delete(self, request, pk):
+#         profile = self.get_object(pk)
+#         profile.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+    
 class ProfileDetailAPIView(APIView):
     err_msg = {
         "error": {
@@ -64,6 +93,15 @@ class ProfileDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class AllArticleListCreateAPIView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        return Article.objects.all()
+        
 # class ArticleListCreateAPIView(APIView):
 class ArticleListCreateAPIView(viewsets.ModelViewSet):
     permission_classes = [

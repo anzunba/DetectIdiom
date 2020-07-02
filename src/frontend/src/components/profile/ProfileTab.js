@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -14,6 +14,9 @@ import Order from '../feed/Order';
 import CardTryLog from './CardTryLog'
 import TodayIcon from '@material-ui/icons/Today';
 import BookIcon from '@material-ui/icons/Book';
+import { getArticle, getAllArticle } from '../../actions/edit4';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile } from '../../actions/profile';
 
 
 function TabPanel(props) {
@@ -28,7 +31,7 @@ function TabPanel(props) {
 			{...other}
 		>
 			{value === index && (
-				<Box p={3}>
+				<Box>
 					<div>{children}</div>
 				</Box>
 			)}
@@ -50,6 +53,11 @@ function a11yProps(index) {
 }
 
 export default function ScrollableTabsButtonForce() {
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(getProfile());
+		dispatch(getArticle());
+	}, []);
 	const [ value, setValue ] = React.useState(0);
 
 	const handleChange = (event, newValue) => {

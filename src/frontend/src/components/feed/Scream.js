@@ -19,9 +19,12 @@ import Divider from '@material-ui/core/Divider';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from '../../actions/profile';
-import { getArticle } from '../../actions/edit4';
+import { sendTextHeader } from '../../actions/edit5';
+import { sendWordIdioms } from '../../actions/edit6';
+import { getArticle, getAllArticle } from '../../actions/edit4';
 import dayjs from 'dayjs'
 import relativeTime from "dayjs/plugin/relativeTime"
+import { getText } from '../../actions/edit';
 
 
 export const profileImg = React.createContext();
@@ -40,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RecipeReviewCard() {
+	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [ expanded, setExpanded ] = React.useState(false);
 
@@ -47,14 +51,13 @@ export default function RecipeReviewCard() {
 		setExpanded(!expanded);
 	};
 
-	const dispatch = useDispatch();
+	
 	const [ croppedImg, setCroppedImg ] = useState('/static/frontend/images/user.png');
-	useEffect(() => {
-		dispatch(getProfile());
-		dispatch(getArticle());
-	}, []);
+
 	const p = useSelector((state) => state.profile);
+	console.log(p)
 	const content = useSelector((state) => state.edit4);
+	console.log(content)
 	useEffect(
 		() => {
 			setCroppedImg(p.profile_img);
@@ -63,11 +66,15 @@ export default function RecipeReviewCard() {
 	);
 dayjs.extend(relativeTime)
 
+const showEdit = (fileContent, wordIdioms) =>{
+	dispatch(getText(fileContent))
+	dispatch(sendWordIdioms(wordIdioms))
+	dispatch(sendTextHeader(Math.random()))
+}
 
 
 const articleList = (
 	content.map((c, i) => {
-			
 		return (
 			<div className="bg-light m-1" key={i}>
 				<CardHeader
@@ -83,8 +90,10 @@ const articleList = (
 							</IconButton>
 						</div>
 					}
+					className="cursor"
 					title={c.title}
 					subheader={dayjs(c.updated_at).fromNow()}
+					onClick={()=>showEdit(c.content, [c.word, c.idiom])}
 				/>
 				<CardContent>
 					<Typography variant="body1" color="textSecondary" component="span" className="pb-2">
@@ -99,7 +108,7 @@ const articleList = (
 						<Card data={[c.origin_sentence, c.translated_sentence, c.word, c.idiom]}/>
 						</span>
 						<span className="w-50">
-							<WordTable />
+							<WordTable data={[c.word, c.idiom]}/>
 						</span>
 					</div>
 					<Divider />

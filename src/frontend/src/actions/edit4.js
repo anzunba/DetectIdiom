@@ -38,3 +38,15 @@ export const getArticle = () => (dispatch, getState) => {
       .catch((err) => console.log("actions: " + err));
   };
 
+export const getAllArticle = () => (dispatch, getState) => {
+  axios
+    .get('/api/allArticle/', tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: ARTICLE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => console.log("actions: " + err));
+};
+

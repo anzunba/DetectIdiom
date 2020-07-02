@@ -57,6 +57,14 @@ const App = ({ parentCallback }) => {
 		textProcessingDone ? setLoader(false) : ''
 	}, [textProcessingDone])
 
+	const editBool = useSelector((state) => state.edit5);
+	useEffect(() => {
+	if(editBool){
+		setLoader(true) ;
+		parentCallback('edit');
+	} 
+	}, [editBool])
+	
 	return (
 		<div>
 			<AppBar position="static">
