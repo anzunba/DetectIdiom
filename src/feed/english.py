@@ -50,16 +50,17 @@ def create_paragraphs_list(sentence_list):
     return paragraphs_list
 
 def create_paragraph_content(sentences, p):
-    paragraph_list, tra_sentence, selected_idioms = [], [], []
+    paragraph_list, tra_sentence, selected_idioms, sentenceTokenLists = [], [], [], []
     s = 0
     for sentence in sentences:
         tra_sentence.append(str(TextBlob(sentence).translate(from_lang='en', to='ja')))
         tokens = TextBlob(sentence).tokens
         selected_idioms.append(get_idiom_key(sentence))
+        sentenceTokenLists.append(get_lemmatizer(sentence))
         sentence_list = create_sentence_content(tokens, p, s)
         paragraph_list.append(create_paragraphs_list(sentence_list))
         s += 1
-    return [paragraph_list, tra_sentence, selected_idioms]
+    return [paragraph_list, tra_sentence, selected_idioms, sentenceTokenLists]
 
 idioms_dictionary = {} #{"for a while":"--", "for the first time": "--"}
 def get_idiom_dictionary():
@@ -92,7 +93,7 @@ def get_lemmatizer(sentence):
     return lemma_sentence
 
 def get_text_en(text): 
-    paragraphs, idioms, all_sentences, paragraph_tra_sentence, paragraph_list = [], [], [], [], []
+    paragraphs, idioms, all_sentences, paragraph_tra_sentence, paragraph_list, sentenceTokenLists = [], [], [], [], [], []
     paragraphs = re.split('\n\n+', text)
     text_lang = TextBlob(text).detect_language()
     p = 0
@@ -103,6 +104,7 @@ def get_text_en(text):
         paragraph_list.append(paragraph_content[0])
         paragraph_tra_sentence.append(paragraph_content[1])
         idioms.append(paragraph_content[2])
+        sentenceTokenLists.append(paragraph_content[3])
         p += 1
-    result = [paragraph_list, all_sentences, paragraph_tra_sentence, idioms]
+    result = [paragraph_list, all_sentences, paragraph_tra_sentence, idioms, sentenceTokenLists]
     return result

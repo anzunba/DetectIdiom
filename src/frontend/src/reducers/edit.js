@@ -5,6 +5,7 @@ const initialState = {
   pre_sentence: [],
   aft_sentence: [],
   idioms: [],
+  sentenceTokensList: [],
 };
 
 export default function (state = initialState, action) {
@@ -15,6 +16,7 @@ export default function (state = initialState, action) {
           pre_sentence : action.payload[1],
           aft_sentence : action.payload[2],
           idioms : action.payload[3],
+          sentenceTokensList : action.payload[4],
         }
     default:
       return state;
