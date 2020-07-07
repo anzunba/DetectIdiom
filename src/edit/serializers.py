@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = "__all__"
         #fields = ('id', 'username')
-             
+                     
 class ProfileSerializer(serializers.ModelSerializer):
     user= UserSerializer(read_only=True)
     class Meta:
@@ -21,16 +21,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ArticleSerializer(serializers.ModelSerializer):
-    user= UserSerializer(read_only=True)
+    user= ProfileSerializer(read_only=True)
     class Meta:
         model = Article
         fields = '__all__'
     
-    # def save(self):
-    #     user = CurrentUserDefault()
-    #     title = self.validated_data['title']
-    #     content = self.validated_data['content']
 
+        
 
 
 

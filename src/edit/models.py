@@ -15,9 +15,10 @@ class EnJa(models.Model):
     return self.word
   
 class Article(models.Model):
-  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="articles")
+  user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name="articles")
   title = models.CharField(max_length=63)
   content = models.TextField()
+  language = models.CharField(max_length=15, null=True)
   origin_sentence = models.TextField()
   translated_sentence = models.TextField()
   word = models.TextField(blank=True)
@@ -29,6 +30,7 @@ class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.CharField(max_length=255, blank=True)
   profile_img = models.ImageField(upload_to='images/profile/')
+  language = models.CharField(max_length=15, null=True)
   created_at = models.DateTimeField(auto_now_add=True)
   
   def create_user_profile(sender, instance, created, **kwargs):
@@ -52,22 +54,6 @@ class Notification(models.Model):
   is_reply_like = models.BooleanField(default=False)
   is_following = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
-  
-  
-class NativeLanguage(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
-  lang = models.ForeignKey('Language', on_delete=models.CASCADE)
-  level = models.ForeignKey('LanguageLevel', on_delete=models.CASCADE)
-
-class LanguageLevel(models.Model):
-  level = models.CharField(max_length=15)
-  def __str__(self):
-        return self.level
-
-class Language(models.Model):
-  lang_name = models.CharField(max_length=15)
-  def __str__(self):
-        return self.lang_name
 
 class ArticleLike(models.Model):
   article = models.ForeignKey('Article', on_delete=models.CASCADE)

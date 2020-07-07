@@ -3,16 +3,22 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
+import { getProfile } from '../../actions/profile';
 
-class Header extends Component {
+class Auth extends Component {
 	static propTypes = {
 		auth: PropTypes.object.isRequired,
 		logout: PropTypes.func.isRequired
 	};
 
+	componentDidUpdate() {
+		const { isAuthenticated } = this.props.auth;
+		isAuthenticated?this.props.getProfile():'';
+	}
+
 	render() {
 		const { isAuthenticated, user } = this.props.auth;
-
+		
 		const authLinks = (
 			<ul className="mb-0  align-self-center">
 				<li className="list-inline-item">
@@ -51,4 +57,4 @@ const mapStateToProps = (state) => ({
 	auth: state.auth
 });
 
-export default connect(mapStateToProps, { logout })(Header);
+export default connect(mapStateToProps, { logout, getProfile })(Auth);

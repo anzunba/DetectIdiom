@@ -5,7 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import { profileImg } from './Scream'
+import { profileImg } from './Article'
 const App = () => {
 	const profileImgUrl = useContext(profileImg)
 	const [ comment, setComment ] = useState('');

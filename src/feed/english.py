@@ -106,5 +106,5 @@ def get_text_en(text):
         idioms.append(paragraph_content[2])
         sentenceTokenLists.append(paragraph_content[3])
         p += 1
-    result = [paragraph_list, all_sentences, paragraph_tra_sentence, idioms, sentenceTokenLists]
+    result = [paragraph_list, all_sentences, paragraph_tra_sentence, idioms, sentenceTokenLists, text_lang]
     return result

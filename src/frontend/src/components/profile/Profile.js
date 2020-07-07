@@ -14,7 +14,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Grid from '@material-ui/core/Grid';
 import ProfileTab from './ProfileTab';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProfile} from '../../actions/profile';
+
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -29,22 +29,18 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function ImgMediaCard() {
+const Profile = () => {
 	const classes = useStyles();
-	const dispatch = useDispatch();
 	const [ profileBio, setProfileBio ] = useState('');
 	const [ croppedImg, setCroppedImg ] = useState("/static/frontend/images/user.png");
-	useEffect(() => {
-		dispatch(getProfile());
-	}, []);
-	const p = useSelector((state) => state.profile);
+	const profileData = useSelector((state) => state.profile);
 
 	useEffect(
 		() => {
-			setProfileBio(p.bio);
-			setCroppedImg(p.profile_img);
+			setProfileBio(profileData.bio);
+			setCroppedImg(profileData.profile_img);
 		},
-		[ p ]
+		[profileData]
 	);
 
 	return (
@@ -53,21 +49,15 @@ export default function ImgMediaCard() {
 				<ProfileTab />
 			</Grid>
 			<Grid item xs={4}>
+				<div className="rounded shadow p-3 mb-5 mt-4">
 				<div>
 					<Avatar alt="" src={croppedImg} className={classes.large} />
 
 					<CardContent>
 						<div className="d-flex justify-content-between">
 							<Typography gutterBottom variant="h5" component="h2">
-								Anna Nakatsuji
+								{profileData.user.username}
 							</Typography>
-							<div className="d-flex pb-2 pr-2">
-								<img src="/static/frontend/images/en-circle.svg" style={{ width: '20px' }} />
-								<span className="align-self-center">
-									<NavigateNextIcon />
-								</span>
-								<img src="/static/frontend/images/ja-circle.svg" style={{ width: '22px' }} />
-							</div>
 						</div>
 						<Typography variant="body2" color="textSecondary" component="p">
 							{profileBio}
@@ -76,13 +66,15 @@ export default function ImgMediaCard() {
 				</div>
 				<CardActions>
 					<div className="w-50">
-						<ProfileEdit />
+						<ProfileEdit profileImg={croppedImg}/>
 					</div>
 					<div className="w-50">
 						<Follow />
 					</div>
 				</CardActions>
+				</div>
 			</Grid>
 		</Grid>
 	);
 }
+export default Profile;

@@ -13,18 +13,19 @@ import Comment from './Comment';
 import CommentBox from './CommentBox';
 import IconButtons from './IconButtons';
 import Block from './Block';
-import Card from './Card';
+import Quiz from './Quiz';
 import WordTable from './WordTable';
 import Divider from '@material-ui/core/Divider';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProfile } from '../../actions/profile';
-import { sendTextHeader } from '../../actions/edit5';
-import { sendWordIdioms } from '../../actions/edit6';
-import { getArticle, getAllArticle } from '../../actions/edit4';
+import { startLoader } from '../../actions/startLoader';
+import { getWordIdioms } from '../../actions/getWordIdiom';
+import { getArticle, getAllArticle, getCustomUserArticle } from '../../actions/article';
 import dayjs from 'dayjs'
 import relativeTime from "dayjs/plugin/relativeTime"
-import { getText } from '../../actions/edit';
+import { getProcessedText } from '../../actions/getProcessedText';
+import { showPage } from '../../actions/page';
+import { getCustomUserProfile } from '../../actions/profile';
 
 
 export const profileImg = React.createContext();
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function RecipeReviewCard() {
+const Article = () =>{
 	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [ expanded, setExpanded ] = React.useState(false);
@@ -54,47 +55,45 @@ export default function RecipeReviewCard() {
 	
 	const [ croppedImg, setCroppedImg ] = useState('/static/frontend/images/user.png');
 
-	const p = useSelector((state) => state.profile);
-	console.log(p)
-	const content = useSelector((state) => state.edit4);
-	console.log(content)
+	const profileData = useSelector((state) => state.profile);
+	const content = useSelector((state) => state.article);
+	const [articleContent, setArticleContent] = useState([])
+	
+	useEffect(() => {
+		setArticleContent(content)
+	}, [content])
 	useEffect(
 		() => {
-			setCroppedImg(p.profile_img);
+			setCroppedImg(profileData.profile_img);
 		},
-		[ p ]
+		[ profileData ]
 	);
 dayjs.extend(relativeTime)
 
 const showEdit = (fileContent, wordIdioms) =>{
-	dispatch(getText(fileContent))
-	dispatch(sendWordIdioms(wordIdioms))
-	dispatch(sendTextHeader(Math.random()))
+	dispatch(getProcessedText(fileContent))
+	dispatch(getWordIdioms(wordIdioms))
+	dispatch(startLoader(Math.random()))
 }
 
-
+const getCustomUser = (userId)=>{
+	dispatch(getCustomUserArticle(userId))
+	dispatch(getCustomUserProfile(userId))
+	dispatch(showPage('profile'))
+}
 const articleList = (
-	content.map((c, i) => {
+	articleContent.map((c, i) => {
 		return (
 			<div className="bg-light m-1" key={i}>
-				<CardHeader
-					avatar={<Avatar alt="" src={croppedImg} ria-label="recipe" className="border" />}
-					action={
-						<div className="d-flex">
-							<img src="/static/frontend/images/en-circle.svg" style={{ width: '20px' }} />
-							<NavigateNextIcon />
-							<img src="/static/frontend/images/ja-circle.svg" style={{ width: '22px' }} />
-
-							<IconButton aria-label="settings" className="py-0 pl-3">
-								<Block />
-							</IconButton>
-						</div>
-					}
-					className="cursor"
-					title={c.title}
-					subheader={dayjs(c.updated_at).fromNow()}
-					onClick={()=>showEdit(c.content, [c.word, c.idiom])}
-				/>
+				<div className="d-flex flex-row pt-3 pl-3">
+				<Avatar alt="" src={c.user.profile_img} className="border cursor img-55 hover-img" onClick={()=>getCustomUser(c.user.id)}/>
+				<div className="pl-3"> 
+				<h5 className="d-block pt-1 my-0 hover-blue cursor" onClick={()=>showEdit(c.content, [c.word, c.idiom])}>{c.title}</h5>
+				<small className="d-block hover-blue cursor" onClick={()=>getCustomUser(c.user.id)}>{c.user.user.username}</small>
+				<small className="d-block">{dayjs(c.updated_at).fromNow()}</small>
+				</div>
+				
+				</div>
 				<CardContent>
 					<Typography variant="body1" color="textSecondary" component="span" className="pb-2">
 						{c.content}
@@ -105,7 +104,7 @@ const articleList = (
 					<Divider />
 					<div className="d-flex">
 						<span className="w-50">
-						<Card data={[c.origin_sentence, c.translated_sentence, c.word, c.idiom]}/>
+						<Quiz data={[c.origin_sentence, c.translated_sentence, c.word, c.idiom]}/>
 						</span>
 						<span className="w-50">
 							<WordTable data={[c.word, c.idiom]}/>
@@ -148,3 +147,4 @@ const articleList = (
 		</div>
 	);
 }
+export default Article;

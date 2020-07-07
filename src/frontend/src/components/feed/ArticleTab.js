@@ -8,10 +8,10 @@ import GroupIcon from '@material-ui/icons/Group';
 import HelpIcon from '@material-ui/icons/Help';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Scream from './Scream';
+import Article from './Article';
 import PublicIcon from '@material-ui/icons/Public';
 import Order from './Order';
-import { getArticle, getAllArticle } from '../../actions/edit4';
+import { getArticle, getAllArticle } from '../../actions/article';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from '../../actions/profile';
 
@@ -48,11 +48,11 @@ function a11yProps(index) {
 	};
 }
 
-export default function ScrollableTabsButtonForce() {
+const ArticleTab = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch(getProfile());
-		dispatch(getAllArticle());
+		// dispatch(getProfile());
+		// dispatch(getAllArticle());
 	}, []);
 
 	const [ value, setValue ] = React.useState(0);
@@ -69,7 +69,7 @@ export default function ScrollableTabsButtonForce() {
 
 	return (
 		<div> 
-            <span className="float-right"><Order/></span>          
+            {/* <span className="float-right"><Order/></span>           */}
 			<AppBar position="static" color="default">
 				<Tabs
 					value={value}
@@ -85,15 +85,16 @@ export default function ScrollableTabsButtonForce() {
 					<Tab label="ClassMates" icon={<GroupIcon />} {...a11yProps(2)} />
 				</Tabs>
 			</AppBar>
-			<TabPanel value={value} index={0}>
-				<Scream />
+			<TabPanel value={value} index={0} onClick={dispatch(getAllArticle())}>
+				<Article />
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-            <Scream />
+            <Article />
 			</TabPanel>
 			<TabPanel value={value} index={2}>
-            <Scream />
+            <Article />
 			</TabPanel>
 		</div>
 	);
 }
+export default ArticleTab;

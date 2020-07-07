@@ -5,10 +5,7 @@ import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 //import { Provider as AlertProvider } from 'react-alert';
 //import AlertTemplate from 'react-alert-template-basic';
 
-import Header from './nav/Header';
-import Dashboard from './feed/Dashboard';
-import Edit from './edit/Edit';
-import Profile from './profile/Profile';
+import Nav from './nav/Nav';
 import Login from './accounts/Login';
 import Register from './accounts/Register';
 import PrivateRoute from './common/PrivateRoute';
@@ -16,41 +13,32 @@ import PrivateRoute from './common/PrivateRoute';
 import { Provider } from 'react-redux';
 import store from '../store';
 import { loadUser } from '../actions/auth';
+import Main from './Main';
 
-// Alert Options
-const alertOptions = {
-  timeout: 3000,
-  position: 'top center',
-};
 
 const App = () => {
-  const [page, setPage] = useState('home')
-const callback = (page) => {
-  setPage(page)
-}
   useEffect(() => {
     store.dispatch(loadUser());
-  }, []);
-    return (
-      <Provider store={store}>
-    {/* <AlertProvider template={AlertTemplate} {...alertOptions}> */}
-          <Router>
-            <Fragment>
-              <Header parentCallback={callback}/>
-              {/* <Alerts /> */}
-              <div className="container">
-                <Switch>
-                  <PrivateRoute exact path="/" component={page=='home'? Dashboard : page=='edit' ? Edit: Profile} />
-                  <Route exact path="/register" component={Register} />
-                  <Route exact path="/login" component={Login} />
-                </Switch>
-              </div>
-            </Fragment>
-          </Router>
-     {/* </AlertProvider> */}
-    </Provider>
-    );
+}, []);
+	return (
+		<Provider store={store}>
+			<Router>
+					<Nav />
 
-}
+					<div className="container">
+						<Switch>
+							<PrivateRoute
+								exact
+								path="/"
+								component={Main}
+							/>
+							<Route exact path="/register" component={Register} />
+							<Route exact path="/login" component={Login} />
+						</Switch>
+					</div>
+			</Router>
+		</Provider>
+	);
+};
 
 ReactDOM.render(<App />, document.getElementById('app'));

@@ -1,9 +1,9 @@
 
-import { GET_INPUT_TEXT } from './types';
+import { GET_UNPROCESSED_TEXT } from './types';
 
 export const getInputText = (text) => {
     return {
-      type: GET_INPUT_TEXT,
+      type: GET_UNPROCESSED_TEXT,
       payload: text,
     };
   };

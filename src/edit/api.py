@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from knox.models import AuthToken
 from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer
-from .models import EnJa, Profile, Language, Article
+from .models import EnJa, Profile,Article
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
 from django.contrib.auth.models import User
@@ -34,34 +34,34 @@ def get_lemmatizer(sentence):
         lemma = wnl.lemmatize(word, wntag) if wntag else word
         return lemma
 
-# class OtherProfileDetailAPIView(APIView):
-#     err_msg = {
-#         "error": {
-#             "code": 404,
-#             "message": "Profile not found",
-#         }}
+class OtherProfileDetailAPIView(APIView):
+    err_msg = {
+        "error": {
+            "code": 404,
+            "message": "Profile not found",
+        }}
  
-#     def get_object(self, pk):
-#         profile = get_object_or_404(Profile, pk=pk)
-#         return profile
+    def get_object(self, pk):
+        profile = get_object_or_404(Profile, pk=pk)
+        return profile
  
-#     def get(self, request, pk):
-#         profile = self.get_object(pk)
-#         serializer = ProfileSerializer(profile)
-#         return Response(serializer.data)
+    def get(self, request, pk):
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
  
-#     def put(self, request, pk):
-#         profile = self.get_object(pk)
-#         serializer = ProfileSerializer(profile, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, pk):
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
-#     def delete(self, request, pk):
-#         profile = self.get_object(pk)
-#         profile.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, pk):
+        profile = self.get_object(pk)
+        profile.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 class ProfileDetailAPIView(APIView):
     err_msg = {
@@ -110,13 +110,35 @@ class ArticleListCreateAPIView(viewsets.ModelViewSet):
     serializer_class = ArticleSerializer
 
     def get_queryset(self):
-        return self.request.user.articles.all()
+        return self.request.user.profile.articles.all()
     
     def perform_create(self, serializer):
-        serializer.save(user = self.request.user)
+        serializer.save(user = self.request.user.profile)
         
 
 
+class UsersArticlesListAPIView(APIView):
+    err_msg = {
+        "error": {
+            "code": 404,
+            "message": "Article not found",
+        }}
+ 
+    def get_object(self, userId):
+        user = Profile.objects.get(id=userId)
+        article = Article.objects.filter(user=user)
+        #article = get_object_or_404(Article, user=userId)
+        return article
+ 
+    def get(self, request, userId):
+        articles = self.get_object(userId)
+        article_list = []
+        for article in articles:
+            serializer = ArticleSerializer(article)
+            article_list.append(serializer.data)
+        return Response(article_list)
+
+    
 class ArticleDetailAPIView(APIView):
     err_msg = {
         "error": {
@@ -145,4 +167,5 @@ class ArticleDetailAPIView(APIView):
         article = self.get_object(pk)
         article.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
+

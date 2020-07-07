@@ -3,10 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import LoginNav from './LoginNav';
 import AddIcon from '@material-ui/icons/Add';
 import Notification from './Notification';
 import HomeIcon from '@material-ui/icons/Home';
@@ -17,7 +14,13 @@ import Fade from '@material-ui/core/Fade';
 import PersonIcon from '@material-ui/icons/Person';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useSelector } from 'react-redux';
-const App = ({ parentCallback }) => {
+import {showPage} from '../../actions/page';
+import { useDispatch} from 'react-redux';
+import Auth from './Auth';
+
+
+const Nav = () => {
+	const dispatch = useDispatch();
 	const useStyles = makeStyles((theme) => ({
 		modal: {
 			display: 'flex',
@@ -31,19 +34,33 @@ const App = ({ parentCallback }) => {
 			padding: theme.spacing(2, 4, 3)
 		}
 	}));
-
 	const classes = useStyles();
-	const [ open, setOpen ] = React.useState(false);
+
+	
+	const [ open, setOpen ] = useState(false);
 
 	const handleOpen = () => {
 		setOpen(true);
-		parentCallback('edit');
+		dispatch(showPage('edit'))
 	};
 
 	const handleClose = () => {
 		setOpen(false);
 	};
+
 	const textProcessingDone = useSelector((state) => state.edit)
+	useEffect(() => {
+		textProcessingDone ? setLoader(false) : ''
+	}, [textProcessingDone])
+
+	const isEdit = useSelector((state) => state.startLoader);
+	useEffect(() => {
+	if(isEdit){
+		setLoader(true) ;
+		dispatch(showPage('edit'))
+	} 
+	}, [isEdit])
+
 	const [loader, setLoader] = useState(false)
 	const callback = (handleClose) => {
 		if(handleClose){
@@ -53,18 +70,9 @@ const App = ({ parentCallback }) => {
 			setOpen(true);
 		}
 	};
-	useEffect(() => {
-		textProcessingDone ? setLoader(false) : ''
-	}, [textProcessingDone])
-
-	const editBool = useSelector((state) => state.edit5);
-	useEffect(() => {
-	if(editBool){
-		setLoader(true) ;
-		parentCallback('edit');
-	} 
-	}, [editBool])
-	
+	const getMyProfile = () =>{
+		dispatch(showPage('profile'))
+	}
 	return (
 		<div>
 			<AppBar position="static">
@@ -79,10 +87,10 @@ const App = ({ parentCallback }) => {
 					</div>
 					<div className="d-flex">
 					
-					<IconButton onClick={() => parentCallback('profile')} className="text-light">
+					<IconButton onClick={() => getMyProfile()} className="text-light">
 							<PersonIcon />
 						</IconButton>
-						<IconButton onClick={() => parentCallback('home')} className="text-light">
+						<IconButton onClick={() => dispatch(showPage('home'))} className="text-light">
 							<HomeIcon />
 						</IconButton>
 						
@@ -111,7 +119,7 @@ const App = ({ parentCallback }) => {
 								</Fade>
 							</Modal>
 						</div>
-						<LoginNav />
+						<Auth />
 					</div>
 				</Toolbar>
 				{loader? <LinearProgress/> : ''}
@@ -121,4 +129,4 @@ const App = ({ parentCallback }) => {
 	);
 };
 
-export default App;
+export default Nav;

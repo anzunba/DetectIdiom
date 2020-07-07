@@ -428,3 +428,16 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.w-100.MuiButton-textPrim
 	max-height: 500px;
 	overflow: auto;
 }
+
+.img-55{
+	width: 55px!important;
+	height: 55px!important;
+}
+
+.hover-blue:hover{
+	color:#3f51b5
+}
+
+.hover-img:hover{
+	border: 1px solid #3f51b5!important;
+}

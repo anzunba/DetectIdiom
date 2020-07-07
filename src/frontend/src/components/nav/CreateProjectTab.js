@@ -7,8 +7,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
-import { getText } from '../../actions/edit';
-import { getInputText } from '../../actions/edit2';
+import { getProcessedText } from '../../actions/getProcessedText';
+import { getInputText } from '../../actions/getUnprocessedText';
 import Dropzone from 'react-dropzone';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import TextField from '@material-ui/core/TextField';
@@ -72,14 +72,14 @@ const App = ({handleCloseCallback}) =>{
 		reader.onload = (e) => { 
 			const text = e.target.result;
       setFileContent(text);
-      //dispatch(getText(text))
+      //dispatch(getProcessedText(text))
 		};
     reader.readAsText(e.target.files[0]);
     setFileNames(e.target.files[0].name)
   };
   const dispatch = useDispatch()
 	const handleStart = () =>{
-		dispatch(getText(fileContent))
+		dispatch(getProcessedText(fileContent))
 		dispatch(getInputText(fileContent))
 		handleCloseCallback(true)
 	}

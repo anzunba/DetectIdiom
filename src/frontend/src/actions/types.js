@@ -13,8 +13,8 @@ export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const CLEAR_FEEDS = 'CLEAR_FEEDS';
 
-export const GET_TEXT = 'GET_TEXT';
-export const GET_INPUT_TEXT = 'GET_INPUT_TEXT';
+export const GET_PROCESSED_TEXT = 'GET_PROCESSED_TEXT';
+export const GET_UNPROCESSED_TEXT = 'GET_UNPROCESSED_TEXT';
 export const GET_MEANING = 'GET_MEANING';
 
 
@@ -26,6 +26,8 @@ export const LEMMATIZER2 = 'LEMMATIZER2';
 export const LEMMATIZER3 = 'LEMMATIZER3';
 
 export const PROFILE = 'PROFILE';
+export const LANGUAGE = 'LANGUAGE';
 export const ARTICLE = 'ARTICLE';
 export const SEND_TEXT_HEADER = 'SEND_TEXT_HEADER';
 export const SEND_LIST_EDIT = 'SEND_LIST_EDIT';
+export const PAGE = 'PAGE';

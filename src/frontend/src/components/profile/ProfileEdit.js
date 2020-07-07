@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 
 import TextField from '@material-ui/core/TextField';
 import { updateProfile } from '../../actions/profile';
+import { updateLanguage } from '../../actions/language';
 import { useDispatch } from 'react-redux';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -18,6 +19,10 @@ import CreateIcon from '@material-ui/icons/Create';
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
 let nativeLangLevels = {};
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import { getArticle, getAllArticle } from '../../actions/article';
 
 const useStyles = makeStyles((theme) => ({
 	profileEditModal: {
@@ -46,14 +51,15 @@ const getResizedCanvas = (canvas, newWidth, newHeight) => {
 	return tmpCanvas;
 };
 
-const App = () => {
+const App = (props) => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const [ profileEditOpen, setProfileEditOpen ] = useState(false);
 	const [ cropperOpen, setCropperOpen ] = useState(false);
-	const [ profileName, setProfileName ] = useState('');
+	const [ profileLang, setProfileLang ] = useState('');
 	const [ profileBio, setProfileBio ] = useState('');
 	const [ croppedImg, setCroppedImg ] = useState('');
+	const [lang, setLang] = useState('');
 	const handleProfileName = (e) => {
 		setProfileName(e.target.value);
 	};
@@ -65,9 +71,7 @@ const App = () => {
 		setProfileEditOpen(true);
 	};
 
-	const handleProfileEditClose = () => {
-		setProfileEditOpen(false);
-	};
+
 
 	const handleCropperOpen = () => {
 		setCropperOpen(true);
@@ -76,9 +80,15 @@ const App = () => {
 	const handleProfileSave = () => {
 		const formData = new FormData();
 		formData.append('bio', profileBio)
-		formData.append('lang', nativeLangLevels)
+		formData.append('language', lang)
+		console.log('lang: ' + lang)
 		formData.append('profile_img', croppedImg, 'croppedProfileImg.png')
 		dispatch(updateProfile(formData))
+		// const formLangData = new FormData();
+		// formLangData.append(nativeLangLevels)
+		// dispatch(updateLanguage(formLangData))
+
+		setProfileEditOpen(false);
 	};
 
 	// const onUpdateProfile = () => {
@@ -88,92 +98,92 @@ const App = () => {
 	/*********************/
 	/***Lang Edit Start**/
 	/********************/
-	const [ anchorEl, setAnchorEl ] = React.useState(null);
-	const [ selectedLang, setSelectedLang ] = useState('');
-	const [ selectedLangLevel, setSelectedLangLevel ] = useState([]);
-	const handleLangListOpen = (e) => {
-		setAnchorEl(e.currentTarget);
-		setSelectedLang(e.currentTarget.id);
-	};
+	// const [ anchorEl, setAnchorEl ] = React.useState(null);
+	// const [ selectedLang, setSelectedLang ] = useState('');
+	// const [ selectedLangLevel, setSelectedLangLevel ] = useState([]);
+	// const handleLangListOpen = (e) => {
+	// 	setAnchorEl(e.currentTarget);
+	// 	setSelectedLang(e.currentTarget.id);
+	// };
 
-	const handleLangListClose = () => {
-		setAnchorEl(null);
-	};
-	const open = Boolean(anchorEl);
-	const langListPopoverId = open ? 'simple-popover' : undefined;
-	const langsList = [ 'en', 'ja', 'fr' ];
-	const langFrags = [];
-	const [ fixFlag, setFixFlag ] = useState({});
-	const fragLevelStyle = {
-		Beginner: 'circle90',
-		Intermediate: 'circle180',
-		Advanced: 'circle270',
-		Fluent: 'circle360',
-		Native: 'circleNative',
-		None: 'no-circle'
-	};
-	const handleLevel = (level) => {
-		setSelectedLangLevel((state) => ({ ...state, [selectedLang]: fragLevelStyle[level] }));
-		if (level == 'Beginner' || level == 'Intermediate' || level == 'Advanced') {
-			setFixFlag((state) => ({ ...state, [selectedLang]: 'fix-img' }));
-		} else {
-			setFixFlag((state) => ({ ...state, [selectedLang]: '' }));
-		}
-		nativeLangLevels[selectedLang] = level;
-	};
+	// const handleLangListClose = () => {
+	// 	setAnchorEl(null);
+	// };
+	// const open = Boolean(anchorEl);
+	// const langListPopoverId = open ? 'simple-popover' : undefined;
+	// const langsList = [ 'en', 'ja', 'fr' ];
+	// const langFrags = [];
+	// const [ fixFlag, setFixFlag ] = useState({});
+	// const fragLevelStyle = {
+	// 	Beginner: 'circle90',
+	// 	Intermediate: 'circle180',
+	// 	Advanced: 'circle270',
+	// 	Fluent: 'circle360',
+	// 	Native: 'circleNative',
+	// 	None: 'no-circle'
+	// };
+	// const handleLevel = (level) => {
+	// 	setSelectedLangLevel((state) => ({ ...state, [selectedLang]: fragLevelStyle[level] }));
+	// 	if (level == 'Beginner' || level == 'Intermediate' || level == 'Advanced') {
+	// 		setFixFlag((state) => ({ ...state, [selectedLang]: 'fix-img' }));
+	// 	} else {
+	// 		setFixFlag((state) => ({ ...state, [selectedLang]: '' }));
+	// 	}
+	// 	nativeLangLevels[selectedLang] = level;
+	// };
 
-	let listLevelItem = [];
-	const languageLevelList = [ 'None', 'Beginner', 'Intermediate', 'Advanced', 'Fluent', 'Native' ];
-	languageLevelList.map((level, i) => {
-		listLevelItem.push(
-			<MenuItem key={i} onClick={() => handleLevel(level)}>
-				{level}
-			</MenuItem>
-		);
-	});
+	// let listLevelItem = [];
+	// const languageLevelList = [ 'None', 'Beginner', 'Intermediate', 'Advanced', 'Fluent', 'Native' ];
+	// languageLevelList.map((level, i) => {
+	// 	listLevelItem.push(
+	// 		<MenuItem key={i} onClick={() => handleLevel(level)}>
+	// 			{level}
+	// 		</MenuItem>
+	// 	);
+	// });
 
-	const createLangFlagsHtml = (i, lang) => {
-		const flag_address = `/static/frontend/images/${lang}-circle.svg`;
-		return (
-			<div key={i}>
-				<div
-					id={lang}
-					onClick={handleLangListOpen}
-					className={`${selectedLangLevel[lang] === undefined
-						? 'no-circle'
-						: selectedLangLevel[lang]} w-50 mx-auto`}
-				>
-					<Badge
-										overlap="circle"
-										anchorOrigin={{
-											vertical: 'bottom',
-											horizontal: 'right'
-										}}
-										badgeContent={<CreateIcon className="profileImgEdit" />}
-									><img src={flag_address} className={`${fixFlag[lang]} w-100 cursor`} /></Badge>
-				</div>
-				<Popover
-					id={langListPopoverId}
-					open={open}
-					anchorEl={anchorEl}
-					onClose={handleLangListClose}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'center'
-					}}
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'center'
-					}}
-				>
-					{listLevelItem}
-				</Popover>
-			</div>
-		);
-	};
-	for (const [ index, value ] of langsList.entries()) {
-		langFrags.push(createLangFlagsHtml(index, value));
-	}
+	// const createLangFlagsHtml = (i, lang) => {
+	// 	const flag_address = `/static/frontend/images/${lang}-circle.svg`;
+	// 	return (
+	// 		<div key={i}>
+	// 			<div
+	// 				id={lang}
+	// 				onClick={handleLangListOpen}
+	// 				className={`${selectedLangLevel[lang] === undefined
+	// 					? 'no-circle'
+	// 					: selectedLangLevel[lang]} w-50 mx-auto`}
+	// 			>
+	// 				<Badge
+	// 									overlap="circle"
+	// 									anchorOrigin={{
+	// 										vertical: 'bottom',
+	// 										horizontal: 'right'
+	// 									}}
+	// 									badgeContent={<CreateIcon className="profileImgEdit" />}
+	// 								><img src={flag_address} className={`${fixFlag[lang]} w-100 cursor`} /></Badge>
+	// 			</div>
+	// 			<Popover
+	// 				id={langListPopoverId}
+	// 				open={open}
+	// 				anchorEl={anchorEl}
+	// 				onClose={handleLangListClose}
+	// 				anchorOrigin={{
+	// 					vertical: 'bottom',
+	// 					horizontal: 'center'
+	// 				}}
+	// 				transformOrigin={{
+	// 					vertical: 'top',
+	// 					horizontal: 'center'
+	// 				}}
+	// 			>
+	// 				{listLevelItem}
+	// 			</Popover>
+	// 		</div>
+	// 	);
+	// };
+	// for (const [ index, value ] of langsList.entries()) {
+	// 	langFrags.push(createLangFlagsHtml(index, value));
+	// }
 
 	/*********************/
 	/*Crpper Modal Start*/
@@ -250,7 +260,17 @@ const App = () => {
 		[ completedCrop ]
 	);
 
+	console.log(props.profileImg)
 	const [ prevProfileImg, setPrevProfileImg ] = useState('/static/frontend/images/user.png');
+	useEffect(() => {
+		props.profileImg ? setPrevProfileImg(props.profileImg) : ''
+	}, [props.profileImg])
+
+
+  const handleLangChange = (e) => {
+	  console.log(e.target.value)
+    setLang(e.target.value);
+  };
 
 	return (
 		<div>
@@ -262,7 +282,7 @@ const App = () => {
 				aria-describedby="transition-modal-description"
 				className={classes.profileEditModal}
 				open={profileEditOpen}
-				onClose={handleProfileEditClose}
+		
 				closeAfterTransition
 				BackdropComponent={Backdrop}
 				BackdropProps={{
@@ -339,13 +359,13 @@ const App = () => {
 								</Fade>
 							</Modal>
 							<form noValidate autoComplete="off" className="px-5">
-								<TextField
+								{/* <TextField
 									id="standard-basic"
 									label="Name"
 									className="w-100 mt-2"
 									value={profileName}
 									onChange={handleProfileName}
-								/>
+								/> */}
 								<TextField
 									id="standard-multiline-static"
 									label="Bio"
@@ -355,10 +375,28 @@ const App = () => {
 									value={profileBio}
 									onChange={handleProfileBio}
 								/>
-								<div className="d-flex justify-content-between my-5 px-5">{langFrags}</div>
+								{/* <div className="d-flex justify-content-between my-5 px-5">{langFrags}</div> */}
+								<FormControl className="w-100 mt-5">
+        <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+          You learn
+        </InputLabel>
+        <Select
+          labelId="demo-simple-select-placeholder-label-label"
+          id="demo-simple-select-placeholder-label"
+          value={lang}
+          onChange={handleLangChange}
+          displayEmpty
+
+        >
+          <MenuItem value="en">
+            <em>English</em>
+          </MenuItem>
+          <MenuItem value="ja">Japanese</MenuItem>
+        </Select>
+      </FormControl>
 							</form>
 							<Button
-								className="w-100 mt-0"
+								className="w-100 mt-5"
 								color="primary"
 								size="large"
 								fullWidth

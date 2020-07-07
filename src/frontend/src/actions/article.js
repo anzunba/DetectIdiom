@@ -50,3 +50,16 @@ export const getAllArticle = () => (dispatch, getState) => {
     .catch((err) => console.log("actions: " + err));
 };
 
+export const getCustomUserArticle = (userId) => (dispatch, getState) => {
+  console.log('called getCustomUserArticle')
+  axios
+    .get(`/api/userArticles/${userId}`, tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: ARTICLE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => console.log("actions: " + err));
+};
+

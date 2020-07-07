@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { GET_TEXT } from './types';
+import { GET_PROCESSED_TEXT } from './types';
 
-export const getText = (text) => (dispatch) => {
+export const getProcessedText = (text) => (dispatch) => {
     axios
-      .post('/feed/getText', text)
+      .post('/feed/getProcessedText', text)
       .then((res) => {
         dispatch({
-          type: GET_TEXT,
+          type: GET_PROCESSED_TEXT,
           payload: res.data,
           
         });

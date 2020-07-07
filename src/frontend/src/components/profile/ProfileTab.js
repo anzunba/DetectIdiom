@@ -8,15 +8,15 @@ import PersonPinIcon from '@material-ui/icons/PersonPin';
 import HelpIcon from '@material-ui/icons/Help';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Scream from '../feed/Scream';
+import Scream from '../feed/Article';
 import PublicIcon from '@material-ui/icons/Public';
 import Order from '../feed/Order';
 import CardTryLog from './CardTryLog'
 import TodayIcon from '@material-ui/icons/Today';
 import BookIcon from '@material-ui/icons/Book';
-import { getArticle, getAllArticle } from '../../actions/edit4';
+import { getArticle, getAllArticle } from '../../actions/article';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProfile } from '../../actions/profile';
+
 
 
 function TabPanel(props) {
@@ -54,10 +54,6 @@ function a11yProps(index) {
 
 export default function ScrollableTabsButtonForce() {
 	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch(getProfile());
-		dispatch(getArticle());
-	}, []);
 	const [ value, setValue ] = React.useState(0);
 
 	const handleChange = (event, newValue) => {
@@ -67,7 +63,7 @@ export default function ScrollableTabsButtonForce() {
 	return (
 		<div> 
         
-            <span className="float-right"><Order/></span>          
+            {/* <span className="float-right cursor"><Order/></span>           */}
 			<AppBar position="static" color="default">
 				<Tabs
 					value={value}
@@ -79,15 +75,15 @@ export default function ScrollableTabsButtonForce() {
 					aria-label="scrollable force tabs example"
 				>
 					<Tab label="All" icon={<PublicIcon />} {...a11yProps(0)} />
-					<Tab label="Card Log" icon={<BookIcon />} {...a11yProps(1)} />
+					{/* <Tab label="Card Log" icon={<BookIcon />} {...a11yProps(1)} /> */}
 				</Tabs>
 			</AppBar>
 			<TabPanel value={value} index={0} component="div">
             <Scream />
 			</TabPanel>
-			<TabPanel value={value} index={1} component="div">
+			{/* <TabPanel value={value} index={1} component="div">
             <CardTryLog />
-			</TabPanel>
+			</TabPanel> */}
 		</div>
 	);
 }

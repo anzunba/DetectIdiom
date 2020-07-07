@@ -3,8 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { getMeaning } from '../../actions/edit3';
-import { getTokens } from '../../actions/edit7';
+import { getMeaning } from '../../actions/getMeaning';
+import { getTokens } from '../../actions/getTokens';
 import { lemmatizer } from '../../actions/edit9';
 import { lemmatizer2 } from '../../actions/edit10';
 import { lemmatizer3 } from '../../actions/edit11';
@@ -16,7 +16,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDispatch, useSelector } from 'react-redux';
-import { createArticle, updateArticle } from '../../actions/edit4';
+import { createArticle, updateArticle } from '../../actions/article';
 import { updateProfile } from '../../actions/profile';
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -66,21 +66,23 @@ let iruby = {};
 const App = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const originSentencesList = useSelector((state) => state.edit.pre_sentence);
-	const sentenceTokensList = useSelector((state) => state.edit.sentenceTokensList);
-	const inputTextTokens = useSelector((state) => state.edit.words);
+	const originSentencesList = useSelector((state) => state.getProcessedText.pre_sentence);
+	const sentenceTokensList = useSelector((state) => state.getProcessedText.sentenceTokensList);
+	const text_lang = useSelector((state) => state.getProcessedText.text_lang);
+	console.log(text_lang)
+	const inputTextTokens = useSelector((state) => state.getProcessedText.words);
 	const [ tokenRuby, setTokenRuby ] = useState({});
 	const idiomsTableRow = [];
 	const wordsTableRow = [];
-	const allTranslatedSentences = useSelector((state) => state.edit.aft_sentence);
-	const allIdioms = useSelector((state) => state.edit.idioms);
+	const allTranslatedSentences = useSelector((state) => state.getProcessedText.aft_sentence);
+	const allIdioms = useSelector((state) => state.getProcessedText.idioms);
 	const [ meaningRowBg, setMeaningRowBg ] = useState({});
 	const [ tokenBg, setTokenBg ] = useState({});
 	const [ idiomList, setIdiomList ] = useState({});
 	const [ wordList, setWordList ] = useState({});
 	const [pId, setPId] = useState();
 	const [ sId, setSId] = useState();
-	const wordIdioms = useSelector((state) => state.edit6);
+	const wordIdioms = useSelector((state) => state.getWordIdiom);
 	const meaningsString = useSelector((state) => state.edit3.mean);
 	lemma = useSelector((state) => state.edit9);
 	let wordListFromDb = {};
@@ -103,7 +105,6 @@ const App = () => {
 	useEffect(
 		() => {
 			if (originSentencesList.length != 0) {
-				console.log('originSentencesList:' + originSentencesList);
 				for (let idiomId in idiomListFromDb) {
 					for (let idiom in idiomListFromDb[idiomId]) {
 						const mean = idiomListFromDb[idiomId][idiom];
@@ -198,8 +199,6 @@ const App = () => {
 	};
 	const getIdiomDetail = (selectedIdiom) => {
 		const keySelectedIdiom = selectedIdiom.idiom.replace('A', '');
-		console.log(keySelectedIdiom);
-		console.log(sentenceTokensList);
 		const idiomFullAddress = getSelectedIdiomAddressList(
 			keySelectedIdiom.split(' '),
 			sentenceTokensList[selectedIdiom.sentenceId.split('_')[1]][selectedIdiom.sentenceId.split('_')[2]].split(
@@ -352,6 +351,7 @@ const App = () => {
 		const formData = new FormData();
 		formData.append('title', title);
 		formData.append('content', inputText);
+		formData.append('language', text_lang)
 		formData.append('origin_sentence', JSON.stringify(originSentencesList));
 		formData.append('translated_sentence', JSON.stringify(allTranslatedSentences));
 		formData.append('word', JSON.stringify(wordList));
@@ -363,7 +363,7 @@ const App = () => {
 	const handleTitle = (e) => {
 		setTitle(e.target.value);
 	};
-	const inputText = useSelector((state) => state.edit2);
+	const inputText = useSelector((state) => state.getUnprocessedText);
 
 
 	const createEmptyTokenRubyHtml = (t_idx, t) => {
@@ -440,9 +440,6 @@ const App = () => {
 							<span className="save-img d-flex justify-content-center pb-3">
 								<img src="/static/frontend/images/pig.png" />
 							</span>
-							{/* <DialogContentText>
-            Please input the title.
-          </DialogContentText> */}
 							<TextField
 								autoFocus
 								margin="dense"
@@ -505,7 +502,6 @@ const App = () => {
 				</Grid>
 				<Grid item xs={12} sm={4}>
 					<Paper className={classes.paper}>
-						{/* <LinearProgress/> */}
 						<table className="table table-striped table-scroll mb-0">
 							<thead>
 								<tr>
@@ -518,7 +514,6 @@ const App = () => {
 								</tr>
 							</tbody>
 						</table>
-						{/* <LinearProgress/> */}
 						<table className="table table-striped table-scroll mb-0">
 							<thead>
 								<tr>
@@ -527,7 +522,6 @@ const App = () => {
 							</thead>
 							<tbody className="cursor">{wordsTableRow.length > 0 ? wordsTableRow : notAvailable}</tbody>
 						</table>
-						{/* <LinearProgress /> */}
 						<table className="table table-striped table-scroll mb-0">
 							<thead>
 								<tr>
@@ -538,27 +532,6 @@ const App = () => {
 								{idiomsTableRow.length > 0 ? idiomsTableRow : notAvailable}
 							</tbody>
 						</table>
-						{/* <table className="table table-striped  table-scroll mb-0">
-							<thead>
-								<tr>
-									<th>Custom Input</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<form noValidate autoComplete="off">
-											<InputBase
-												id="standard-basic"
-												fullWidth
-												placeholder="custom input here"
-												inputProps={{ 'aria-label': 'naked' }}
-											/>
-										</form>
-									</td>
-								</tr>
-							</tbody>
-						</table> */}
 					</Paper>
 				</Grid>
 			</Grid>
