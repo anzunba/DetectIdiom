@@ -104,14 +104,26 @@ class AllArticleListCreateAPIView(viewsets.ModelViewSet):
         return Article.objects.all()
 
 
-class FollowArticleListCreateAPIView(APIView):
+# class FollowArticleListCreateAPIView(APIView):
 
-    def get(self, request):
-        followersInstanceList = Following.objects.filter(user=self.request.user).values_list('followed_user', flat=True)
-        articlesList = Article.objects.filter(user=followersInstanceList[0])
-        return Response(articlesList)
+#     def get(self, request):
+#         followersInstanceList = Following.objects.filter(user=self.request.user).values_list('followed_user', flat=True)
+#         articlesList = Article.objects.filter(user=followersInstanceList)
+#         return Response(articlesList)
 
 
+class FollowArticleListCreateAPIView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        filter = (Following.objects.filter(user=self.request.user)).values('followed_user_id')
+        filtered_articles = Article.objects.filter(user__in=filter)
+        
+        # requestUserArticle = Article.objects.filter(filter)
+        return filtered_articles
 
 # class ArticleListCreateAPIView(APIView):
 class ArticleListCreateAPIView(viewsets.ModelViewSet):
