@@ -39,8 +39,22 @@ export const getArticle = () => (dispatch, getState) => {
   };
 
 export const getAllArticle = () => (dispatch, getState) => {
+  console.log("called getAllArticle")
   axios
     .get('/api/allArticle/', tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: ARTICLE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => console.log("actions: " + err));
+};
+
+export const getFollowArticle = () => (dispatch, getState) => {
+  console.log("called getFollowArticle")
+  axios
+    .get('/api/followArticle/', tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: ARTICLE,

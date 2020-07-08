@@ -55,12 +55,13 @@ const Article = () =>{
 	
 	const [ croppedImg, setCroppedImg ] = useState('/static/frontend/images/user.png');
 
-	const profileData = useSelector((state) => state.profile);
+	const profileData = useSelector((state) => state.getRequestUserProfile);
 	const content = useSelector((state) => state.article);
 	const [articleContent, setArticleContent] = useState([])
 	
 	useEffect(() => {
 		setArticleContent(content)
+		console.log('updated content')
 	}, [content])
 	useEffect(
 		() => {
@@ -86,10 +87,10 @@ const articleList = (
 		return (
 			<div className="bg-light m-1" key={i}>
 				<div className="d-flex flex-row pt-3 pl-3">
-				<Avatar alt="" src={c.user.profile_img} className="border cursor img-55 hover-img" onClick={()=>getCustomUser(c.user.id)}/>
+				<Avatar alt="" src={c.profile.profile_img} className="border cursor img-55 hover-img" onClick={()=>getCustomUser(c.user.id)}/>
 				<div className="pl-3"> 
 				<h5 className="d-block pt-1 my-0 hover-blue cursor" onClick={()=>showEdit(c.content, [c.word, c.idiom])}>{c.title}</h5>
-				<small className="d-block hover-blue cursor" onClick={()=>getCustomUser(c.user.id)}>{c.user.user.username}</small>
+				<small className="d-block hover-blue cursor" onClick={()=>getCustomUser(c.user.id)}>{c.user.username}</small>
 				<small className="d-block">{dayjs(c.updated_at).fromNow()}</small>
 				</div>
 				
@@ -113,9 +114,9 @@ const articleList = (
 					<Divider />
 					<CardActions className="px-0">
 						<div className="w-95 p-0 topCommentBox">
-							<profileImg.Provider value={croppedImg}>
-								<CommentBox />
-							</profileImg.Provider>
+							
+								<CommentBox profileImg={croppedImg} />
+						
 						</div>
 						<div className="w-10 ml-0 mt-3">
 							<IconButton

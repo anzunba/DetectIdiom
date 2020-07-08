@@ -15,7 +15,8 @@ class EnJa(models.Model):
     return self.word
   
 class Article(models.Model):
-  user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name="articles")
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
+  profile = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name="profile", null=True)
   title = models.CharField(max_length=63)
   content = models.TextField()
   language = models.CharField(max_length=15, null=True)
@@ -41,7 +42,7 @@ class Profile(models.Model):
 
 class Following(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "following_user")
-  followed_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = "followed_user")
+  followed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "followed_user")
 
 class Notification(models.Model):
   article = models.ForeignKey('Article', on_delete=models.CASCADE)

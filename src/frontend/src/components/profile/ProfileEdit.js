@@ -8,7 +8,7 @@ import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 
 import TextField from '@material-ui/core/TextField';
-import { updateProfile } from '../../actions/profile';
+import { updateProfile } from '../../actions/getRequestUserProfile';
 import { updateLanguage } from '../../actions/language';
 import { useDispatch } from 'react-redux';
 
@@ -71,6 +71,10 @@ const App = (props) => {
 		setProfileEditOpen(true);
 	};
 
+	const handleProfileEditClose = () =>{
+		setProfileEditOpen(false);
+	}
+
 
 
 	const handleCropperOpen = () => {
@@ -84,10 +88,6 @@ const App = (props) => {
 		console.log('lang: ' + lang)
 		formData.append('profile_img', croppedImg, 'croppedProfileImg.png')
 		dispatch(updateProfile(formData))
-		// const formLangData = new FormData();
-		// formLangData.append(nativeLangLevels)
-		// dispatch(updateLanguage(formLangData))
-
 		setProfileEditOpen(false);
 	};
 
@@ -268,7 +268,6 @@ const App = (props) => {
 
 
   const handleLangChange = (e) => {
-	  console.log(e.target.value)
     setLang(e.target.value);
   };
 
@@ -282,7 +281,7 @@ const App = (props) => {
 				aria-describedby="transition-modal-description"
 				className={classes.profileEditModal}
 				open={profileEditOpen}
-		
+				onClose={handleProfileEditClose}
 				closeAfterTransition
 				BackdropComponent={Backdrop}
 				BackdropProps={{

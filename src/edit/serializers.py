@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import EnJa, Profile, Article
+from .models import EnJa, Profile, Article, Following
 from rest_framework.fields import CurrentUserDefault
 class EnJaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,13 +21,19 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ArticleSerializer(serializers.ModelSerializer):
-    user= ProfileSerializer(read_only=True)
+    user= UserSerializer(read_only=True)
+    profile = ProfileSerializer(read_only=True)
     class Meta:
         model = Article
         fields = '__all__'
     
 
-        
+class FollowSerializer(serializers.ModelSerializer):
+    user= UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Following
+        fields = '__all__'
 
 
 

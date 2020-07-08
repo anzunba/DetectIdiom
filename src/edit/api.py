@@ -1,8 +1,8 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer
-from .models import EnJa, Profile,Article
+from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer
+from .models import EnJa, Profile,Article, Following
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
 from django.contrib.auth.models import User
@@ -42,7 +42,8 @@ class OtherProfileDetailAPIView(APIView):
         }}
  
     def get_object(self, pk):
-        profile = get_object_or_404(Profile, pk=pk)
+        profile = Profile.objects.get(user=User.objects.get(id=pk))
+        #user = get_object_or_404(User, pk=pk)
         return profile
  
     def get(self, request, pk):
@@ -101,7 +102,17 @@ class AllArticleListCreateAPIView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Article.objects.all()
-        
+
+
+class FollowArticleListCreateAPIView(APIView):
+
+    def get(self, request):
+        followersInstanceList = Following.objects.filter(user=self.request.user).values_list('followed_user', flat=True)
+        articlesList = Article.objects.filter(user=followersInstanceList[0])
+        return Response(articlesList)
+
+
+
 # class ArticleListCreateAPIView(APIView):
 class ArticleListCreateAPIView(viewsets.ModelViewSet):
     permission_classes = [
@@ -110,10 +121,12 @@ class ArticleListCreateAPIView(viewsets.ModelViewSet):
     serializer_class = ArticleSerializer
 
     def get_queryset(self):
-        return self.request.user.profile.articles.all()
+        requestUserArticle = Article.objects.filter(user=self.request.user)
+        return requestUserArticle
+        #return self.request.user.articles.all()
     
     def perform_create(self, serializer):
-        serializer.save(user = self.request.user.profile)
+        serializer.save(user = self.request.user, profile=self.request.user.profile)
         
 
 
@@ -125,7 +138,7 @@ class UsersArticlesListAPIView(APIView):
         }}
  
     def get_object(self, userId):
-        user = Profile.objects.get(id=userId)
+        user = User.objects.get(id=userId)
         article = Article.objects.filter(user=user)
         #article = get_object_or_404(Article, user=userId)
         return article
@@ -136,7 +149,7 @@ class UsersArticlesListAPIView(APIView):
         for article in articles:
             serializer = ArticleSerializer(article)
             article_list.append(serializer.data)
-        return Response(article_list)
+        return Response(article_list)    
 
     
 class ArticleDetailAPIView(APIView):
@@ -169,3 +182,41 @@ class ArticleDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class FollowListCreateAPIView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = FollowSerializer
+    
+    def perform_create(self, serializer):
+        if not Following.objects.filter(user=self.request.user, followed_user=self.request.POST.get('followed_user')).exists():
+            serializer.save(user = self.request.user)
+    
+
+class FollowDetailAPIView(APIView):
+    err_msg = {
+        "error": {
+            "code": 404,
+            "message": "Follow not found",
+        }}
+ 
+    def get_object(self, followedId):
+        if Following.objects.filter(user=self.request.user, followed_user=User.objects.get(id=followedId)).exists():
+            follow = Following.objects.get(user=self.request.user, followed_user=User.objects.get(id=followedId))
+            return follow
+        else:
+            ''
+ 
+    def get(self, request, followedId):
+        follow = self.get_object(followedId)
+        serializer = FollowSerializer(follow)
+        if serializer.data['followed_user'] == None:
+            return Response(False)
+        else: 
+            return Response(True)
+        #return Response(serializer.data)
+ 
+    def delete(self, request, followedId):
+        follow = self.get_object(followedId)
+        follow.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

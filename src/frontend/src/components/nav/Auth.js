@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
-import { getProfile } from '../../actions/profile';
+import { getProfile } from '../../actions/getRequestUserProfile';
 
 class Auth extends Component {
 	static propTypes = {

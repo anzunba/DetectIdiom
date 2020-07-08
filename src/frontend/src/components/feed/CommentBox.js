@@ -5,9 +5,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import { profileImg } from './Article'
-const App = () => {
-	const profileImgUrl = useContext(profileImg)
+
+const App = (props) => {
+
 	const [ comment, setComment ] = useState('');
 	const [ open, setOpen ] = React.useState(false);
 	const handleComment = (e) => {
@@ -60,9 +60,7 @@ const App = () => {
 			</Snackbar>
 			<CardContent>
 				<div className="profileImg">
-					<Avatar alt="" src={profileImgUrl} ria-label="recipe">
-						R
-					</Avatar>
+					<Avatar alt="" src={props.profileImg} />
 				</div>
 				<div className="commentContent">
 					<Tooltip title="TO SUBMIT : [Ctrl + Enter]" aria-label="add">

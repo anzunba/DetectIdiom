@@ -26,8 +26,10 @@ export const LEMMATIZER2 = 'LEMMATIZER2';
 export const LEMMATIZER3 = 'LEMMATIZER3';
 
 export const PROFILE = 'PROFILE';
+export const REQUEST_USER_PROFILE = 'REQUEST_USER_PROFILE';
 export const LANGUAGE = 'LANGUAGE';
 export const ARTICLE = 'ARTICLE';
 export const SEND_TEXT_HEADER = 'SEND_TEXT_HEADER';
 export const SEND_LIST_EDIT = 'SEND_LIST_EDIT';
 export const PAGE = 'PAGE';
+export const FOLLOW = 'FOLLOW';

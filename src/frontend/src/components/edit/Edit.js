@@ -83,7 +83,7 @@ const App = () => {
 	const [pId, setPId] = useState();
 	const [ sId, setSId] = useState();
 	const wordIdioms = useSelector((state) => state.getWordIdiom);
-	const meaningsString = useSelector((state) => state.edit3.mean);
+	const meaningsString = useSelector((state) => state.getMeaning.mean);
 	lemma = useSelector((state) => state.edit9);
 	let wordListFromDb = {};
 	let idiomListFromDb = {};

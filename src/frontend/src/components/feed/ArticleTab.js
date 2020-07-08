@@ -5,13 +5,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import GroupIcon from '@material-ui/icons/Group';
-import HelpIcon from '@material-ui/icons/Help';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Article from './Article';
 import PublicIcon from '@material-ui/icons/Public';
 import Order from './Order';
-import { getArticle, getAllArticle } from '../../actions/article';
+import { getArticle, getAllArticle, getFollowArticle } from '../../actions/article';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from '../../actions/profile';
 
@@ -52,7 +50,7 @@ const ArticleTab = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		// dispatch(getProfile());
-		// dispatch(getAllArticle());
+		dispatch(getAllArticle());
 	}, []);
 
 	const [ value, setValue ] = React.useState(0);
@@ -60,10 +58,12 @@ const ArticleTab = () => {
 	const handleChange = (event, newValue) => {
 		if(newValue==0){
 			dispatch(getAllArticle());
+		}else if(newValue==1){
+			dispatch(getFollowArticle())
+			
 		}else{
 			dispatch(getArticle());
 		}
-		
 		setValue(newValue);
 	};
 
@@ -85,7 +85,7 @@ const ArticleTab = () => {
 					<Tab label="ClassMates" icon={<GroupIcon />} {...a11yProps(2)} />
 				</Tabs>
 			</AppBar>
-			<TabPanel value={value} index={0} onClick={dispatch(getAllArticle())}>
+			<TabPanel value={value} index={0}>
 				<Article />
 			</TabPanel>
 			<TabPanel value={value} index={1}>

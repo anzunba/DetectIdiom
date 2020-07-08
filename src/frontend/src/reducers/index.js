@@ -16,6 +16,8 @@ import edit11 from './edit11';
 import profile from './profile';
 import language from './language';
 import page from './page';
+import follow from './follow';
+import getRequestUserProfile from './getRequestUserProfile'
 
 export default combineReducers({
   feed,
@@ -34,5 +36,7 @@ export default combineReducers({
   edit11,
   profile,
   language,
-  page
+  page, 
+  getRequestUserProfile,
+  follow
 });

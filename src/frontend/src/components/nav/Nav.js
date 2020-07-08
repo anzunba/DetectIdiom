@@ -17,6 +17,8 @@ import { useSelector } from 'react-redux';
 import {showPage} from '../../actions/page';
 import { useDispatch} from 'react-redux';
 import Auth from './Auth';
+import { getProfile } from '../../actions/getRequestUserProfile';
+import { getArticle } from '../../actions/article';
 
 
 const Nav = () => {
@@ -48,7 +50,7 @@ const Nav = () => {
 		setOpen(false);
 	};
 
-	const textProcessingDone = useSelector((state) => state.edit)
+	const textProcessingDone = useSelector((state) => state.getProcessedText)
 	useEffect(() => {
 		textProcessingDone ? setLoader(false) : ''
 	}, [textProcessingDone])
@@ -71,6 +73,8 @@ const Nav = () => {
 		}
 	};
 	const getMyProfile = () =>{
+		dispatch(getProfile())
+		dispatch(getArticle())
 		dispatch(showPage('profile'))
 	}
 	return (
