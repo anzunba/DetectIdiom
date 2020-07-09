@@ -26,6 +26,8 @@ class Article(models.Model):
   idiom = models.TextField(blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+  def __str__(self):
+    return self.title
   
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -46,7 +48,7 @@ class Following(models.Model):
 
 class Notification(models.Model):
   article = models.ForeignKey('Article', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
   is_favorite = models.BooleanField(default=False)
   is_like = models.BooleanField(default=False)
   is_comment = models.BooleanField(default=False)
@@ -58,31 +60,35 @@ class Notification(models.Model):
 
 class ArticleLike(models.Model):
   article = models.ForeignKey('Article', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Favorite(models.Model):
   article = models.ForeignKey('Article', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Comment(models.Model):
   article = models.ForeignKey('Article', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
   content = models.CharField(max_length=255, blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
+  def __str__(self):
+    return self.content
 
 class CommentLike(models.Model):
   comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Reply(models.Model):
   comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
   content = models.CharField(max_length=255, blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
 
 class ReplyLike(models.Model):
   reply = models.ForeignKey('Reply', on_delete=models.CASCADE)
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
   
 
   

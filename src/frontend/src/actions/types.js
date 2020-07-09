@@ -33,3 +33,5 @@ export const SEND_TEXT_HEADER = 'SEND_TEXT_HEADER';
 export const SEND_LIST_EDIT = 'SEND_LIST_EDIT';
 export const PAGE = 'PAGE';
 export const FOLLOW = 'FOLLOW';
+export const COMMENT = 'COMMENT';
+export const REPLY = 'REPLY';

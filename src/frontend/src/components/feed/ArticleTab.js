@@ -9,7 +9,7 @@ import Box from '@material-ui/core/Box';
 import Article from './Article';
 import PublicIcon from '@material-ui/icons/Public';
 import Order from './Order';
-import { getArticle, getAllArticle, getFollowArticle } from '../../actions/article';
+import { getArticle, getAllArticle, getFollowArticle, getClassmateArticle } from '../../actions/article';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from '../../actions/profile';
 
@@ -49,19 +49,21 @@ function a11yProps(index) {
 const ArticleTab = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
-		// dispatch(getProfile());
 		dispatch(getAllArticle());
 	}, []);
 
 	const [ value, setValue ] = React.useState(0);
 
-	const handleChange = (event, newValue) => {
+	const handleChange = (e, newValue) => {
 		if(newValue==0){
 			dispatch(getAllArticle());
 		}else if(newValue==1){
 			dispatch(getFollowArticle())
 			
-		}else{
+		}else if(newValue==2){
+			dispatch(getClassmateArticle())
+		}
+		else{
 			dispatch(getArticle());
 		}
 		setValue(newValue);

@@ -1,27 +1,40 @@
-import React from 'react';
+import React, {useEffect, Fragment}from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import IconButtons from './IconButtons';
+import { useDispatch, useSelector } from 'react-redux';
+import { getReply } from '../../actions/reply';
+import reply from '../../reducers/reply';
 
+const Reply = (props) =>{
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(getReply(props.comment.id))
+	}, [])
 
-export default function AlignItemsList() {
-	const message1 =
-		"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-
+	// const message1 =
+	// 	"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+	const replys= useSelector((state) => state.reply);
+	console.log(replys)
 	return (
 		<React.Fragment>
-			<div className="profileImg">
-				<Avatar alt="" src="/static/frontend/images/bear.png" ria-label="recipe">
-					R
-				</Avatar>
-			</div>
-			<div className="commentContent">
-				<Typography component="span" variant="body2" color="textPrimary">
-					{message1}
-				</Typography>
-				<div><IconButtons /></div>
-				
-			</div>
+			{replys.length>0? replys.map((reply, i)=>{
+				return(
+				<Fragment key={i}>
+				<div className="profileImg">
+					<Avatar alt="" src={reply.profile.profile_img} />
+				</div>
+				<div className="commentContent">
+					<small>{reply.user.username}</small><br/>
+					<Typography component="span" variant="body2" color="textPrimary">
+						{reply.content}
+					</Typography>
+					<div><IconButtons /></div>
+				</div>
+				</Fragment>)
+			}):''}
+			
 		</React.Fragment>
 	);
 }
+export default Reply;

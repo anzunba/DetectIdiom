@@ -6,38 +6,37 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
-import { postComment, getComment } from '../../actions/comment';
+import { postReply, getReply } from '../../actions/reply';
 
 const App = (props) => {
 	const dispatch = useDispatch();
-	const [ comment, setComment ] = useState('');
+	const [ reply, setReply ] = useState('');
 	const [ open, setOpen ] = React.useState(false);
-	const handleComment = (e) => {
-		setComment(e.target.value);
+	const handleReply = (e) => {
+		setReply(e.target.value);
 	};
 	const submit = (e) => {
 		if ((e.ctrlKey && e.key == 'Enter')) {
-			const articleId = e.target.id.split('_')[1]
+			const commentId = e.target.id.split('_')[1]
 			setOpen(true);
-			setComment('');
-			const commentData = new FormData();
-			commentData.append('article', articleId);
-			commentData.append('content', comment);
-			dispatch(postComment(commentData))
+			setReply('');
+			const replyData = new FormData();
+			replyData.append('comment', commentId);
+			replyData.append('content', reply);
+			dispatch(postReply(replyData))
 		}
 	};
-
 
 	const form = (
 		<form noValidate autoComplete="off">
 			<div>
 				<TextField
-					id={`id_${props.articleId}`}
-					label="Write a comment"
+					id={`id_${props.comment.id}`}
+					label="Write a reply"
 					multiline
 					rowsMax={4}
-					value={comment}
-					onChange={handleComment}
+					value={reply}
+					onChange={handleReply}
 					variant="outlined"
 					fullWidth
 					onKeyUp={submit}
@@ -75,7 +74,7 @@ const App = (props) => {
 				autoHideDuration={2500}
 				onClose={handleClose}
 			>
-				<Alert severity="success">Successfully comment sent!</Alert>
+				<Alert severity="success">Successfully reply sent!</Alert>
 			</Snackbar>
 			<CardContent>
 				<div className="profileImg">

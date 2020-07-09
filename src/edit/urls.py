@@ -1,23 +1,28 @@
 from django.urls import path, include
 from . import views
 from rest_framework import routers
-from .api import EnJaViewSet, ProfileDetailAPIView, ArticleDetailAPIView, ArticleListCreateAPIView, AllArticleListCreateAPIView, OtherProfileDetailAPIView, UsersArticlesListAPIView, FollowDetailAPIView, FollowArticleListCreateAPIView, FollowListCreateAPIView
+from .api import EnJaViewSet, RequestUserProfileView, UpdateCustomArticleView, RequestUserArticleCreateView, AllArticleCreateView, CustomUserProfileView, CustomUserArticleView, FollowDetailAPIView, FollowArticleCreateView, FollowCreateView, ClassmateArticleCreateView, CommentCreateView, CommentDetailAPIView, ReplyCreateView, ReplyDetailAPIView
 
 urlpatterns = [
   path('edit/getTokens', views.get_tokens),
-  path("api/profile/", ProfileDetailAPIView.as_view(), name="profile-detail"),
-  #path("api/followArticle/", FollowArticleListCreateAPIView.as_view(), name="followe-detail"),
-  path("api/profile/<int:pk>", OtherProfileDetailAPIView.as_view(), name="other-profile-detail"),
-  #path("api/article/", ArticleListCreateAPIView.as_view(), name="article-detail"),
+  path("api/profile/", RequestUserProfileView.as_view(), name="profile-detail"),
+  #path("api/followArticle/", FollowArticleCreateView.as_view(), name="followe-detail"),
+  path("api/profile/<int:pk>", CustomUserProfileView.as_view(), name="other-profile-detail"),
+  #path("api/article/", RequestUserArticleCreateView.as_view(), name="article-detail"),
   path("api/follow/<int:followedId>", FollowDetailAPIView.as_view(), name="follow-detail"),
-  path("api/article/<int:pk>", ArticleDetailAPIView.as_view(), name="article-detail"),
-  path("api/userArticles/<int:userId>", UsersArticlesListAPIView.as_view(), name="users-article-list"),
+  path("api/comment/<int:articleId>", CommentDetailAPIView.as_view(), name="comment-detail"),
+  path("api/reply/<int:commentId>", ReplyDetailAPIView.as_view(), name="reply-detail"),
+  path("api/article/<int:pk>", UpdateCustomArticleView.as_view(), name="article-detail"),
+  path("api/userArticles/<int:userId>", CustomUserArticleView.as_view(), name="users-article-list"),
 ]
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register('api/enja', EnJaViewSet, 'enja')
-router.register("api/article/", ArticleListCreateAPIView, "article-detail")
-router.register("api/allArticle/", AllArticleListCreateAPIView, "allArticle-detail")
-router.register("api/followArticle/", FollowArticleListCreateAPIView, "followArticle-detail")
-router.register("api/follow/", FollowListCreateAPIView, "follow-detail")
+router.register("api/article/", RequestUserArticleCreateView, "article-detail")
+router.register("api/allArticle/", AllArticleCreateView, "allArticle-detail")
+router.register("api/followArticle/", FollowArticleCreateView, "followArticle-detail")
+router.register("api/classmateArticle/", ClassmateArticleCreateView, "classmateArticle-detail")
+router.register("api/follow/", FollowCreateView, "follow-detail")
+router.register("api/comment/", CommentCreateView, "comment-detail")
+router.register("api/reply/", ReplyCreateView, "reply-detail")
 urlpatterns += router.urls

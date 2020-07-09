@@ -1,8 +1,8 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer
-from .models import EnJa, Profile,Article, Following
+from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer, CommentSerializer, ReplySerializer
+from .models import EnJa, Profile,Article, Following, Comment, Reply
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
 from django.contrib.auth.models import User
@@ -34,7 +34,7 @@ def get_lemmatizer(sentence):
         lemma = wnl.lemmatize(word, wntag) if wntag else word
         return lemma
 
-class OtherProfileDetailAPIView(APIView):
+class CustomUserProfileView(APIView):
     err_msg = {
         "error": {
             "code": 404,
@@ -43,7 +43,6 @@ class OtherProfileDetailAPIView(APIView):
  
     def get_object(self, pk):
         profile = Profile.objects.get(user=User.objects.get(id=pk))
-        #user = get_object_or_404(User, pk=pk)
         return profile
  
     def get(self, request, pk):
@@ -64,7 +63,7 @@ class OtherProfileDetailAPIView(APIView):
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-class ProfileDetailAPIView(APIView):
+class RequestUserProfileView(APIView):
     err_msg = {
         "error": {
             "code": 404,
@@ -94,7 +93,7 @@ class ProfileDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AllArticleListCreateAPIView(viewsets.ModelViewSet):
+class AllArticleCreateView(viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAuthenticated
     ]
@@ -104,15 +103,7 @@ class AllArticleListCreateAPIView(viewsets.ModelViewSet):
         return Article.objects.all()
 
 
-# class FollowArticleListCreateAPIView(APIView):
-
-#     def get(self, request):
-#         followersInstanceList = Following.objects.filter(user=self.request.user).values_list('followed_user', flat=True)
-#         articlesList = Article.objects.filter(user=followersInstanceList)
-#         return Response(articlesList)
-
-
-class FollowArticleListCreateAPIView(viewsets.ModelViewSet):
+class FollowArticleCreateView(viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAuthenticated
     ]
@@ -122,11 +113,21 @@ class FollowArticleListCreateAPIView(viewsets.ModelViewSet):
         filter = (Following.objects.filter(user=self.request.user)).values('followed_user_id')
         filtered_articles = Article.objects.filter(user__in=filter)
         
-        # requestUserArticle = Article.objects.filter(filter)
         return filtered_articles
 
-# class ArticleListCreateAPIView(APIView):
-class ArticleListCreateAPIView(viewsets.ModelViewSet):
+class ClassmateArticleCreateView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        lang = Profile.objects.get(user=self.request.user).language
+        articles = Article.objects.filter(language=lang)
+        
+        return articles
+
+class RequestUserArticleCreateView(viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAuthenticated
     ]
@@ -135,14 +136,12 @@ class ArticleListCreateAPIView(viewsets.ModelViewSet):
     def get_queryset(self):
         requestUserArticle = Article.objects.filter(user=self.request.user)
         return requestUserArticle
-        #return self.request.user.articles.all()
     
     def perform_create(self, serializer):
         serializer.save(user = self.request.user, profile=self.request.user.profile)
         
 
-
-class UsersArticlesListAPIView(APIView):
+class CustomUserArticleView(APIView):
     err_msg = {
         "error": {
             "code": 404,
@@ -152,7 +151,6 @@ class UsersArticlesListAPIView(APIView):
     def get_object(self, userId):
         user = User.objects.get(id=userId)
         article = Article.objects.filter(user=user)
-        #article = get_object_or_404(Article, user=userId)
         return article
  
     def get(self, request, userId):
@@ -164,7 +162,7 @@ class UsersArticlesListAPIView(APIView):
         return Response(article_list)    
 
     
-class ArticleDetailAPIView(APIView):
+class UpdateCustomArticleView(APIView):
     err_msg = {
         "error": {
             "code": 404,
@@ -194,7 +192,7 @@ class ArticleDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class FollowListCreateAPIView(viewsets.ModelViewSet):
+class FollowCreateView(viewsets.ModelViewSet):
     permission_classes = [
         permissions.AllowAny
     ]
@@ -226,9 +224,61 @@ class FollowDetailAPIView(APIView):
             return Response(False)
         else: 
             return Response(True)
-        #return Response(serializer.data)
  
     def delete(self, request, followedId):
         follow = self.get_object(followedId)
         follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CommentCreateView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        article = get_object_or_404(Article, id=self.request.POST.get('article'))
+        serializer.save(user = self.request.user, article=article, profile=self.request.user.profile)
+        
+
+class CommentDetailAPIView(APIView):
+ 
+    def get_object(self, articleId):
+        article = Article.objects.get(id=articleId)
+        comments = Comment.objects.filter(article=article)
+        return comments
+    
+    def get(self, request, articleId):
+        comments= self.get_object(articleId)
+        comment_list = []
+        for comment in comments:
+            serializer = CommentSerializer(comment)
+            comment_list.append(serializer.data)
+        return Response(comment_list)  
+    
+
+class ReplyCreateView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    serializer_class = ReplySerializer
+
+    def perform_create(self, serializer):
+        comment = get_object_or_404(Comment, id=self.request.POST.get('comment'))
+        serializer.save(user = self.request.user, comment=comment, profile=self.request.user.profile)
+        
+
+class ReplyDetailAPIView(APIView):
+ 
+    def get_object(self, commentId):
+        comment = Comment.objects.get(id=commentId)
+        replys = Reply.objects.filter(comment=comment)
+        return replys
+    
+    def get(self, request, commentId):
+        replys= self.get_object(commentId)
+        reply_list = []
+        for reply in replys:
+            serializer = ReplySerializer(reply)
+            reply_list.append(serializer.data)
+        return Response(reply_list)  

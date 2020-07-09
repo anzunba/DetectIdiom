@@ -64,6 +64,19 @@ export const getFollowArticle = () => (dispatch, getState) => {
     .catch((err) => console.log("actions: " + err));
 };
 
+export const getClassmateArticle = () => (dispatch, getState) => {
+  console.log("called getClassmateArticle")
+  axios
+    .get('/api/classmateArticle/', tokenConfig(getState))
+    .then((res) => {
+      dispatch({
+        type: ARTICLE,
+        payload: res.data,
+      });
+    })
+    .catch((err) => console.log("actions: " + err));
+};
+
 export const getCustomUserArticle = (userId) => (dispatch, getState) => {
   console.log('called getCustomUserArticle')
   axios

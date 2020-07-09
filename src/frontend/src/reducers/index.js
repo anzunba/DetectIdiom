@@ -18,6 +18,8 @@ import language from './language';
 import page from './page';
 import follow from './follow';
 import getRequestUserProfile from './getRequestUserProfile'
+import comment from './comment'
+import reply from './reply'
 
 export default combineReducers({
   feed,
@@ -38,5 +40,7 @@ export default combineReducers({
   language,
   page, 
   getRequestUserProfile,
-  follow
+  follow,
+  comment,
+  reply
 });
