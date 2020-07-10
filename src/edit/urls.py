@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from rest_framework import routers
-from .api import EnJaViewSet, RequestUserProfileView, UpdateCustomArticleView, RequestUserArticleCreateView, AllArticleCreateView, CustomUserProfileView, CustomUserArticleView, FollowDetailAPIView, FollowArticleCreateView, FollowCreateView, ClassmateArticleCreateView, CommentCreateView, CommentDetailAPIView, ReplyCreateView, ReplyDetailAPIView
+from .api import EnJaViewSet, RequestUserProfileView, UpdateCustomArticleView, RequestUserArticleCreateView, AllArticleCreateView, CustomUserProfileView, CustomUserArticleView, FollowDetailAPIView, FollowArticleCreateView, FollowCreateView, ClassmateArticleCreateView, CommentCreateView, CommentDetailAPIView, ReplyCreateView, ReplyDetailAPIView, ArticleLikeCreateView, CommentLikeCreateView, ArticleLikeDetailAPIView, CommentLikeDetailAPIView, CommentUserDetailAPIView, ReplyUserDetailAPIView
 
 urlpatterns = [
   path('edit/getTokens', views.get_tokens),
@@ -10,8 +10,12 @@ urlpatterns = [
   path("api/profile/<int:pk>", CustomUserProfileView.as_view(), name="other-profile-detail"),
   #path("api/article/", RequestUserArticleCreateView.as_view(), name="article-detail"),
   path("api/follow/<int:followedId>", FollowDetailAPIView.as_view(), name="follow-detail"),
-  path("api/comment/<int:articleId>", CommentDetailAPIView.as_view(), name="comment-detail"),
-  path("api/reply/<int:commentId>", ReplyDetailAPIView.as_view(), name="reply-detail"),
+  path("api/comment/<int:id>", CommentDetailAPIView.as_view(), name="comment-detail"),
+  path("api/commentUser/<int:id>", CommentUserDetailAPIView.as_view(), name="commentUser-detail"),
+  path("api/replyUser/<int:id>", ReplyUserDetailAPIView.as_view(), name="replyUser-detail"),
+  path("api/reply/<int:id>", ReplyDetailAPIView.as_view(), name="reply-detail"),
+  path("api/articleLike/<int:id>", ArticleLikeDetailAPIView.as_view(), name="articleLike-detail"),
+  path("api/commentLike/<int:id>", CommentLikeDetailAPIView.as_view(), name="commentLike-detail"),
   path("api/article/<int:pk>", UpdateCustomArticleView.as_view(), name="article-detail"),
   path("api/userArticles/<int:userId>", CustomUserArticleView.as_view(), name="users-article-list"),
 ]
@@ -25,4 +29,6 @@ router.register("api/classmateArticle/", ClassmateArticleCreateView, "classmateA
 router.register("api/follow/", FollowCreateView, "follow-detail")
 router.register("api/comment/", CommentCreateView, "comment-detail")
 router.register("api/reply/", ReplyCreateView, "reply-detail")
+router.register("api/articleLike/", ArticleLikeCreateView, "articleLike-detail")
+router.register("api/commentLike/", CommentLikeCreateView, "commentLike-detail")
 urlpatterns += router.urls

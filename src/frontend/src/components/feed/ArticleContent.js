@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
@@ -10,22 +9,27 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Comment from './Comment';
-import CommentBox from './CommentBox';
-import IconButtons from './IconButtons';
-import Block from './Block';
 import Quiz from './Quiz';
+import CommentBox from './CommentBox';
 import WordTable from './WordTable';
 import Divider from '@material-ui/core/Divider';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { useDispatch, useSelector } from 'react-redux';
 import { startLoader } from '../../actions/startLoader';
 import { getWordIdioms } from '../../actions/getWordIdiom';
-import { getArticle, getAllArticle, getCustomUserArticle } from '../../actions/article';
+import { getCustomUserArticle } from '../../actions/article';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { getProcessedText } from '../../actions/getProcessedText';
 import { showPage } from '../../actions/page';
 import { getCustomUserProfile } from '../../actions/profile';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import CommentIcon from '@material-ui/icons/Comment';
+import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
+import { getCommentUser } from '../../actions/commentUser';
+import { postArticleLike, getArticleLike } from '../../actions/articleLike';
 
 const useStyles = makeStyles((theme) => ({
 	expand: {
@@ -39,31 +43,59 @@ const useStyles = makeStyles((theme) => ({
 		transform: 'rotate(180deg)'
 	}
 }));
-
+// let likedByRequestUser = {}
 const ArticleContent = (props) => {
-    const [expandControllerList, setExpandControllerList]= useState({})
+	const [ expandControllerList, setExpandControllerList ] = useState({});
 	const dispatch = useDispatch();
-    const classes = useStyles();
-    
-    useEffect(() => {
-        setExpandControllerList((state) => ({ ...state, [props.article.id]: false }));
-    }, [])
-
-	const handleExpandClick = (articleId) => {
-        setExpandControllerList((state) => ({ ...state, [props.article.id]: !expandControllerList[props.article.id] }));
-	};
-
+	const classes = useStyles();
 	const [ croppedImg, setCroppedImg ] = useState('/static/frontend/images/user.png');
-
 	const profileData = useSelector((state) => state.getRequestUserProfile);
-
+	const articleLikeData = useSelector((state) => state.articleLike);
+	const [ likedByRequestUser, setLikedByRequestUser ] = useState({});
+	const [ commentedByRequestUser, setCommentedByRequestUser ] = useState({});
+	const [ likeNum, setLikeNum ] = useState({});
+	const commentUserData = useSelector((state) => state.commentUser);
+	dayjs.extend(relativeTime);
+	useEffect(() => {
+		setExpandControllerList((state) => ({ ...state, [props.article.id]: false }));
+		//likedByRequestUser[props.article.id] = false
+		setLikedByRequestUser((state) => ({ ...state, [props.article.id]: false }));
+		setLikeNum((state) => ({ ...state, [props.article.id]: 0 }));
+		dispatch(getArticleLike(props.article.id));
+		dispatch(getCommentUser(props.article.id));
+	}, []);
+	useEffect(
+		() => {
+			if (commentUserData.length > 0) {
+				const isCommentedByRequestUser = commentUserData[0];
+				const articleId = commentUserData[1]
+				setCommentedByRequestUser((state) => ({ ...state, [articleId]: isCommentedByRequestUser }));
+			}
+		},
+		[ commentUserData ]
+	);
+	useEffect(
+		() => {
+			if (articleLikeData.length > 0) {
+				const likeSum = articleLikeData[0]
+				const isLikedByRequestUser = articleLikeData[1];
+				const articleId = articleLikeData[2]
+				setLikedByRequestUser((state) => ({ ...state, [articleId]: isLikedByRequestUser }));
+				setLikeNum((state) => ({ ...state, [articleId]: likeSum }));
+			}
+		},
+		[ articleLikeData ]
+	);
 	useEffect(
 		() => {
 			setCroppedImg(profileData.profile_img);
 		},
 		[ profileData ]
 	);
-	dayjs.extend(relativeTime);
+
+	const handleExpandClick = () => {
+		setExpandControllerList((state) => ({ ...state, [props.article.id]: !expandControllerList[props.article.id] }));
+	};
 
 	const showEdit = (fileContent, wordIdioms) => {
 		dispatch(getProcessedText(fileContent));
@@ -76,8 +108,15 @@ const ArticleContent = (props) => {
 		dispatch(getCustomUserProfile(userId));
 		dispatch(showPage('profile'));
 	};
+
+	const clickLike = () => {
+		const articleLikeData = new FormData();
+		articleLikeData.append('article', props.article.id);
+		dispatch(postArticleLike(articleLikeData));
+	};
+
 	return (
-		<div className="bg-light m-1" >
+		<div className="bg-light m-1">
 			<div className="d-flex flex-row pt-3 pl-3">
 				<Avatar
 					alt=""
@@ -104,7 +143,33 @@ const ArticleContent = (props) => {
 					{props.article.content}
 				</Typography>
 				<CardActions disableSpacing className="p-0">
-					<IconButtons />
+					<FormControlLabel
+						control={
+							<Checkbox
+								name={`like_${props.article.id}`}
+								icon={<FavoriteBorder />}
+								checkedIcon={<Favorite />}
+								onClick={() => clickLike()}
+								color="secondary"
+								checked={likedByRequestUser[props.article.id]?true:false}
+							/>
+						}
+						label={`${likeNum[props.article.id]} Like`}
+					/>
+					<FormControlLabel
+						control={
+							<Checkbox
+								name={`comment_${props.article.id}`}
+								icon={<CommentOutlinedIcon />}
+								checkedIcon={<CommentIcon />}
+								color="primary"
+								checked={commentedByRequestUser[props.article.id]?true:false}
+								style={{cursor:'default'}}
+							/>
+						}
+						label={`${props.article.commentsNum} Comment`}
+						style={{cursor:'default'}}
+					/>
 				</CardActions>
 				<Divider />
 				<div className="d-flex">
@@ -132,7 +197,7 @@ const ArticleContent = (props) => {
 							className={clsx(classes.expand, {
 								[classes.expandOpen]: expandControllerList[props.article.id]
 							})}
-							onClick={()=>handleExpandClick(props.article.id)}
+							onClick={() => handleExpandClick()}
 							aria-expanded={expandControllerList[props.article.id]}
 							aria-label="show more"
 						>

@@ -8,6 +8,7 @@ import Alert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
 import { postComment, getComment } from '../../actions/comment';
 
+let articleId
 const App = (props) => {
 	const dispatch = useDispatch();
 	const [ comment, setComment ] = useState('');
@@ -17,7 +18,7 @@ const App = (props) => {
 	};
 	const submit = (e) => {
 		if ((e.ctrlKey && e.key == 'Enter')) {
-			const articleId = e.target.id.split('_')[1]
+			articleId = e.target.id.split('_')[1]
 			setOpen(true);
 			setComment('');
 			const commentData = new FormData();
@@ -26,6 +27,7 @@ const App = (props) => {
 			dispatch(postComment(commentData))
 		}
 	};
+
 
 
 	const form = (

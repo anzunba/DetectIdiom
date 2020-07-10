@@ -8,7 +8,7 @@ import Alert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
 import { postReply, getReply } from '../../actions/reply';
 
-const App = (props) => {
+const ReplyBox = (props) => {
 	const dispatch = useDispatch();
 	const [ reply, setReply ] = useState('');
 	const [ open, setOpen ] = React.useState(false);
@@ -89,4 +89,4 @@ const App = (props) => {
 		</React.Fragment>
 	);
 };
-export default App;
+export default ReplyBox;

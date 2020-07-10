@@ -20,6 +20,10 @@ import follow from './follow';
 import getRequestUserProfile from './getRequestUserProfile'
 import comment from './comment'
 import reply from './reply'
+import articleLike from './articleLike'
+import commentLike from './commentLike'
+import commentUser from './commentUser'
+import replyUser from './replyUser'
 
 export default combineReducers({
   feed,
@@ -42,5 +46,9 @@ export default combineReducers({
   getRequestUserProfile,
   follow,
   comment,
-  reply
+  reply,
+  articleLike,
+  commentLike,
+  commentUser,
+  replyUser
 });

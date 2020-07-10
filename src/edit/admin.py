@@ -6,7 +6,7 @@ from .models import *
 admin.site.register(EnJa)
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'title', 'content', 'language', 'origin_sentence', 'translated_sentence', 'word', 'idiom')
+    list_display = ('id', 'user', 'title', 'content', 'language', 'origin_sentence', 'translated_sentence', 'word', 'idiom', 'commentsNum')
     
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'bio', 'profile_img','language', 'created_at')
@@ -24,7 +24,7 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('id', 'article', 'user')
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'article', 'user', 'content', 'created_at')
+    list_display = ('id', 'article', 'user', 'content', 'replyNum', 'created_at')
 
 class CommentLikeAdmin(admin.ModelAdmin):
     list_display = ('id', 'comment', 'user')

@@ -1,8 +1,8 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer, CommentSerializer, ReplySerializer
-from .models import EnJa, Profile,Article, Following, Comment, Reply
+from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer, CommentSerializer, ReplySerializer, ArticleLikeSerializer, CommentLikeSerializer
+from .models import EnJa, Profile,Article, Following, Comment, Reply, ArticleLike, CommentLike
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
 from django.contrib.auth.models import User
@@ -239,23 +239,42 @@ class CommentCreateView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         article = get_object_or_404(Article, id=self.request.POST.get('article'))
         serializer.save(user = self.request.user, article=article, profile=self.request.user.profile)
-        
+        Article.objects.filter(id=self.request.POST.get('article')).update(commentsNum=len(Comment.objects.filter(article=self.request.POST.get('article'))))
 
 class CommentDetailAPIView(APIView):
  
-    def get_object(self, articleId):
-        article = Article.objects.get(id=articleId)
+    def get_object(self, id):
+        article = Article.objects.get(id=id)
         comments = Comment.objects.filter(article=article)
         return comments
     
-    def get(self, request, articleId):
-        comments= self.get_object(articleId)
+    def get(self, request, id):
+        comments= self.get_object(id)
         comment_list = []
         for comment in comments:
             serializer = CommentSerializer(comment)
             comment_list.append(serializer.data)
         return Response(comment_list)  
     
+    def delete(self, request, id):
+        comment = Comment.objects.get(id=id)
+        comment.delete()
+        article = Article.objects.filter(id=comment.article.id)
+        article.update(commentsNum=len(Comment.objects.filter(article=Article.objects.get(id=comment.article.id))))
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ReplyUserDetailAPIView(APIView):
+
+    def get(self, request, id):
+        comment = Comment.objects.get(id=id)
+        isRepliedByRequestUser = Reply.objects.filter(comment=comment, user=self.request.user).exists()
+        return Response([isRepliedByRequestUser, id])
+class CommentUserDetailAPIView(APIView):
+
+    def get(self, request, id):
+        article = Article.objects.get(id=id)
+        isCommentedByRequestUser = Comment.objects.filter(article=article, user=self.request.user).exists()
+        return Response([isCommentedByRequestUser, id])
 
 class ReplyCreateView(viewsets.ModelViewSet):
     permission_classes = [
@@ -266,19 +285,74 @@ class ReplyCreateView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         comment = get_object_or_404(Comment, id=self.request.POST.get('comment'))
         serializer.save(user = self.request.user, comment=comment, profile=self.request.user.profile)
+        Comment.objects.filter(id=self.request.POST.get('comment')).update(replyNum=len(Reply.objects.filter(comment=self.request.POST.get('comment'))))
+
         
 
 class ReplyDetailAPIView(APIView):
  
-    def get_object(self, commentId):
-        comment = Comment.objects.get(id=commentId)
+    def get_object(self, id):
+        comment = Comment.objects.get(id=id)
         replys = Reply.objects.filter(comment=comment)
         return replys
     
-    def get(self, request, commentId):
-        replys= self.get_object(commentId)
+    def get(self, request, id):
+        replys= self.get_object(id)
         reply_list = []
         for reply in replys:
             serializer = ReplySerializer(reply)
             reply_list.append(serializer.data)
         return Response(reply_list)  
+
+    def delete(self, request, id):
+        reply = Reply.objects.get(id=id)
+        reply.delete()
+        comment = Comment.objects.filter(id=reply.comment.id)
+        comment.update(replyNum=len(Reply.objects.filter(comment=Comment.objects.get(id=reply.comment.id))))
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class ArticleLikeCreateView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    serializer_class = ArticleLikeSerializer
+
+    def perform_create(self, serializer):
+        article = get_object_or_404(Article, id=self.request.POST.get('article'))
+        isAlreadyLikedByRequestUser = ArticleLike.objects.filter(article=article, user=self.request.user).exists()
+        if isAlreadyLikedByRequestUser:
+            ArticleLike.objects.get(article=article, user=self.request.user).delete()
+        else:
+            serializer.save(user = self.request.user, article=article)
+        #Comment.objects.filter(id=self.request.POST.get('comment')).update(replyNum=len(Reply.objects.filter(comment=self.request.POST.get('comment'))))
+
+class CommentLikeCreateView(viewsets.ModelViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    serializer_class = CommentLikeSerializer
+
+    def perform_create(self, serializer):
+        comment = get_object_or_404(Comment, id=self.request.POST.get('comment'))
+        isAlreadyLikedByRequestUser = CommentLike.objects.filter(comment=comment, user=self.request.user).exists()
+        if isAlreadyLikedByRequestUser:
+            CommentLike.objects.get(comment=comment, user=self.request.user).delete()
+        else:
+            serializer.save(user = self.request.user, comment=comment)
+        #Comment.objects.filter(id=self.request.POST.get('comment')).update(replyNum=len(Reply.objects.filter(comment=self.request.POST.get('comment'))))
+
+class ArticleLikeDetailAPIView(APIView):
+    def get(self, request, id):
+        article = Article.objects.get(id=id)
+        articleLikes = ArticleLike.objects.filter(article=article)
+        isLikedByRequestUser = ArticleLike.objects.filter(article=article, user=request.user).exists()
+        return Response([len(articleLikes), isLikedByRequestUser, id])  
+
+    
+class CommentLikeDetailAPIView(APIView):
+    def get(self, request, id):
+        comment = Comment.objects.get(id=id)
+        commentLikes = CommentLike.objects.filter(comment=comment)
+        isLikedByRequestUser = CommentLike.objects.filter(comment=comment, user=request.user).exists()
+        return Response([len(commentLikes), isLikedByRequestUser, id])

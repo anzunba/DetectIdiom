@@ -1,0 +1,15 @@
+import { REPLY_USER } from '../actions/types.js';
+
+const initialState = '';
+
+export default function (state = initialState, action) {
+  switch (action.type) {
+    case REPLY_USER:
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
+
+

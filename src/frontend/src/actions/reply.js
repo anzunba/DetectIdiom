@@ -15,7 +15,6 @@ export const postReply = (replyData) => (dispatch, getState) => {
       .catch((err) => console.log("actions: " + err));
   };
 
-
   export const getReply = (commentId) => (dispatch, getState) => {
     console.log("called getReply: " + commentId)
     axios

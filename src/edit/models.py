@@ -24,6 +24,7 @@ class Article(models.Model):
   translated_sentence = models.TextField()
   word = models.TextField(blank=True)
   idiom = models.TextField(blank=True)
+  commentsNum = models.PositiveIntegerField(default=0)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   def __str__(self):
@@ -71,6 +72,7 @@ class Comment(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
   content = models.CharField(max_length=255, blank=True)
+  replyNum = models.PositiveIntegerField(default=0)
   created_at = models.DateTimeField(auto_now_add=True)
   def __str__(self):
     return self.content

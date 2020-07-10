@@ -14,6 +14,7 @@ import CommentBox from './CommentBox';
 import { useDispatch, useSelector } from 'react-redux';
 import { getComment } from '../../actions/comment';
 import CommentContent from './CommentContent';
+
 const useStyles = makeStyles((theme) => ({
 	expand: {
 		transform: 'rotate(0deg)',
@@ -32,17 +33,17 @@ const Comment = (props) => {
 	useEffect(() => {
 		dispatch(getComment(props.articleId))
 	}, [])
-	const classes = useStyles();
-
+	
 
 	const comments= useSelector((state) => state.comment);
 
 	return (
 		<div>
+
 			{comments.length>0? comments.map((comment, i)=>{
 				return(
 				<CommentContent comment={comment} key={i}/>
-			)}):''}
+			)}):<p className="mb-2 ml-3">Write the first comment :)</p>}
 			
 		</div>
 	);

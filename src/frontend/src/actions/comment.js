@@ -29,6 +29,8 @@ export const postComment = (commentData) => (dispatch, getState) => {
       .catch((err) => console.log("actions: " + err));
   };
 
+
+
   export const deleteComment = (commentId) => (dispatch, getState) => {
     console.log("called deleteComment")
     axios

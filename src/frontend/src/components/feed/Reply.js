@@ -5,7 +5,7 @@ import IconButtons from './IconButtons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getReply } from '../../actions/reply';
 import reply from '../../reducers/reply';
-
+import ReplyDelete from './ReplyDelete'
 const Reply = (props) =>{
 	const dispatch = useDispatch();
 	useEffect(() => {
@@ -20,19 +20,24 @@ const Reply = (props) =>{
 		<React.Fragment>
 			{replys.length>0? replys.map((reply, i)=>{
 				return(
-				<Fragment key={i}>
+				<Fragment key={i}><div className="d-flex justify-content-between">
+					<div>
 				<div className="profileImg">
 					<Avatar alt="" src={reply.profile.profile_img} />
 				</div>
 				<div className="commentContent">
-					<small>{reply.user.username}</small><br/>
+					<small>{reply.content}</small><br/>
 					<Typography component="span" variant="body2" color="textPrimary">
 						{reply.content}
 					</Typography>
-					<div><IconButtons /></div>
+					
+					{/* <div><IconButtons /></div> */}
+				</div>
+				</div>
+				<ReplyDelete replyId={reply.id}/>
 				</div>
 				</Fragment>)
-			}):''}
+			}):<p className="mb-2 ml-3">Write the first reply :)</p>}
 			
 		</React.Fragment>
 	);

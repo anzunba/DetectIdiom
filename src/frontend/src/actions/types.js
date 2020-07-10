@@ -35,3 +35,7 @@ export const PAGE = 'PAGE';
 export const FOLLOW = 'FOLLOW';
 export const COMMENT = 'COMMENT';
 export const REPLY = 'REPLY';
+export const ARTICLE_LIKE = 'ARTICLE_LIKE';
+export const COMMENT_LIKE = 'COMMENT_LIKE';
+export const COMMENT_USER = 'COMMENT_USER';
+export const REPLY_USER = 'REPLY_USER';

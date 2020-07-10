@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import EnJa, Profile, Article, Following, Comment, Reply
+from .models import EnJa, Profile, Article, Following, Comment, Reply, ArticleLike, CommentLike
 from rest_framework.fields import CurrentUserDefault
 class EnJaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,6 +52,24 @@ class ReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Reply
         fields = '__all__'
+
+class ArticleLikeSerializer(serializers.ModelSerializer):
+    user= UserSerializer(read_only=True)
+    article=ArticleSerializer(read_only=True)
+    
+    class Meta:
+        model = ArticleLike
+        fields = '__all__'
+        
+
+class CommentLikeSerializer(serializers.ModelSerializer):
+    user= UserSerializer(read_only=True)
+    comment=CommentSerializer(read_only=True)
+    
+    class Meta:
+        model = CommentLike
+        fields = '__all__'
+        
 
 
 
