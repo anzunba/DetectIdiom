@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import EnJa, Profile, Article, Following, Comment, Reply, ArticleLike, CommentLike
+from .models import EnJa, Profile, Article, Following, Comment, Reply, ArticleLike, CommentLike, Notification
 from rest_framework.fields import CurrentUserDefault
 class EnJaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,7 +69,17 @@ class CommentLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentLike
         fields = '__all__'
-        
+
+class NotificationSerializer(serializers.ModelSerializer):
+    article = ArticleSerializer(read_only=True)
+    targetUser= UserSerializer(read_only=True)
+    originUser= UserSerializer(read_only=True)
+    originProfile = ProfileSerializer(read_only=True)
+    
+    
+    class Meta:
+        model = Notification
+        fields = '__all__'
 
 
 

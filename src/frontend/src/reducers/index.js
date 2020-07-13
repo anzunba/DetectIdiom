@@ -24,6 +24,7 @@ import articleLike from './articleLike'
 import commentLike from './commentLike'
 import commentUser from './commentUser'
 import replyUser from './replyUser'
+import notification from './notification'
 
 export default combineReducers({
   feed,
@@ -50,5 +51,6 @@ export default combineReducers({
   articleLike,
   commentLike,
   commentUser,
-  replyUser
+  replyUser,
+  notification
 });

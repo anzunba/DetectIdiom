@@ -35,6 +35,7 @@ class Profile(models.Model):
   bio = models.CharField(max_length=255, blank=True)
   profile_img = models.ImageField(upload_to='images/profile/')
   language = models.CharField(max_length=15, null=True)
+  notify = models.BooleanField(default=True)
   created_at = models.DateTimeField(auto_now_add=True)
   
   def create_user_profile(sender, instance, created, **kwargs):
@@ -42,21 +43,24 @@ class Profile(models.Model):
         Profile.objects.create(user=instance)
 
   post_save.connect(create_user_profile, sender=User)
+  
+  def __str__(self):
+    return self.user.username
 
 class Following(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "following_user")
   followed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "followed_user")
 
 class Notification(models.Model):
-  article = models.ForeignKey('Article', on_delete=models.CASCADE)
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
-  is_favorite = models.BooleanField(default=False)
+  article = models.ForeignKey('Article', on_delete=models.CASCADE, null=True)
+  targetUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "target_user", null=True)
   is_like = models.BooleanField(default=False)
   is_comment = models.BooleanField(default=False)
   is_comment_like = models.BooleanField(default=False)
   is_reply = models.BooleanField(default=False)
-  is_reply_like = models.BooleanField(default=False)
   is_following = models.BooleanField(default=False)
+  originUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "origin_user", null=True)
+  originProfile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
   created_at = models.DateTimeField(auto_now_add=True)
 
 class ArticleLike(models.Model):

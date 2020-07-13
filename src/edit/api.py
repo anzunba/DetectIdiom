@@ -1,8 +1,8 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer, CommentSerializer, ReplySerializer, ArticleLikeSerializer, CommentLikeSerializer
-from .models import EnJa, Profile,Article, Following, Comment, Reply, ArticleLike, CommentLike
+from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer, CommentSerializer, ReplySerializer, ArticleLikeSerializer, CommentLikeSerializer, NotificationSerializer
+from .models import EnJa, Profile,Article, Following, Comment, Reply, ArticleLike, CommentLike, Notification
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
 from django.contrib.auth.models import User
@@ -92,7 +92,17 @@ class RequestUserProfileView(APIView):
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+class NotifyDetailView(APIView):
+ 
+    def put(self, request, id):
+        if Profile.objects.get(id=id).notify:
+            Profile.objects.filter(id=id).update(notify=False)
+        else:
+            Profile.objects.filter(id=id).update(notify=True)
+        profile = Profile.objects.get(id=id)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+ 
 class AllArticleCreateView(viewsets.ModelViewSet):
     permission_classes = [
         permissions.IsAuthenticated
@@ -201,6 +211,8 @@ class FollowCreateView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         if not Following.objects.filter(user=self.request.user, followed_user=self.request.POST.get('followed_user')).exists():
             serializer.save(user = self.request.user)
+            if not Notification.objects.filter(targetUser=User.objects.get(id=self.request.POST.get('followed_user')), is_following=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+                Notification.objects.create(targetUser=User.objects.get(id=self.request.POST.get('followed_user')), is_following=True, originUser=self.request.user, originProfile=self.request.user.profile)
     
 
 class FollowDetailAPIView(APIView):
@@ -228,6 +240,8 @@ class FollowDetailAPIView(APIView):
     def delete(self, request, followedId):
         follow = self.get_object(followedId)
         follow.delete()
+        if Notification.objects.filter(targetUser=follow.followed_user, is_following=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+            Notification.objects.get(targetUser=follow.followed_user, is_following=True, originUser=self.request.user, originProfile=self.request.user.profile).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CommentCreateView(viewsets.ModelViewSet):
@@ -240,6 +254,8 @@ class CommentCreateView(viewsets.ModelViewSet):
         article = get_object_or_404(Article, id=self.request.POST.get('article'))
         serializer.save(user = self.request.user, article=article, profile=self.request.user.profile)
         Article.objects.filter(id=self.request.POST.get('article')).update(commentsNum=len(Comment.objects.filter(article=self.request.POST.get('article'))))
+        if not Notification.objects.filter(article=article, targetUser=article.user, is_comment=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+            Notification.objects.create(article=article, targetUser=article.user, is_comment=True, originUser=self.request.user, originProfile=self.request.user.profile)
 
 class CommentDetailAPIView(APIView):
  
@@ -261,6 +277,8 @@ class CommentDetailAPIView(APIView):
         comment.delete()
         article = Article.objects.filter(id=comment.article.id)
         article.update(commentsNum=len(Comment.objects.filter(article=Article.objects.get(id=comment.article.id))))
+        if Notification.objects.filter(article=comment.article, targetUser=comment.article.user, is_comment=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+            Notification.objects.get(article=comment.article, targetUser=comment.article.user, is_comment=True, originUser=self.request.user, originProfile=self.request.user.profile).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ReplyUserDetailAPIView(APIView):
@@ -286,6 +304,8 @@ class ReplyCreateView(viewsets.ModelViewSet):
         comment = get_object_or_404(Comment, id=self.request.POST.get('comment'))
         serializer.save(user = self.request.user, comment=comment, profile=self.request.user.profile)
         Comment.objects.filter(id=self.request.POST.get('comment')).update(replyNum=len(Reply.objects.filter(comment=self.request.POST.get('comment'))))
+        if not Notification.objects.filter(article=comment.article, targetUser=comment.article.user, is_reply=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+            Notification.objects.create(article=comment.article, targetUser=comment.article.user, is_reply=True, originUser=self.request.user, originProfile=self.request.user.profile)
 
         
 
@@ -309,6 +329,8 @@ class ReplyDetailAPIView(APIView):
         reply.delete()
         comment = Comment.objects.filter(id=reply.comment.id)
         comment.update(replyNum=len(Reply.objects.filter(comment=Comment.objects.get(id=reply.comment.id))))
+        if Notification.objects.filter(article=comment.article, targetUser=comment.article.user, is_comment=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+            Notification.objects.get(article=comment.article, targetUser=comment.article.user, is_comment=True, originUser=self.request.user, originProfile=self.request.user.profile).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
@@ -323,8 +345,12 @@ class ArticleLikeCreateView(viewsets.ModelViewSet):
         isAlreadyLikedByRequestUser = ArticleLike.objects.filter(article=article, user=self.request.user).exists()
         if isAlreadyLikedByRequestUser:
             ArticleLike.objects.get(article=article, user=self.request.user).delete()
+            if Notification.objects.filter(article=article, targetUser=article.user, is_like=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+                Notification.objects.get(article=article, targetUser=article.user, is_like=True, originUser=self.request.user, originProfile=self.request.user.profile).delete()
         else:
             serializer.save(user = self.request.user, article=article)
+            if not Notification.objects.filter(article=article, targetUser=article.user, is_like=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+                Notification.objects.create(article=article, targetUser=article.user, is_like=True, originUser=self.request.user, originProfile=self.request.user.profile)
         #Comment.objects.filter(id=self.request.POST.get('comment')).update(replyNum=len(Reply.objects.filter(comment=self.request.POST.get('comment'))))
 
 class CommentLikeCreateView(viewsets.ModelViewSet):
@@ -338,8 +364,12 @@ class CommentLikeCreateView(viewsets.ModelViewSet):
         isAlreadyLikedByRequestUser = CommentLike.objects.filter(comment=comment, user=self.request.user).exists()
         if isAlreadyLikedByRequestUser:
             CommentLike.objects.get(comment=comment, user=self.request.user).delete()
+            if Notification.objects.filter(article=comment.article, targetUser=comment.article.user, is_comment_like=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+                Notification.objects.get(article=comment.article, targetUser=comment.article.user, is_comment_like=True, originUser=self.request.user, originProfile=self.request.user.profile).delete()
         else:
             serializer.save(user = self.request.user, comment=comment)
+            if not Notification.objects.filter(article=comment.article, targetUser=comment.article.user, is_comment_like=True, originUser=self.request.user, originProfile=self.request.user.profile).exists():
+                Notification.objects.create(article=comment.article, targetUser=comment.article.user, is_comment_like=True, originUser=self.request.user, originProfile=self.request.user.profile)
         #Comment.objects.filter(id=self.request.POST.get('comment')).update(replyNum=len(Reply.objects.filter(comment=self.request.POST.get('comment'))))
 
 class ArticleLikeDetailAPIView(APIView):
@@ -356,3 +386,18 @@ class CommentLikeDetailAPIView(APIView):
         commentLikes = CommentLike.objects.filter(comment=comment)
         isLikedByRequestUser = CommentLike.objects.filter(comment=comment, user=request.user).exists()
         return Response([len(commentLikes), isLikedByRequestUser, id])
+
+class NotificationDetailView(APIView):
+    
+    def get(self, request, id):
+        notifications= Notification.objects.filter(targetUser=request.user)
+        notification_list = []
+        for notification in notifications:
+            serializer = NotificationSerializer(notification)
+            notification_list.append(serializer.data)
+        return Response(notification_list)  
+
+    def delete(self, request, id):
+        notification = Notification.objects.get(id=id)
+        notification.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

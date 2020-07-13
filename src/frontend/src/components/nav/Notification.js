@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
@@ -16,6 +16,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import { getNotification, deleteNotification } from '../../actions/Notification';
+import { postNotify, getProfile } from '../../actions/getRequestUserProfile';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
 	typography: {
@@ -23,29 +26,9 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const n = (
-	<List className="px-3">
-		<ListItem>
-			<ListItemAvatar>
-				<Avatar>
-					<FolderIcon />
-				</Avatar>
-			</ListItemAvatar>
-			<ListItemText primary="Single-line item" secondary="Secondary text" />
-			<ListItemSecondaryAction>
-				<IconButton edge="end" aria-label="delete">
-					<DeleteIcon />
-				</IconButton>
-			</ListItemSecondaryAction>
-		</ListItem>
-	</List>
-);
-
-const noNotification = (
-    <div className="p-3">You have notifications turned off!</div>
-);
-
-export default function SimplePopover() {
+const noNotification = <div className="p-3">You have notifications turned off!</div>;
+const Notification = () => {
+	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [ anchorEl, setAnchorEl ] = React.useState(null);
 
@@ -60,20 +43,32 @@ export default function SimplePopover() {
 	const open = Boolean(anchorEl);
 	const id = open ? 'simple-popover' : undefined;
 
-    const [state, setState] = React.useState({
-        checkedA: true,
-      });
-    
-      const [notify, setNotify] = useState(true)
-      const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-        event.target.checked ? setNotify(true) : setNotify(false);
-      };
+	const handleNotification = () =>{
+		dispatch(postNotify(profileId))
+		dispatch(getProfile())
+	}
+	const [requestUserNotify, setRequestUserNotify] = useState(false)
+	const [profileId, setProfileId] = useState()
+	const requestUserProfileData = useSelector((state) => state.getRequestUserProfile);
+	useEffect(() => {
+		dispatch(getNotification());
+		dispatch(getProfile())
+	}, []);
+	useEffect(() => {
+		console.log(requestUserProfileData)
+		setRequestUserNotify(requestUserProfileData.notify)
+		setProfileId(requestUserProfileData.id)
+	}, [requestUserProfileData])
+	const notifications = useSelector((state) => state.notification);
+
+
 	return (
 		<div className="align-self-center">
-			<IconButton onClick={handleClick}><Badge badgeContent={notify?4:0} color="error" aria-describedby={id}>
-			<MailIcon style={{color:'#f8f9fa'}}/>
-			</Badge></IconButton>
+			<IconButton onClick={handleClick}>
+				<Badge badgeContent={requestUserNotify ? notifications.length : 0} color="error" aria-describedby={id}>
+					<MailIcon style={{ color: '#f8f9fa' }} />
+				</Badge>
+			</IconButton>
 
 			<Popover
 				id={id}
@@ -90,20 +85,40 @@ export default function SimplePopover() {
 				}}
 			>
 				<div>
-                    <div className="d-flex justify-content-between">
-					<Typography variant="h6" className="p-3">
-						Notifications
-					</Typography>
-					<FormControlLabel
-						control={<Switch checked={state.checkedA} onChange={handleChange} name="checkedA" />}  className="mt-3"
-					/>
-                    </div>
+					<div className="d-flex justify-content-between">
+						<Typography variant="h6" className="p-3">
+							Notifications
+						</Typography>
+						<FormControlLabel
+							control={<Switch checked={requestUserNotify? true:false} onClick={()=>handleNotification()}  />}
+							className="mt-3"
+						/>
+					</div>
 					<Divider />
 					<div className="">
-                        {notify === true? n : noNotification }
+						{requestUserNotify ? (
+							<List className="px-3">
+							{notifications.map((notification, i)=>{
+								return(<ListItem key={i}>
+									<ListItemAvatar>
+										<Avatar alt="" src={notification.originProfile.profile_img} className={classes.large} />
+									</ListItemAvatar>
+									<ListItemText primary={`${notification.originUser.username}  ${notification.is_like?'liked!':notification.is_comment?'commentd!':notification.is_comment_like?'like your comment!': notification.is_reply ? 'replied!': notification.is_following? 'followed you!': ''}`} secondary={notification.article?notification.article.title:''}  />
+									<ListItemSecondaryAction>
+										<IconButton edge="end" aria-label="delete" onClick={()=>dispatch(deleteNotification(notification.id))}>
+											<DeleteIcon />
+										</IconButton>
+									</ListItemSecondaryAction>
+								</ListItem>)
+							})}
+							</List>
+						) : (
+							noNotification
+						)}
 					</div>
 				</div>
 			</Popover>
 		</div>
 	);
-}
+};
+export default Notification;

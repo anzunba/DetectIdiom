@@ -26,3 +26,16 @@ export const getProfile = () => (dispatch, getState) => {
       })
       .catch((err) => console.log("actions: " + err));
   };
+
+  export const postNotify = (id) => (dispatch, getState) => {
+    console.log("called post notify: ")
+    axios
+      .put(`/api/isNotify/${id}`, tokenConfig(getState))
+      .then((res) => {
+        dispatch({
+          type: IS_NOTIFY,
+          payload: res.data,
+        });
+      })
+      .catch((err) => console.log("actions: " + err));
+  };

@@ -39,3 +39,4 @@ export const ARTICLE_LIKE = 'ARTICLE_LIKE';
 export const COMMENT_LIKE = 'COMMENT_LIKE';
 export const COMMENT_USER = 'COMMENT_USER';
 export const REPLY_USER = 'REPLY_USER';
+export const NOTIFICATION = 'NOTIFICATION';
