@@ -55,7 +55,6 @@ const commentContent = (props) => {
     useEffect(() => {
         setExpandControllerList((state) => ({ ...state, [props.comment.id]: false }));
         dispatch(getCommentLike(props.comment.id))
-		//dispatch(getCommentUser(props.article.id))
 		setLikedByRequestUser((state) => ({ ...state, [props.comment.id]: false }));
 		setRepliedByRequestUser((state) => ({ ...state, [props.comment.id]: false }));
 		setLikeNum((state) => ({ ...state, [props.comment.id]: 0 }));
@@ -63,7 +62,6 @@ const commentContent = (props) => {
     }, [])
 	useEffect(
 		() => {
-			console.log(replyUserData)
 			if (replyUserData.length > 0) {
 				const isRepliedByRequestUser = replyUserData[0];
 				const commentId = replyUserData[1]
@@ -74,7 +72,6 @@ const commentContent = (props) => {
 	);
 	useEffect(
 		() => {
-			console.log(commentUserData)
 			if (commentUserData.length > 0) {
 				const isCommentedByRequestUser = commentUserData[0];
 				const commentId = commentUserData[1]
@@ -93,7 +90,6 @@ const commentContent = (props) => {
 				const commentId = commentLikeData[2]
 				setLikedByRequestUser((state) => ({ ...state, [commentId]: isLikedByRequestUser }));
 				setLikeNum((state) => ({ ...state, [commentId]: likeSum }));
-				console.log(likedByRequestUser)
 			}
 		},
 		[ commentLikeData ]

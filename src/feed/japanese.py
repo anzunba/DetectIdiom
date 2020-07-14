@@ -13,6 +13,7 @@ from janome.tokenfilter import *
 from janome.charfilter import *
 from pykakasi import kakasi
 import csv
+from textblob import TextBlob
 
 def to_hiragana(text):
     kakasi_ = kakasi()
@@ -68,26 +69,16 @@ def get_tra_sentence(text):
     sentence = str(TextBlob(text).translate(from_lang='ja', to='en'))
     
 def create_sentence_content(tokens, p, s):
-    t = 0
-    sentence_html = ''
     sentence_list = []
+    t = 0
     for token in tokens:
-        sentence_html += create_sentence_html(token, p, s, t)
-        sentence_list.append([token, ''])
-        t += 1
-    return [sentence_html, sentence_list]
-
-def create_sentence_html(token, p, s, t):
-    sentence_html = ''
-    h = "<span id='t_{}_{}_{}' class='{}'>{}</span>".format(p, s, t, "clickable_token", token)
-    sentence_html += h
-    return sentence_html
-
-def create_paragraph_html(sentence_html, p, s):
-    paragraph_html = ''
-    h = "<p id='s_{}_{}' class='mb-0'>{}</p>".format(p, s, sentence_html)
-    paragraph_html += h
-    return(paragraph_html)
+        sentence_d = {}
+        sentence_d['id'] = '{}_{}_{}'.format(p, s, t)
+        sentence_d['token'] = token
+        sentence_d['mean'] = ''
+        sentence_list.append(sentence_d)
+        t+=1
+    return sentence_list
 
 def create_paragraphs_list(sentence_list):
     sentences_list = []
@@ -95,45 +86,42 @@ def create_paragraphs_list(sentence_list):
     return sentences_list
 
 def create_paragraph_content(sentences, p):
-    paragraph_list, tra_sentence, selected_idioms = [], [], []
+    paragraph_list, tra_sentence, selected_idioms, sentenceTokenLists = [], [], [], []
     s = 0
-    paragraph_html = ''
     for sentence in sentences:
         tra_sentence.append(str(TextBlob(sentence).translate(from_lang='ja', to='en')))
         tokens = get_tokens(sentence)
         nouns = get_noun(sentence)
         selected_idioms.append(get_idiom_key(tokens, nouns))
-        sentence_content = create_sentence_content(tokens, p, s)
-        sentence_html = sentence_content[0]
-        paragraph_html += create_paragraph_html(sentence_html, p, s)
-        sentence_list = sentence_content[1]
-        paragraph_list += create_paragraphs_list(sentence_list)
+        sentence_list = create_sentence_content(tokens, p, s)
+        paragraph_list.append(create_paragraphs_list(sentence_list))
+        sentenceTokenLists.append(get_lemmatizer(tokens))
         s += 1
-    return [paragraph_html, paragraph_list, tra_sentence, selected_idioms]
+    return [paragraph_list, tra_sentence, selected_idioms, sentenceTokenLists]
 
-def create_html(paragraph_html, p):
-    html = ''
-    h = "<div class='clickable id='p_{}'>{}</p>".format(p, paragraph_html)
-    html += h
-    return(html)
+def get_lemmatizer(tokens):
+    lemma_sentence = ''
+    for token in tokens:
+        t = Tokenizer().tokenize(token)[0]
+        lemma_sentence += t.base_form + ' '
+    return lemma_sentence
 
 
 def get_text_ja(text):
-    html = ''
-    paragraphs, all_sentences, paragraph_tra_sentence, paragraph_list, idioms = [], [], [], [], []
+    paragraphs, all_sentences, paragraph_tra_sentence, paragraph_list, idioms, sentenceTokenLists= [], [], [], [], [], []
     paragraphs = re.split('\n\n+', text)
+    text_lang = TextBlob(text).detect_language()
     p = 0
     for paragraph in paragraphs:
         sentences = get_sentence(paragraph)
         all_sentences.append(sentences)
         paragraph_content = create_paragraph_content(sentences, p)
-        paragraph_html = paragraph_content[0]
-        paragraph_list.append(paragraph_content[1])
-        paragraph_tra_sentence.append(paragraph_content[2])
-        idioms.append(paragraph_content[3])
-        html += create_html(paragraph_html, p)
+        paragraph_list.append(paragraph_content[0])
+        paragraph_tra_sentence.append(paragraph_content[1])
+        idioms.append(paragraph_content[2])
+        sentenceTokenLists.append(paragraph_content[2])
         p += 1
-    result = [html, paragraph_list, all_sentences, paragraph_tra_sentence, idioms]
+    result = [paragraph_list, all_sentences, paragraph_tra_sentence, idioms, sentenceTokenLists, text_lang]
     return result
             
 def get_tokens(sentence):

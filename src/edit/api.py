@@ -1,12 +1,12 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import EnJaSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer, CommentSerializer, ReplySerializer, ArticleLikeSerializer, CommentLikeSerializer, NotificationSerializer
-from .models import EnJa, Profile,Article, Following, Comment, Reply, ArticleLike, CommentLike, Notification
+from .serializers import EnJaSerializer, JaEnSerializer, ProfileSerializer, ArticleSerializer, UserSerializer, FollowSerializer, CommentSerializer, ReplySerializer, ArticleLikeSerializer, CommentLikeSerializer, NotificationSerializer
+from .models import EnJa, JaEn, Profile,Article, Following, Comment, Reply, ArticleLike, CommentLike, Notification
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
 from django.contrib.auth.models import User
-
+from janome.tokenizer import Tokenizer
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -23,16 +23,32 @@ class EnJaViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         qs = super().get_queryset()
-        word = get_lemmatizer(str(self.request.query_params.get('word')).lower())
+        word = get_enlemmatizer(str(self.request.query_params.get('word')).lower())
         return qs.filter(word=word)
  
-def get_lemmatizer(sentence):
+def get_enlemmatizer(sentence):
     wnl = WordNetLemmatizer()
     for word, tag in pos_tag(word_tokenize(sentence)):
         wntag = tag[0].lower()
         wntag = wntag if wntag in ['a', 'r', 'n', 'v'] else None
         lemma = wnl.lemmatize(word, wntag) if wntag else word
         return lemma
+
+class JaEnViewSet(viewsets.ModelViewSet):
+    queryset = JaEn.objects.all()
+    serializer_class = JaEnSerializer
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    
+    def get_queryset(self):
+        qs = super().get_queryset()
+        word = get_jalemmatizer(str(self.request.query_params.get('word')))
+        return qs.filter(word=word)
+
+def get_jalemmatizer(token):
+    lemma = Tokenizer().tokenize(token)[0].base_form
+    return lemma
 
 class CustomUserProfileView(APIView):
     err_msg = {

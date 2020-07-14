@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { getMeaning } from '../../actions/getMeaning';
+import { getEnMeaning, getJaMeaning } from '../../actions/getMeaning';
 import { getTokens } from '../../actions/getTokens';
 import { lemmatizer } from '../../actions/edit9';
 import { lemmatizer2 } from '../../actions/edit10';
@@ -69,7 +69,6 @@ const App = () => {
 	const originSentencesList = useSelector((state) => state.getProcessedText.pre_sentence);
 	const sentenceTokensList = useSelector((state) => state.getProcessedText.sentenceTokensList);
 	const text_lang = useSelector((state) => state.getProcessedText.text_lang);
-	console.log(text_lang)
 	const inputTextTokens = useSelector((state) => state.getProcessedText.words);
 	const [ tokenRuby, setTokenRuby ] = useState({});
 	const idiomsTableRow = [];
@@ -131,7 +130,7 @@ const App = () => {
 		setPId(tokenFullId.split('_')[1])
 		setSId(tokenFullId.split('_')[2])
 		token = e.target.innerHTML;
-		dispatch(getMeaning(token));
+		text_lang == 'en' ? dispatch(getEnMeaning(token)):dispatch(getJaMeaning(token));
 		dispatch(lemmatizer(token));
 		dispatch(lemmatizer2(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
 		setTokenBg((state) => ({ ...state, [tokenFullId]: 'bg-yellow' }));

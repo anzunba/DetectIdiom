@@ -11,7 +11,6 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -55,12 +54,10 @@ const Notification = () => {
 		dispatch(getProfile())
 	}, []);
 	useEffect(() => {
-		console.log(requestUserProfileData)
 		setRequestUserNotify(requestUserProfileData.notify)
 		setProfileId(requestUserProfileData.id)
 	}, [requestUserProfileData])
 	const notifications = useSelector((state) => state.notification);
-
 
 	return (
 		<div className="align-self-center">

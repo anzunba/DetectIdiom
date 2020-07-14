@@ -441,3 +441,7 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.w-100.MuiButton-textPrim
 .hover-img:hover{
 	border: 1px solid #3f51b5!important;
 }
+
+.opacity1{
+	opacity: 0.1!important;
+}

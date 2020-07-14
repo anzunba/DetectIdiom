@@ -1,11 +1,16 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import EnJa, Profile, Article, Following, Comment, Reply, ArticleLike, CommentLike, Notification
+from .models import EnJa, JaEn, Profile, Article, Following, Comment, Reply, ArticleLike, CommentLike, Notification
 from rest_framework.fields import CurrentUserDefault
 class EnJaSerializer(serializers.ModelSerializer):
     class Meta:
         model = EnJa
+        fields = ['mean']
+
+class JaEnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JaEn
         fields = ['mean']
         
 class UserSerializer(serializers.ModelSerializer):

@@ -13,6 +13,13 @@ class EnJa(models.Model):
 
   def __str__(self):
     return self.word
+
+class JaEn(models.Model):
+  word = models.CharField(max_length=63)
+  mean = models.CharField(max_length=511)
+
+  def __str__(self):
+    return self.word
   
 class Article(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")

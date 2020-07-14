@@ -3,8 +3,13 @@ from django.contrib import admin
 # Register your models here.
 from .models import *
 
-admin.site.register(EnJa)
+#admin.site.register(EnJa)
 
+class EnJaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'word', 'mean')
+    
+class JaEnAdmin(admin.ModelAdmin):
+    list_display = ('id', 'word', 'mean')
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'title', 'content', 'language', 'origin_sentence', 'translated_sentence', 'word', 'idiom', 'commentsNum')
     
@@ -20,8 +25,6 @@ class NotificationAdmin(admin.ModelAdmin):
 class ArticleLikeAdmin(admin.ModelAdmin):
     list_display = ('id', 'article', 'user')
     
-
-
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'article', 'user', 'content', 'replyNum', 'created_at')
 
@@ -43,3 +46,5 @@ admin.site.register(Comment, CommentAdmin)
 admin.site.register(CommentLike, CommentLikeAdmin)
 admin.site.register(Reply, ReplyAdmin)
 admin.site.register(ReplyLike, ReplyLikeAdmin)
+admin.site.register(EnJa, EnJaAdmin)
+admin.site.register(JaEn, JaEnAdmin)

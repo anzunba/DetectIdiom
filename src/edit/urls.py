@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from rest_framework import routers
-from .api import EnJaViewSet, RequestUserProfileView, UpdateCustomArticleView, RequestUserArticleCreateView, AllArticleCreateView, CustomUserProfileView, CustomUserArticleView, FollowDetailAPIView, FollowArticleCreateView, FollowCreateView, ClassmateArticleCreateView, CommentCreateView, CommentDetailAPIView, ReplyCreateView, ReplyDetailAPIView, ArticleLikeCreateView, CommentLikeCreateView, ArticleLikeDetailAPIView, CommentLikeDetailAPIView, CommentUserDetailAPIView, ReplyUserDetailAPIView, NotificationDetailView, NotifyDetailView
+from .api import EnJaViewSet, JaEnViewSet,RequestUserProfileView, UpdateCustomArticleView, RequestUserArticleCreateView, AllArticleCreateView, CustomUserProfileView, CustomUserArticleView, FollowDetailAPIView, FollowArticleCreateView, FollowCreateView, ClassmateArticleCreateView, CommentCreateView, CommentDetailAPIView, ReplyCreateView, ReplyDetailAPIView, ArticleLikeCreateView, CommentLikeCreateView, ArticleLikeDetailAPIView, CommentLikeDetailAPIView, CommentUserDetailAPIView, ReplyUserDetailAPIView, NotificationDetailView, NotifyDetailView
 
 urlpatterns = [
   path('edit/getTokens', views.get_tokens),
@@ -25,6 +25,7 @@ urlpatterns = [
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register('api/enja', EnJaViewSet, 'enja')
+router.register('api/jaen', JaEnViewSet, 'jaen')
 router.register("api/article/", RequestUserArticleCreateView, "article-detail")
 router.register("api/allArticle/", AllArticleCreateView, "allArticle-detail")
 router.register("api/followArticle/", FollowArticleCreateView, "followArticle-detail")

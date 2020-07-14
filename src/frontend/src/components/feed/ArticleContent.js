@@ -30,7 +30,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 import { getCommentUser } from '../../actions/commentUser';
 import { postArticleLike, getArticleLike } from '../../actions/articleLike';
-
+import Report from './Report'
 const useStyles = makeStyles((theme) => ({
 	expand: {
 		transform: 'rotate(0deg)',
@@ -117,7 +117,8 @@ const ArticleContent = (props) => {
 
 	return (
 		<div className="bg-light m-1">
-			<div className="d-flex flex-row pt-3 pl-3">
+			<div className="d-flex justify-content-between">
+			<div className="d-flex flex-row pt-3 pl-3" >
 				<Avatar
 					alt=""
 					src={props.article.profile.profile_img}
@@ -128,7 +129,7 @@ const ArticleContent = (props) => {
 					<h5
 						className="d-block pt-1 my-0 hover-blue cursor"
 						onClick={() =>
-							showEdit(props.props.article.content, [ props.article.word, props.article.idiom ])}
+							showEdit(props.article.content, [ props.article.word, props.article.idiom ])}
 					>
 						{props.article.title}
 					</h5>
@@ -137,6 +138,8 @@ const ArticleContent = (props) => {
 					</small>
 					<small className="d-block">{dayjs(props.article.updated_at).fromNow()}</small>
 				</div>
+			</div>
+			<Report />
 			</div>
 			<CardContent>
 				<Typography variant="body1" color="textSecondary" component="span" className="pb-2">
