@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { getEnMeaning, getJaMeaning } from '../../actions/getMeaning';
 import { getTokens } from '../../actions/getTokens';
-import { lemmatizer } from '../../actions/edit9';
+import { enLemmatizer, jaLemmatizer } from '../../actions/edit9';
 import { lemmatizer2 } from '../../actions/edit10';
 import { lemmatizer3 } from '../../actions/edit11';
 import InputBase from '@material-ui/core/InputBase';
@@ -107,7 +107,7 @@ const App = () => {
 				for (let idiomId in idiomListFromDb) {
 					for (let idiom in idiomListFromDb[idiomId]) {
 						const mean = idiomListFromDb[idiomId][idiom];
-						dispatch(lemmatizer2(originSentencesList[idiomId.split('_')[0]][idiomId.split('_')[1]]));
+						//dispatch(lemmatizer2(originSentencesList[idiomId.split('_')[0]][idiomId.split('_')[1]]));
 						let tokenHash = {};
 						tokenHash[idiom] = idiomListFromDb[idiomId][idiom];
 						getIdiomDetail({
@@ -131,8 +131,7 @@ const App = () => {
 		setSId(tokenFullId.split('_')[2])
 		token = e.target.innerHTML;
 		text_lang == 'en' ? dispatch(getEnMeaning(token)):dispatch(getJaMeaning(token));
-		dispatch(lemmatizer(token));
-		dispatch(lemmatizer2(originSentencesList[tokenFullId.split('_')[1]][tokenFullId.split('_')[2]]));
+		text_lang == 'en' ? dispatch(enLemmatizer(token)):dispatch(jaLemmatizer(token))
 		setTokenBg((state) => ({ ...state, [tokenFullId]: 'bg-yellow' }));
 	};
 

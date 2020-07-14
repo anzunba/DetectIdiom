@@ -8,6 +8,7 @@ import json
 from . import english, japanese
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag, word_tokenize
+from janome.tokenizer import Tokenizer
 
 @csrf_exempt 
 def get_news(request):
@@ -42,7 +43,7 @@ def get_text(request):
         
 
 @csrf_exempt 
-def lemmatizer(request):
+def en_lemmatizer(request):
     if request.method == 'POST':
         if request.body:
             text = request.body.decode("utf-8")
@@ -53,4 +54,16 @@ def lemmatizer(request):
                 wntag = wntag if wntag in ['a', 'r', 'n', 'v'] else None
                 lemma = wnl.lemmatize(word, wntag) if wntag else word
                 lemma_list.append(lemma) 
+            return HttpResponse(json.dumps(lemma_list))
+
+@csrf_exempt 
+def ja_lemmatizer(request):
+    if request.method == 'POST':
+        if request.body:
+            text = request.body.decode("utf-8")
+            tokens = Tokenizer().tokenize(text, wakati=True)
+            lemma_list = []
+            for token in tokens:
+                t = Tokenizer().tokenize(token)[0]
+                lemma_list.append(t.base_form)
             return HttpResponse(json.dumps(lemma_list))

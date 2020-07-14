@@ -13,7 +13,6 @@ from janome.tokenfilter import *
 from janome.charfilter import *
 from pykakasi import kakasi
 import csv
-from textblob import TextBlob
 
 def to_hiragana(text):
     kakasi_ = kakasi()

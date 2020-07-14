@@ -4,5 +4,6 @@ from . import views
 urlpatterns = [
   path('feed', views.get_news),
   path('feed/getProcessedText', views.get_text),
-  path('feed/lemmatizer', views.lemmatizer)
+  path('feed/enLemmatizer', views.en_lemmatizer),
+  path('feed/jaLemmatizer', views.ja_lemmatizer)
 ]
